@@ -54,7 +54,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/username"
+                android:id="@+id/username_or_email"
                 android:background="@drawable/login_input_bg"
                 android:drawableStart="@drawable/person_img"
                 android:drawablePadding="8dp"

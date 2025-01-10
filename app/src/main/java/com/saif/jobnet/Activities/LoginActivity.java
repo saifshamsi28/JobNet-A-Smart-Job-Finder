@@ -73,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.loginButton.setOnClickListener(v -> {
             boolean hasError = false;
 
-            if (binding.username.getText().toString().isEmpty()) {
-                binding.username.setError("Username is required");
+            if (binding.usernameOrEmail.getText().toString().isEmpty() ) {
+                binding.usernameOrEmail.setError("Username is required");
                 hasError = true;
             }
 
@@ -121,14 +121,14 @@ public class LoginActivity extends AppCompatActivity {
 //        Toast.makeText(this, "Welcome to JobNet " + binding.username.getText().toString().trimDD(), Toast.LENGTH_SHORT).show();
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        String username = binding.username.getText().toString().trim();
+        String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
         String storedUsername = sharedPreferences.getString("userName", "");
         String storedEmail = sharedPreferences.getString("userEmail", "");
         String storedPassword = sharedPreferences.getString("userPassword", "");
 
         //to check credentials if wrong then set error in textview
-        if (username.equals(storedUsername) || username.equals(storedEmail) && password.equals(storedPassword)) {
+        if (usernameOrEmail.equals(storedUsername) || usernameOrEmail.equals(storedEmail) && password.equals(storedPassword)) {
             Toast.makeText(this, "Welcome to JobNet " , Toast.LENGTH_SHORT).show();
             editor.putBoolean("isLoggedIn", true);
             editor.apply();

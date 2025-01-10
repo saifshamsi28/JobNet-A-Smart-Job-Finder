@@ -112,6 +112,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Save user data in SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("name",name);
+        editor.putString("userName", username);
+        editor.putString("userEmail", email);
+        editor.putString("userPassword", password);
+        editor.putString("userPhoneNumber", phoneNumber);
+
 
         editor.putBoolean("isRegistered", true);
         editor.putBoolean("isLoggedIn", false);
