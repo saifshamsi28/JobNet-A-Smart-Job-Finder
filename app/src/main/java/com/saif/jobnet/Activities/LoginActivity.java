@@ -14,8 +14,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.saif.jobnet.Models.User;
+import com.saif.jobnet.Models.UserLoginCredentials;
+import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityLoginBinding;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -98,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        binding.username.addTextChangedListener(new TextWatcher() {
+        binding.usernameOrEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -118,26 +127,50 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkCredentials() {
-//        Toast.makeText(this, "Welcome to JobNet " + binding.username.getText().toString().trimDD(), Toast.LENGTH_SHORT).show();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
         String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
-        String storedUsername = sharedPreferences.getString("userName", "");
-        String storedEmail = sharedPreferences.getString("userEmail", "");
-        String storedPassword = sharedPreferences.getString("userPassword", "");
 
-        //to check credentials if wrong then set error in textview
-        if (usernameOrEmail.equals(storedUsername) || usernameOrEmail.equals(storedEmail) && password.equals(storedPassword)) {
-            Toast.makeText(this, "Welcome to JobNet " , Toast.LENGTH_SHORT).show();
-            editor.putBoolean("isLoggedIn", true);
-            editor.apply();
-            redirectToProfile();
-        } else {
-            binding.invalidCredentials.setVisibility(View.VISIBLE);
-            binding.invalidCredentials.setText("Invalid username or password");
-        }
+        // Create login credentials object
+        UserLoginCredentials credentials = new UserLoginCredentials();
+        credentials.setUserNameOrEmail(usernameOrEmail);
+        credentials.setPassword(password);
+
+        // Retrofit setup
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<User> call = apiService.loginUser(credentials);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    User user = response.body();
+                    if (user != null) {
+                        Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean("isLoggedIn", true);
+                        editor.putString("userName", user.getUserName());
+                        editor.putString("userEmail", user.getEmail());
+                        editor.apply();
+                        redirectToProfile();
+                    }
+                } else {
+                    binding.invalidCredentials.setVisibility(View.VISIBLE);
+                    binding.invalidCredentials.setText("Invalid username or password");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private void togglePasswordVisibility() {
         if (isPasswordVisible) {

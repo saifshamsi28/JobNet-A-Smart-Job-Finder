@@ -2,6 +2,7 @@ package com.saif.jobnet.Network;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
+import com.saif.jobnet.Models.UserLoginCredentials;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,4 +26,10 @@ public interface ApiService {
 
     @POST("/user")
     Call<User> registerUser(@Body User user);
+
+    @POST("/user/login")
+    Call<User> loginUser(@Body UserLoginCredentials credentials);
+
+
+
 }
