@@ -20,7 +20,6 @@ public class User implements Serializable {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.savedJobs = savedJobs;
     }
 
     public String getId() {

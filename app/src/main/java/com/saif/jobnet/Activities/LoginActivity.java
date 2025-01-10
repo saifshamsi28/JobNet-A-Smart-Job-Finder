@@ -1,5 +1,6 @@
 package com.saif.jobnet.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -142,6 +143,9 @@ public class LoginActivity extends AppCompatActivity {
         UserLoginCredentials credentials = new UserLoginCredentials();
         credentials.setUserNameOrEmail(usernameOrEmail);
         credentials.setPassword(password);
+        ProgressDialog dialog=new ProgressDialog(this);
+        dialog.setMessage("Checking credentials...");
+        dialog.show();
 
         // Retrofit setup
         Retrofit retrofit = new Retrofit.Builder()
@@ -168,17 +172,20 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("phoneNumber", user.getPhoneNumber());
                         editor.putString("password", user.getPassword());
                         editor.apply();
+                        dialog.dismiss();
                         redirectToProfile(user);
                     }
                 } else {
                     binding.invalidCredentials.setVisibility(View.VISIBLE);
                     binding.invalidCredentials.setText("Invalid username or password");
+                    dialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
     }
