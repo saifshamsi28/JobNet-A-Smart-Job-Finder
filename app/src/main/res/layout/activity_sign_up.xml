@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.SignUpActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="32dp"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        app:layout_constraintVertical_bias="0.5">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textSize="30sp"
+                android:textColor="@color/colorActionBarBackground"
+                android:textStyle="bold"
+                android:layout_marginBottom="24dp" />
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Name "
+                android:background="@drawable/login_input_bg"
+                android:drawableStart="@drawable/person_img"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Username"
+                android:background="@drawable/login_input_bg"
+                android:drawableStart="@drawable/person_img"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Email"
+                android:background="@drawable/login_input_bg"
+                android:drawableStart="@drawable/icon_mail"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Password"
+                android:background="@drawable/login_input_bg"
+                android:drawableStart="@drawable/baseline_lock_24"
+                android:drawableEnd="@drawable/icon_close_eye"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"
+                android:inputType="textPassword" />
+            <EditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Phone Number (Optional)"
+                android:background="@drawable/login_input_bg"
+                android:drawableStart="@drawable/phone_icon"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"
+                android:inputType="phone" />
+
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:textSize="18sp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/colorActionBarBackground"
+                android:textColor="@color/white"
+                />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</ScrollView>

@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">JobNet</string>
+    <string name="app_slogan">A Smart Job Finder</string>
+    <string name="example_name">Saif Shamsi</string>
+    <string name="example_email">Example@gmail.com</string>
+    <string-array name="job_heading_terms">
+        <item>Key Responsibilities</item>
+        <item>Qualifications</item>
+        <item>Experience</item>
+        <item>EXPERIENCE</item>
+        <item>Description</item>
+        <item>Responsibilities</item>
+        <item>Skills</item>
+        <item>Requirements</item>
+        <item>Summary</item>
+        <item>Duties</item>
+        <item>Job Overview</item>
+        <item>Role Purpose</item>
+        <item>Position Objectives</item>
+        <item>Core Duties</item>
+        <item>Capabilities</item>
+        <item>Key Skills</item>
+        <item>Education</item>
+        <item>Preferred Qualifications</item>
+        <item>Knowledge and Abilities</item>
+        <item>Competencies</item>
+    </string-array>
+    <!-- for storing different job title like java developer, web developer, android developer -->
+    <string-array name="job_titles">
+        "Web Developer", "Android Developer", "Java Developer",
+        "Python Developer", "Flutter Developer", "IOS Developer", "Data Scientist", "Data Analyst", "Data Engineer"
+        , "Front-end Developer", "Back-end Developer"
+    </string-array>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+</resources>

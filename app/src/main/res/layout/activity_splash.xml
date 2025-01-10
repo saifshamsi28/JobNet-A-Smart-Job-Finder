@@ -1,0 +1,226 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:id="@+id/main"
+    android:background="@drawable/gradient1"
+    android:layout_height="match_parent">
+
+    <!-- Background Texts Layer -->
+    <RelativeLayout
+        android:id="@+id/background_titles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Job Titles at the Top -->
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:text="Software Engineer"
+            android:textColor="@color/teal"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="40dp"
+            android:text="Project Manager"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data Scientist"
+            android:textColor="@color/yellow"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="60dp" />
+
+        <TextView
+            android:id="@+id/title4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product Designer"
+            android:textColor="@color/pink"
+            android:textSize="20sp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="80dp" />
+
+        <TextView
+            android:id="@+id/title5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Business Analyst"
+            android:textColor="@color/golden"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="100dp" />
+
+        <TextView
+            android:id="@+id/title6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Web Developer"
+            android:textColor="@color/purple"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="120dp" />
+
+        <TextView
+            android:id="@+id/title7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Marketing Specialist"
+            android:textColor="@color/teal"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="140dp" />
+
+        <TextView
+            android:id="@+id/title8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UX Researcher"
+            android:textColor="@color/pink"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="160dp" />
+
+        <TextView
+            android:id="@+id/title9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Content Writer"
+            android:textColor="@color/yellow"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="180dp" />
+
+        <TextView
+            android:id="@+id/title10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Financial Consultant"
+            android:textColor="@color/golden"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="200dp" />
+
+        <TextView
+            android:id="@+id/title11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DevOps Engineer"
+            android:textColor="@color/purple"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="220dp" />
+
+        <TextView
+            android:id="@+id/title12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Machine Learning Engineer"
+            android:textColor="@color/highlight"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="240dp" />
+
+        <TextView
+            android:id="@+id/title13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HR Manager"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="260dp" />
+
+        <TextView
+            android:id="@+id/title14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Technical Writer"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="280dp" />
+
+        <TextView
+            android:id="@+id/title15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cloud Architect"
+            android:textColor="@color/teal"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="300dp" />
+
+        <TextView
+            android:id="@+id/title16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cybersecurity Analyst"
+            android:textColor="@color/golden"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="320dp" />
+
+        <TextView
+            android:id="@+id/title17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEO Specialist"
+            android:textColor="@color/purple"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="340dp" />
+
+        <TextView
+            android:id="@+id/title18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blockchain Developer"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="360dp" />
+
+        <TextView
+            android:id="@+id/title19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Game Developer"
+            android:textColor="@color/green"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="380dp" />
+
+        <TextView
+            android:id="@+id/title20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI Specialist"
+            android:textColor="@color/teal"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="400dp" />
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

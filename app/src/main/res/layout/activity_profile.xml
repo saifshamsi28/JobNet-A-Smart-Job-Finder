@@ -1,0 +1,75 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.ProfileActivity">
+
+    <ImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="40dp"
+        app:srcCompat="@drawable/person_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="Profile Image"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Full Name"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/profile_image"
+        app:layout_constraintEnd_toEndOf="@id/profile_image"
+        app:layout_constraintTop_toBottomOf="@id/profile_image" />
+
+    <ImageView
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="Edit name"
+        android:src="@drawable/edit_icon"
+        app:layout_constraintBottom_toBottomOf="@id/profile_name"
+        app:layout_constraintStart_toEndOf="@+id/profile_name"
+        app:layout_constraintTop_toTopOf="@id/profile_name"
+        app:layout_constraintVertical_bias="1.0"
+        app:tint="@color/teal" />
+
+    <TextView
+        android:id="@+id/profile_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Email Address"
+        android:textSize="16sp"
+        android:textColor="#948D8D"
+        android:clickable="true"
+        android:onClick="sendEmail"
+        android:contextClickable="true"
+        app:layout_constraintTop_toBottomOf="@id/profile_name"
+        app:layout_constraintStart_toStartOf="@id/profile_name"
+        app:layout_constraintEnd_toEndOf="@id/profile_image" />
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Log Out"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/colorActionBarBackground"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/profile_email"
+        app:layout_constraintStart_toStartOf="@id/profile_image"
+        app:layout_constraintEnd_toEndOf="@id/profile_image" />
+</androidx.constraintlayout.widget.ConstraintLayout>

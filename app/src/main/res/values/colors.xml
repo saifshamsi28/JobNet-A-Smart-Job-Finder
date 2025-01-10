@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#FF0000FF</color>
+    <color name="pink">#E41A5E</color>
+    <color name="purple">#8692f7</color>
+    <color name="golden">#AF8507</color>
+    <color name="green">#669900</color>
+    <color name="grey">#6A6969</color>
+    <color name="teal">#03A9F4</color>
+    <color name="red">#B61409</color>
+    <color name="orange">#E64817</color>
+    <color name="highlight">#79DB09</color>
+    <color name="colorSearch">#E06363</color>
+    <color name="actionBar">#1D1D1D</color>
+    <color name="disable_btn">#6A6969</color>
+    <color name="colorJobTitle">#A31FBA</color>
+    <color name="colorActionBarBackground">#00BCD4</color>
+    <color name="nav_selected_item_background">#9500BCD4</color>
+    <color name="colorActionBarTitleText">#000000</color>
+    <color name="searchbar">#F0ECEC</color>
+    <color name="yellow">#E2D248</color>
+    <color name="shimmer_placeholder">#858383</color>
+
+</resources>

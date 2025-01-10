@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Search Bar -->
+    <item
+        android:id="@+id/search_bar"
+        android:title="Search"
+        android:icon="@drawable/search_item"
+        app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <!-- More Menu -->
+    <item
+        android:id="@+id/vertical_more"
+        android:title="More"
+        android:icon="@drawable/vertical_more"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/share"
+                android:title="Share" />
+            <item
+                android:id="@+id/delete"
+                android:title="Delete" />
+        </menu>
+    </item>
+</menu>
