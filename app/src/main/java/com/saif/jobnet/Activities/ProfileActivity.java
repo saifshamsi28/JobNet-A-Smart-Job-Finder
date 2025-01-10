@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityProfileBinding;
 
@@ -40,8 +41,10 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
+        Intent intent = getIntent();
+        User user = intent.getParcelableExtra("user");
         // Load user details
-        loadUserProfile();
+        loadUserProfile(user);
 
         // Set up Log Out button
         binding.logoutButton.setOnClickListener(v -> {
@@ -122,12 +125,11 @@ public class ProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void loadUserProfile() {
-        String name = sharedPreferences.getString("userName", "User Name");
-        String email = sharedPreferences.getString("userEmail", "email@example.com");
-
-        binding.profileName.setText(name);
-        binding.profileEmail.setText(email);
+    private void loadUserProfile(User user) {
+        binding.profileName.setText(user.getName());
+        binding.profileEmail.setText(user.getEmail());
+        binding.phoneNumber.setText(user.getPhoneNumber());
+        binding.username.setText(user.getUserName());
     }
 
     private void redirectToLogin() {

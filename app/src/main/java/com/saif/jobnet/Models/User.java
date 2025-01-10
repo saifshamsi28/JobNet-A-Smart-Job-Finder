@@ -1,9 +1,10 @@
 package com.saif.jobnet.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
     private String id;
     private String name;
     private String userName;
@@ -12,8 +13,8 @@ public class User {
     private String phoneNumber;
     private List<Job> savedJobs=new ArrayList<>();
 
-    public User(long id, String name, String userName, String email, String password, String phoneNumber, List<Job> savedJobs) {
-        this.id = String.valueOf(id);
+    public User(String id, String name, String userName, String email, String password, String phoneNumber) {
+        this.id = id;
         this.name = name;
         this.userName = userName;
         this.email = email;

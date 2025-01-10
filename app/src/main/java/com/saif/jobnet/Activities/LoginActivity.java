@@ -59,7 +59,15 @@ public class LoginActivity extends AppCompatActivity {
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (isLoggedIn) {
             // Redirect to LoginActivity
-            redirectToProfile();
+            //restoring the user details from shared prefs
+            String name = sharedPreferences.getString("userName", "User Name");
+            String username = sharedPreferences.getString("userName", "username");
+            String email = sharedPreferences.getString("userEmail", "email@example.com");
+            String phoneNumber = sharedPreferences.getString("phoneNumber", "9050346306");
+            String password = sharedPreferences.getString("password", "password");
+            String userId = sharedPreferences.getString("userId", "1");
+            User user = new User(userId, name,username, email, phoneNumber, password);
+            redirectToProfile(user);
             return;
         }
         // Set up password visibility toggle with accessibility-compliant performClick
@@ -153,10 +161,14 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putBoolean("isLoggedIn", true);
+                        editor.putString("userId", user.getId());
+                        editor.putString("name", user.getName());
                         editor.putString("userName", user.getUserName());
                         editor.putString("userEmail", user.getEmail());
+                        editor.putString("phoneNumber", user.getPhoneNumber());
+                        editor.putString("password", user.getPassword());
                         editor.apply();
-                        redirectToProfile();
+                        redirectToProfile(user);
                     }
                 } else {
                     binding.invalidCredentials.setVisibility(View.VISIBLE);
@@ -201,8 +213,9 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
-    private void redirectToProfile() {
+    private void redirectToProfile(User user) {
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+        intent.putExtra("user", user);
         startActivity(intent);
         finish();
     }

@@ -112,12 +112,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Save user data in SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("name",name);
-        editor.putString("userName", username);
-        editor.putString("userEmail", email);
-        editor.putString("userPassword", password);
-        editor.putString("userPhoneNumber", phoneNumber);
-
+//        editor.putString("name",name);
+//        editor.putString("userName", username);
+//        editor.putString("userEmail", email);
+//        editor.putString("userPassword", password);
+//        editor.putString("userPhoneNumber", phoneNumber);
+//
 
         editor.putBoolean("isRegistered", true);
         editor.putBoolean("isLoggedIn", false);
@@ -149,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         ApiService apiService=retrofit.create(ApiService.class);
-        User user=new User(System.currentTimeMillis(),name,username,email,password,phoneNumber,new ArrayList<>());
+        User user=new User(System.currentTimeMillis()+"",name,username,email,password,phoneNumber);
         Call<User> response=apiService.registerUser(user);
         response.enqueue(new Callback<User>() {
             @Override
