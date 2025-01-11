@@ -86,23 +86,26 @@ public class SignUpActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create()).build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        Call<Response<Boolean>> response=apiService.checkUserName(userName);
-        response.enqueue(new Callback<Response<Boolean>>() {
+        Call<Boolean> response=apiService.checkUserName(userName);
+        response.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Response<Boolean>> call, Response<Response<Boolean>> response) {
-                if(response.isSuccessful()){
-                    Response<Boolean> body=response.body();
-                    if(body!=null){
-                        if(Boolean.TRUE.equals(body.body())){
-                            binding.username.setError("Username already exists");
-                        }
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    System.out.println("Response successful, response: "+response.body());
+                    boolean isAvailable = response.body();
+                    if (!isAvailable) {
+                        binding.username.setError("Username already exists");
+                    } else {
+                        binding.username.setError(null); // Clear the error
                     }
+                }else {
+                    System.out.println("Response not successful");
                 }
             }
 
             @Override
-            public void onFailure(Call<Response<Boolean>> call, Throwable throwable) {
-
+            public void onFailure(Call<Boolean> call, Throwable throwable) {
+                Toast.makeText(SignUpActivity.this, "Failed to check username", Toast.LENGTH_SHORT).show();
             }
         });
     }

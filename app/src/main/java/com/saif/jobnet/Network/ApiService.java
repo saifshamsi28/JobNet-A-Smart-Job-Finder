@@ -31,8 +31,7 @@ public interface ApiService {
     @POST("/user/login")
     Call<User> loginUser(@Body UserLoginCredentials credentials);
 
-    @POST("/user/availableUserName")
-    Call<Response<Boolean>> checkUserName(@Path("username") String username);
-
+    @POST("user/username/{username}")
+    Call<Boolean> checkUserName(@Path("username") String username);
 
 }
