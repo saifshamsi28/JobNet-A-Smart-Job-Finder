@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.saif.jobnet.R;
 import com.saif.jobnet.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivitySignUpBinding;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +51,23 @@ public class SignUpActivity extends AppCompatActivity {
         // Add TextWatchers for dynamic validation
         addTextWatchers();
 
+        binding.username.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkUserNameAvailableOrNot(s.toString());
+            }
+        });
+
         // Register Button Click
         binding.registerButton.setOnClickListener(v -> registerUser());
 
@@ -56,35 +75,61 @@ public class SignUpActivity extends AppCompatActivity {
         binding.password.setOnTouchListener((v, event) -> handlePasswordVisibility(event));
     }
 
+    private void checkUserNameAvailableOrNot(String userName) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080/")
+                .client((new OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build()))
+                .addConverterFactory(GsonConverterFactory.create()).build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        Call<Response<Boolean>> response=apiService.checkUserName(userName);
+        response.enqueue(new Callback<Response<Boolean>>() {
+            @Override
+            public void onResponse(Call<Response<Boolean>> call, Response<Response<Boolean>> response) {
+                if(response.isSuccessful()){
+                    Response<Boolean> body=response.body();
+                    if(body!=null){
+                        if(Boolean.TRUE.equals(body.body())){
+                            binding.username.setError("Username already exists");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Response<Boolean>> call, Throwable throwable) {
+
+            }
+        });
+    }
+
     private void addTextWatchers() {
-        binding.name.addTextChangedListener(createSimpleTextWatcher());
-        binding.username.addTextChangedListener(createSimpleTextWatcher());
         binding.email.addTextChangedListener(createSimpleTextWatcher());
         binding.password.addTextChangedListener(createSimpleTextWatcher());
     }
 
     private TextWatcher createSimpleTextWatcher() {
-        return new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(String newText) {
-                validateFields();
-            }
-        };
+       return new SimpleTextWatcher() {
+           @Override
+           public void onTextChanged(String newText) {
+               validateFields();
+           }
+       };
     }
 
 
     private void validateFields() {
-        String name = binding.name.getText().toString().trim();
-        String username = binding.username.getText().toString().trim();
         String email = binding.email.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
 
-        boolean isNameValid = !name.isEmpty();
-        boolean isUsernameValid = !username.isEmpty();
         boolean isEmailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         boolean isPasswordValid = !password.isEmpty();
 
-        boolean isFormValid = isNameValid && isUsernameValid && isEmailValid && isPasswordValid;
+        boolean isFormValid = isEmailValid && isPasswordValid;
 
         // Enable or disable the register button
         binding.registerButton.setEnabled(isFormValid);

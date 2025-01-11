@@ -139,55 +139,73 @@ public class LoginActivity extends AppCompatActivity {
         String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
 
-        // Create login credentials object
-        UserLoginCredentials credentials = new UserLoginCredentials();
-        credentials.setUserNameOrEmail(usernameOrEmail);
-        credentials.setPassword(password);
-        ProgressDialog dialog=new ProgressDialog(this);
-        dialog.setMessage("Checking credentials...");
-        dialog.show();
+        boolean isUserStored = sharedPreferences.getBoolean("userStored", false);
+        if (isUserStored) {
+            //check the credentials with the stored credentials
+            String storedEmail = sharedPreferences.getString("userEmail", "");
+            String storedUserName = sharedPreferences.getString("userName", "");
+            String storedPassword = sharedPreferences.getString("password", "");
+            if (usernameOrEmail.equals(storedEmail) || usernameOrEmail.equals(storedUserName) && password.equals(storedPassword)) {
+                sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
+                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                binding.invalidCredentials.setVisibility(View.VISIBLE);
+                binding.invalidCredentials.setText("Invalid username or password");
+            }
+        } else {
+            // Create login credentials object
+            UserLoginCredentials credentials = new UserLoginCredentials();
+            credentials.setUserNameOrEmail(usernameOrEmail);
+            credentials.setPassword(password);
+            ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage("Checking credentials...");
+            dialog.show();
 
-        // Retrofit setup
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            // Retrofit setup
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://10.162.1.53:8080")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        ApiService apiService = retrofit.create(ApiService.class);
-        Call<User> call = apiService.loginUser(credentials);
+            ApiService apiService = retrofit.create(ApiService.class);
+            Call<User> call = apiService.loginUser(credentials);
 
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    User user = response.body();
-                    if (user != null) {
-                        Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("isLoggedIn", true);
-                        editor.putString("userId", user.getId());
-                        editor.putString("name", user.getName());
-                        editor.putString("userName", user.getUserName());
-                        editor.putString("userEmail", user.getEmail());
-                        editor.putString("phoneNumber", user.getPhoneNumber());
-                        editor.putString("password", user.getPassword());
-                        editor.apply();
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (response.isSuccessful()) {
+                        User user = response.body();
+                        if (user != null) {
+                            Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("isLoggedIn", true);
+                            editor.putString("userId", user.getId());
+                            editor.putString("name", user.getName());
+                            editor.putString("userName", user.getUserName());
+                            editor.putString("userEmail", user.getEmail());
+                            editor.putString("phoneNumber", user.getPhoneNumber());
+                            editor.putString("password", user.getPassword());
+                            editor.putBoolean("userStored", true);
+                            editor.apply();
+                            dialog.dismiss();
+                            redirectToProfile(user);
+                        }
+                    } else {
+                        binding.invalidCredentials.setVisibility(View.VISIBLE);
+                        binding.invalidCredentials.setText("Invalid username or password");
                         dialog.dismiss();
-                        redirectToProfile(user);
                     }
-                } else {
-                    binding.invalidCredentials.setVisibility(View.VISIBLE);
-                    binding.invalidCredentials.setText("Invalid username or password");
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
+            });
+        }
     }
 
 
@@ -223,6 +241,14 @@ public class LoginActivity extends AppCompatActivity {
     private void redirectToProfile(User user) {
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
         intent.putExtra("user", user);
+        //store the user details in shared prefs
+        sharedPreferences.edit().putString("userId", user.getId()).apply();
+        sharedPreferences.edit().putString("name", user.getName()).apply();
+        sharedPreferences.edit().putString("userEmail", user.getEmail()).apply();
+        sharedPreferences.edit().putString("phoneNumber", user.getPhoneNumber()).apply();
+        sharedPreferences.edit().putString("password", user.getPassword()).apply();
+        sharedPreferences.edit().putString("userName", user.getUserName()).apply();
+        sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
         startActivity(intent);
         finish();
     }

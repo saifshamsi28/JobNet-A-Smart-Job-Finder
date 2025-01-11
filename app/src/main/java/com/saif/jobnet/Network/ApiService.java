@@ -11,6 +11,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface ApiService {
     @POST("/user/login")
     Call<User> loginUser(@Body UserLoginCredentials credentials);
 
+    @POST("/user/availableUserName")
+    Call<Response<Boolean>> checkUserName(@Path("username") String username);
 
 
 }

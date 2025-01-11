@@ -51,51 +51,63 @@ public class ProfileActivity extends AppCompatActivity {
             // Redirect to LoginActivity
             redirectToLogin();
             return;
+        }else{
+            loadUserProfile();
         }
-
-        Intent intent = getIntent();
-//        User user = intent.getParcelableExtra("user");
-        user= (User) intent.getSerializableExtra("user");
-        // Load user details
-        loadUserProfile(user);
 
         // Set up Log Out button
         binding.logoutButton.setOnClickListener(v -> {
-            // Clear user data and redirect to login
-            //a confirmation dialogue to confirm the logout
-            Dialog dialog=new Dialog(ProfileActivity.this);
-            dialog.setContentView(R.layout.confirmation_dialogue_layout);
-            if (dialog.getWindow() != null) {
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-            }
-            dialog.show();
-            TextView confirmButton = dialog.findViewById(R.id.confirm_button);
-            TextView dismissButton = dialog.findViewById(R.id.dismiss_button);
-
-            confirmButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("isLoggedIn", false);
-                    editor.apply();
-                    dialog.dismiss();
-                    dialog.cancel();
-                    Toast.makeText(ProfileActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
-                    redirectToLogin();
-                    finish();
-                }
-            });
-            dismissButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+            showConfirmationDialogue();
         });
 
         binding.editButton.setOnClickListener(v -> {
             updateUserNameOrEmail();
+        });
+    }
+
+    private void loadUserFromSharedPreferences() {
+        String userId = sharedPreferences.getString("userId", null);
+        String name = sharedPreferences.getString("userName", null);
+        String email = sharedPreferences.getString("userEmail", null);
+        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
+        String password = sharedPreferences.getString("password", null);
+
+        if (userId == null || name == null || email == null) {
+            redirectToLogin();
+        } else {
+            user = new User(userId, name, name, email, phoneNumber, password);
+        }
+    }
+
+    private void showConfirmationDialogue() {
+        Dialog dialog=new Dialog(ProfileActivity.this);
+        dialog.setContentView(R.layout.confirmation_dialogue_layout);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        }
+        dialog.show();
+        TextView confirmButton = dialog.findViewById(R.id.confirm_button);
+        TextView dismissButton = dialog.findViewById(R.id.dismiss_button);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.apply();
+                dialog.dismiss();
+                dialog.cancel();
+                Toast.makeText(ProfileActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
+                redirectToLogin();
+                finish();
+            }
+        });
+        dismissButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
         });
     }
 
@@ -201,19 +213,18 @@ public class ProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void loadUserProfile(User user) {
-        if(user!=null) {
-            binding.profileName.setText(user.getName());
-            binding.profileEmail.setText(user.getEmail());
-            binding.phoneNumber.setText(user.getPhoneNumber());
-            binding.username.setText(user.getUserName());
-        }else {
-            //logout the user
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isLoggedIn", false);
-            editor.apply();
-            redirectToLogin();
-        }
+    private void loadUserProfile() {
+        String userId = sharedPreferences.getString("userId", null);
+        String name = sharedPreferences.getString("name", null);
+        String userName = sharedPreferences.getString("userName", null);
+        String email = sharedPreferences.getString("userEmail", null);
+        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
+        String password = sharedPreferences.getString("password", null);
+        user = new User(userId, name, userName, email, password,phoneNumber);
+        binding.profileName.setText(name);
+        binding.username.setText(userName);
+        binding.profileEmail.setText(email);
+        binding.phoneNumber.setText(phoneNumber);
     }
 
     private void redirectToLogin() {
