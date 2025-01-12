@@ -9,6 +9,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,12 +92,15 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    System.out.println("Response successful, response: "+response.body());
                     boolean isAvailable = response.body();
                     if (!isAvailable) {
-                        binding.username.setError("Username already exists");
+                        binding.usernameAvailable.setVisibility(View.VISIBLE);
+                        binding.usernameAvailable.setText("Username already exist");
+                        binding.registerButton.setEnabled(false);
                     } else {
-                        binding.username.setError(null); // Clear the error
+                        binding.usernameAvailable.setVisibility(View.GONE);
+                        binding.registerButton.setEnabled(true);
+                        binding.username.setError(null);
                     }
                 }else {
                     System.out.println("Response not successful");
