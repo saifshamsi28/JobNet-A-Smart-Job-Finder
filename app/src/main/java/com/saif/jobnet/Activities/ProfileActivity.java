@@ -8,12 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -254,10 +256,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation_menu, menu);
-        menu.findItem(R.id.profile_section).setVisible(false);
-
+        getMenuInflater().inflate(R.menu.user_profile_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.update_profile){
+            updateUserNameOrEmail();
+        }else if(item.getItemId()==R.id.changed_password){
+            Toast.makeText(this, "Password Changed", Toast.LENGTH_SHORT).show();
+        }else if(item.getItemId()==R.id.logout){
+            showConfirmationDialogue();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
