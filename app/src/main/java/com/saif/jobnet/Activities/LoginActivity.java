@@ -67,7 +67,8 @@ public class LoginActivity extends AppCompatActivity {
             String phoneNumber = sharedPreferences.getString("phoneNumber", "9050346306");
             String password = sharedPreferences.getString("password", "password");
             String userId = sharedPreferences.getString("userId", "1");
-            User user = new User(userId, name,username, email, phoneNumber, password);
+            User user = new User(name,username, email, phoneNumber, password);
+            user.setId(userId);
             redirectToProfile(user);
             return;
         }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,7 +76,8 @@ public class ProfileActivity extends AppCompatActivity {
         if (userId == null || name == null || email == null) {
             redirectToLogin();
         } else {
-            user = new User(userId, name, name, email, phoneNumber, password);
+            user = new User(name, name, email, phoneNumber, password);
+            user.setId(userId);
         }
     }
 
@@ -120,12 +122,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         EditText nameInput = dialog.findViewById(R.id.dialog_name_input);
-        nameInput.setText(binding.profileName.getText().toString());
+        nameInput.setText(binding.profileName.getText().toString().trim());
         EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
-        emailInput.setText(binding.profileEmail.getText().toString());
+        emailInput.setText(binding.profileEmail.getText().toString().trim());
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         EditText phoneNumberInput = dialog.findViewById(R.id.dialog_phone_input);
-        phoneNumberInput.setText(binding.phoneNumber.getText().toString());
+        phoneNumberInput.setText(binding.phoneNumber.getText().toString().trim());
         phoneNumberInput.setInputType(InputType.TYPE_CLASS_PHONE);
 
         Button cancelButton = dialog.findViewById(R.id.cancel_button);
@@ -220,11 +222,17 @@ public class ProfileActivity extends AppCompatActivity {
         String email = sharedPreferences.getString("userEmail", null);
         String phoneNumber = sharedPreferences.getString("phoneNumber", null);
         String password = sharedPreferences.getString("password", null);
-        user = new User(userId, name, userName, email, password,phoneNumber);
+        user = new User(name, userName, email, password,phoneNumber);
+        user.setId(userId);
         binding.profileName.setText(name);
         binding.username.setText(userName);
         binding.profileEmail.setText(email);
-        binding.phoneNumber.setText(phoneNumber);
+        if(phoneNumber!=null && !phoneNumber.isEmpty()){
+            binding.phoneNumber.setVisibility(View.VISIBLE);
+            binding.phoneNumber.setText(phoneNumber);
+        }else{
+            binding.phoneNumber.setVisibility(View.GONE);
+        }
     }
 
     private void redirectToLogin() {
@@ -244,6 +252,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+        menu.findItem(R.id.profile_section).setVisible(false);
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onResume() {

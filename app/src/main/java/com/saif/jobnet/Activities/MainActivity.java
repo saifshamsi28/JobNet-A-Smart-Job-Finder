@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
     // Function to fetch job data from API
     private void fetchJobs(String query, String home) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.4.167:5000/")
+                .baseUrl("http://10.162.1.53:8080/")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
         ApiService apiService = retrofit.create(ApiService.class);
         Call<List<Job>> call;
         if (home.equals("home")) {
-            call = apiService.showJobs(query);
+            call = apiService.showJobs();
         } else {
             call = apiService.searchJobs(query);
         }
@@ -390,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerViewJobs.setAdapter(jobsAdapter);
 //        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(this));
-        new Thread(() -> jobDao.insertAllJobs(jobs)).start();
+//        new Thread(() -> jobDao.insertAllJobs(jobs)).start();
     }
 
     @Override

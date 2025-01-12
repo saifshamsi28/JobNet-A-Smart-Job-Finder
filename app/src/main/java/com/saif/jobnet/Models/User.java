@@ -13,8 +13,7 @@ public class User implements Serializable {
     private String phoneNumber;
     private List<Job> savedJobs=new ArrayList<>();
 
-    public User(String id, String name, String userName, String email, String password, String phoneNumber) {
-        this.id = id;
+    public User(String name, String userName, String email, String password, String phoneNumber) {
         this.name = name;
         this.userName = userName;
         this.email = email;

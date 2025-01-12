@@ -201,7 +201,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         ApiService apiService=retrofit.create(ApiService.class);
-        User user=new User(System.currentTimeMillis()+"",name,username,email,password,phoneNumber);
+        User user=new User(name,username,email,password,phoneNumber);
         Call<User> response=apiService.registerUser(user);
         response.enqueue(new Callback<User>() {
             @Override

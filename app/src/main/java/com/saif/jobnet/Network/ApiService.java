@@ -17,7 +17,7 @@ import java.util.List;
 
 public interface ApiService {
     @GET("home")
-    Call<List<Job>> showJobs(@Query("job_title") String jobTitle);
+    Call<List<Job>> showJobs();
 
     @GET("jobs")
     Call<List<Job>> searchJobs(@Query("job_title") String jobTitle);
