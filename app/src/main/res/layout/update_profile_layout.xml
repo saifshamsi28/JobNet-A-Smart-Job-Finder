@@ -10,7 +10,7 @@
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="32dp"
-        app:contentPadding="16sp"
+        app:contentPadding="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -23,8 +23,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingTop="12sp"
-            android:paddingStart="12sp"
-            android:paddingEnd="12sp">
+            android:paddingStart="8sp"
+            android:paddingEnd="8sp">
 
             <!-- Dialog Title -->
             <TextView

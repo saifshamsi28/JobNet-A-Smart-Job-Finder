@@ -53,7 +53,6 @@ public class ProfileActivity extends AppCompatActivity {
         if (!isLoggedIn) {
             // Redirect to LoginActivity
             redirectToLogin();
-            return;
         }else{
             loadUserProfile();
         }
