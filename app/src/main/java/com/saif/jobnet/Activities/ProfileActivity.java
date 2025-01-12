@@ -127,6 +127,10 @@ public class ProfileActivity extends AppCompatActivity {
         EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
         emailInput.setText(binding.userEmail.getText().toString().trim());
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        // check if email is valid
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput.getText().toString().trim()).matches()) {
+            emailInput.setError("Invalid email address");
+        }
         EditText phoneNumberInput = dialog.findViewById(R.id.dialog_phone_input);
         phoneNumberInput.setText(binding.contactNumber.getText().toString().trim());
         phoneNumberInput.setInputType(InputType.TYPE_CLASS_PHONE);

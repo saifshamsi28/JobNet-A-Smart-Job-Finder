@@ -139,23 +139,25 @@ public class LoginActivity extends AppCompatActivity {
     private void checkCredentials() {
         String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
         String password = binding.password.getText().toString().trim();
-
-        boolean isUserStored = sharedPreferences.getBoolean("userStored", false);
-        if (isUserStored) {
-            //check the credentials with the stored credentials
-            String storedEmail = sharedPreferences.getString("userEmail", "");
-            String storedUserName = sharedPreferences.getString("userName", "");
-            String storedPassword = sharedPreferences.getString("password", "");
-            if (usernameOrEmail.equals(storedEmail) || usernameOrEmail.equals(storedUserName) && password.equals(storedPassword)) {
-                sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
-                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                startActivity(intent);
-                finish();
-            }else{
-                binding.invalidCredentials.setVisibility(View.VISIBLE);
-                binding.invalidCredentials.setText("Invalid username or password");
-            }
-        } else {
+//        System.out.println("username or email: "+usernameOrEmail+" password: "+password);
+//
+//        boolean isUserStored = sharedPreferences.getBoolean("userStored", false);
+//        if (isUserStored) {
+//            //check the credentials with the stored credentials
+//            String storedEmail = sharedPreferences.getString("userEmail", "");
+//            String storedUserName = sharedPreferences.getString("userName", "");
+//            String storedPassword = sharedPreferences.getString("password", "");
+//            if (usernameOrEmail.equals(storedEmail) || usernameOrEmail.equals(storedUserName) && password.equals(storedPassword)) {
+//                sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
+//                System.out.println("stored email: "+storedEmail+" stored username: "+storedUserName+" stored password: "+storedPassword);
+//                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }else{
+//                binding.invalidCredentials.setVisibility(View.VISIBLE);
+//                binding.invalidCredentials.setText("Invalid username or password");
+//            }
+         {
             // Create login credentials object
             UserLoginCredentials credentials = new UserLoginCredentials();
             credentials.setUserNameOrEmail(usernameOrEmail);
