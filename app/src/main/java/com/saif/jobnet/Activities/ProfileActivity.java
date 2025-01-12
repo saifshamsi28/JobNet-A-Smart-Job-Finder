@@ -59,13 +59,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         // Set up Log Out button
-        binding.logoutButton.setOnClickListener(v -> {
-            showConfirmationDialogue();
-        });
+//        binding.logoutButton.setOnClickListener(v -> {
+//            showConfirmationDialogue();
+//        });
 
-        binding.editButton.setOnClickListener(v -> {
-            updateUserNameOrEmail();
-        });
+//        binding.editButton.setOnClickListener(v -> {
+//            updateUserNameOrEmail();
+//        });
     }
 
     private void loadUserFromSharedPreferences() {
