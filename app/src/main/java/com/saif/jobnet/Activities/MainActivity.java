@@ -196,9 +196,9 @@ public class MainActivity extends AppCompatActivity {
             loginItem.setVisible(false); // Hide Login
             profileItem.setVisible(true); // Show Profile
             logoutItem.setVisible(true);
-            String username = sharedPreferences.getString("userName", "");
+            String name = sharedPreferences.getString("name", "");
             String userEmail = sharedPreferences.getString("userEmail", "");
-            usernameTextView.setText(username);
+            usernameTextView.setText(name);
             userEmailTextView.setText(userEmail);
         } else {
             loginItem.setVisible(true);
