@@ -125,10 +125,10 @@ public class ProfileActivity extends AppCompatActivity {
         EditText nameInput = dialog.findViewById(R.id.dialog_name_input);
         nameInput.setText(binding.profileName.getText().toString().trim());
         EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
-        emailInput.setText(binding.profileEmail.getText().toString().trim());
+        emailInput.setText(binding.userEmail.getText().toString().trim());
         emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         EditText phoneNumberInput = dialog.findViewById(R.id.dialog_phone_input);
-        phoneNumberInput.setText(binding.phoneNumber.getText().toString().trim());
+        phoneNumberInput.setText(binding.contactNumber.getText().toString().trim());
         phoneNumberInput.setInputType(InputType.TYPE_CLASS_PHONE);
 
         Button cancelButton = dialog.findViewById(R.id.cancel_button);
@@ -156,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
                 editor.putString("userEmail", newEmail);
                 editor.apply();
                 user.setEmail(newEmail);
-                binding.profileEmail.setText(newEmail);
+                binding.userEmail.setText(newEmail);
                 Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
             }
             if (!newPhoneNumber.isEmpty()) {
@@ -164,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity {
                 editor.putString("phoneNumber", newPhoneNumber);
                 editor.apply();
                 user.setPhoneNumber(newPhoneNumber);
-                binding.phoneNumber.setText(newPhoneNumber);
+                binding.contactNumber.setText(newPhoneNumber);
             }
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -227,12 +227,12 @@ public class ProfileActivity extends AppCompatActivity {
         user.setId(userId);
         binding.profileName.setText(name);
         binding.username.setText(userName);
-        binding.profileEmail.setText(email);
+        binding.userEmail.setText(email);
         if(phoneNumber!=null && !phoneNumber.isEmpty()){
-            binding.phoneNumber.setVisibility(View.VISIBLE);
-            binding.phoneNumber.setText(phoneNumber);
+            binding.contactNumber.setVisibility(View.VISIBLE);
+            binding.contactNumber.setText(phoneNumber);
         }else{
-            binding.phoneNumber.setVisibility(View.GONE);
+            binding.contactNumber.setVisibility(View.GONE);
         }
     }
 
@@ -243,7 +243,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void sendEmail(View view) {
-        String emailAddress = binding.profileEmail.getText().toString();
+        String emailAddress = binding.userEmail.getText().toString();
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + emailAddress));
         try {

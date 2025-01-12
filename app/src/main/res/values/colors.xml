@@ -20,6 +20,7 @@
     <color name="nav_selected_item_background">#9500BCD4</color>
     <color name="colorActionBarTitleText">#000000</color>
     <color name="searchbar">#F0ECEC</color>
+    <color name="fields_divider">#AEE6C8C8</color>
     <color name="yellow">#E2D248</color>
     <color name="shimmer_placeholder">#858383</color>
 

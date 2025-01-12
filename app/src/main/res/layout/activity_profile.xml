@@ -1,105 +1,207 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.ProfileActivity">
 
-    <ImageView
-        android:id="@+id/profile_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
-        app:srcCompat="@drawable/person_img"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Profile Image"
-        android:scaleType="centerCrop"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/profile_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Full Name"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@id/profile_image"
-        app:layout_constraintEnd_toEndOf="@id/profile_image"
-        app:layout_constraintTop_toBottomOf="@id/profile_image" />
-
-    <ImageView
-        android:id="@+id/edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="8dp"
-        android:contentDescription="Edit name"
-        android:src="@drawable/edit_icon"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/profile_name"
-        app:layout_constraintStart_toEndOf="@+id/profile_name"
-        app:layout_constraintTop_toTopOf="@id/profile_name"
-        app:layout_constraintVertical_bias="1.0"
-        app:tint="@color/teal" />
-
-    <TextView
-        android:id="@+id/profile_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Email Address"
-        android:textSize="16sp"
-        android:textColor="#948D8D"
-        android:clickable="true"
-        android:textStyle="bold"
-        android:onClick="sendEmail"
-        android:contextClickable="true"
-        app:layout_constraintTop_toBottomOf="@id/profile_name"
-        app:layout_constraintStart_toStartOf="@id/profile_name"
-        app:layout_constraintEnd_toEndOf="@id/profile_image" />
-    <TextView
-        android:id="@+id/username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="toxic_saif123"
-        android:textSize="16sp"
-        android:textColor="#948D8D"
-        android:clickable="false"
-        android:focusable="false"
-        android:contextClickable="false"
-        app:layout_constraintTop_toBottomOf="@id/profile_email"
-        app:layout_constraintStart_toStartOf="@id/profile_email"
-        app:layout_constraintEnd_toEndOf="@id/profile_email" />
-
-    <TextView
-        android:id="@+id/phone_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text=""
-        android:textSize="16sp"
-        android:textColor="#948D8D"
-        app:layout_constraintTop_toBottomOf="@id/username"
-        app:layout_constraintStart_toStartOf="@id/profile_email"
-        app:layout_constraintEnd_toEndOf="@id/profile_email" />
+        <ImageView
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16sp"
+            android:contentDescription="cancel button"
+            android:src="@drawable/cancel_icon"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
-        android:id="@+id/logout_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16sp"
-        android:text="Log Out"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/colorActionBarBackground"
-        android:textColor="@color/white"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/phone_number"
-        app:layout_constraintStart_toStartOf="@id/profile_email"
-        app:layout_constraintEnd_toEndOf="@id/profile_email" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/user_profile_img"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/profile_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cancel_button"
+            app:tint="@color/black" />
+
+        <!-- Song Title -->
+
+        <TextView
+            android:id="@+id/tv_title_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16sp"
+            android:text="Name "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_img"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/profile_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16sp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:hint="Unknown Title"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_label" />
+
+        <View
+            android:id="@+id/border_below_title"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
+            app:layout_constraintBottom_toTopOf="@id/tv_artist_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_name" />
+        <!-- Artist -->
+        <TextView
+            android:id="@+id/tv_artist_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="Username"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tv_title_label"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16sp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:hint="Unknown Artist"
+            android:background="@android:color/transparent"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_artist_label" />
+
+        <View
+            android:id="@+id/border_below_artist"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_album_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/username" />
+        <TextView
+            android:id="@+id/tv_album_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="Email"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tv_artist_label"
+            app:layout_constraintTop_toBottomOf="@+id/username" />
+
+        <EditText
+            android:id="@+id/user_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16sp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:hint="Unknown Album"
+            android:textSize="16sp"
+            android:onClick="sendEmail"
+            android:textColor="@color/black"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_album_label" />
+
+        <View
+            android:id="@+id/border_below_album"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            app:layout_constraintBottom_toTopOf="@id/tv_duration_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_email" />
+        <!-- Other Metadata -->
+        <TextView
+            android:id="@+id/tv_duration_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16sp"
+            android:text="Contact"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tv_album_label"
+            app:layout_constraintTop_toBottomOf="@+id/user_email" />
+
+        <TextView
+            android:id="@+id/contact_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="5:20"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tv_duration_label"
+            app:layout_constraintTop_toBottomOf="@+id/tv_duration_label" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contact_number" />
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
