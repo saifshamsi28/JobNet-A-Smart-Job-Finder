@@ -270,7 +270,12 @@ public class ProfileActivity extends AppCompatActivity {
         if(item.getItemId()==R.id.update_profile){
             updateUserNameOrEmail();
         }else if(item.getItemId()==R.id.changed_password){
-            Toast.makeText(this, "Password Changed", Toast.LENGTH_SHORT).show();
+            Dialog dialog=new Dialog(ProfileActivity.this);
+            dialog.setContentView(R.layout.password_update_layout);
+            if(dialog.getWindow()!=null){
+                dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_update_bg));
+            }
+            dialog.show();
         }else if(item.getItemId()==R.id.logout){
             showConfirmationDialogue();
         }

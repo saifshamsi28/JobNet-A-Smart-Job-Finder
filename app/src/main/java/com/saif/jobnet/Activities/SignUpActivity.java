@@ -214,7 +214,6 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-
     private void sendUserToBackend(String name, String username, String email, String password, String phoneNumber) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
