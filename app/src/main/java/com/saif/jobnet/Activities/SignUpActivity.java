@@ -13,22 +13,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
-import com.saif.jobnet.Network.RetrofitClient;
 import com.saif.jobnet.R;
 import com.saif.jobnet.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivitySignUpBinding;
 
-import java.sql.SQLOutput;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,7 +89,7 @@ public class SignUpActivity extends AppCompatActivity {
         Call<Boolean> response=apiService.checkUserName(userName);
         response.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     boolean isAvailable = response.body();
                     if (!isAvailable) {
@@ -110,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable throwable) {
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable throwable) {
                 Toast.makeText(SignUpActivity.this, "Failed to check username", Toast.LENGTH_SHORT).show();
             }
         });
@@ -167,25 +164,13 @@ public class SignUpActivity extends AppCompatActivity {
         progressDialog.setMessage("Registering user...");
         progressDialog.show();
 
-        // Save user data in SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("name",name);
-//        editor.putString("userName", username);
-//        editor.putString("userEmail", email);
-//        editor.putString("userPassword", password);
-//        editor.putString("userPhoneNumber", phoneNumber);
-//        if(checkEmailAlreadyExist(email)){
-//            binding.email.setError("Email already exist");
-//            binding.registerButton.setEnabled(false);
-//        }else{
-//        }
         checkEmailAlreadyExist(name,username,email,password,phoneNumber);
     }
 
     private void checkEmailAlreadyExist(String name, String username, String email, String password, String phoneNumber) {
-        Retrofit retrofit =new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
-                .client(new OkHttpClient().newBuilder()
+                .client(new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .writeTimeout(10, TimeUnit.SECONDS)
@@ -193,52 +178,42 @@ public class SignUpActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        ApiService apiService=retrofit.create(ApiService.class);
+        ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Boolean> response=apiService.checkEmailAlreadyExist(email);
-//        final boolean[] isEmailExists = {false};
+        Call<Boolean> response = apiService.checkEmailAlreadyExist(email);
+        boolean isv=true;
 
         response.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if(response.isSuccessful() && response.body() != null){
-                    boolean isAvailable=response.body();
-                    System.out.println("isAvailable: "+isAvailable);
-                    if(!isAvailable){
-                        binding.email.setError("Email already exist");
-                        binding.registerButton.setEnabled(false);
-                        sharedPreferences.edit().putBoolean("isEmailExist", true).apply();
-                        progressDialog.dismiss();
-                    }else {
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean isAvailable = response.body();
+                    if (!isAvailable) {
+                        // Email already exists
+                        binding.email.setError("Email already exists");
                         binding.registerButton.setEnabled(true);
+                        Toast.makeText(SignUpActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Email is available
                         binding.email.setError(null);
+                        sendUserToBackend(name, username, email, password, phoneNumber);
                     }
-                    System.out.println("response successful");
-                }else{
-                    System.out.println("response not successful");
-                    progressDialog.dismiss();
+                } else {
+                    Toast.makeText(SignUpActivity.this, "Error checking email availability.", Toast.LENGTH_SHORT).show();
+                    binding.registerButton.setEnabled(true);
                 }
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable throwable) {
-                Toast.makeText(SignUpActivity.this, "Failed to check email", Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable throwable) {
                 progressDialog.dismiss();
+                Toast.makeText(SignUpActivity.this, "Failed to check email. Try again.", Toast.LENGTH_SHORT).show();
+                binding.registerButton.setEnabled(true);
             }
         });
-        boolean isEmailExist=sharedPreferences.getBoolean("isEmailExist", false);
-        if(isEmailExist){
-            binding.email.setError("Email already exist");
-            binding.registerButton.setEnabled(false);
-            sharedPreferences.edit().putBoolean("isEmailExist", false).apply();
-            System.out.println("email already exist");
-            Toast.makeText(SignUpActivity.this, "Email already exist", Toast.LENGTH_SHORT).show();
-        }else {
-            System.out.println("sending user to backend");
-            sendUserToBackend(name, username, email, password, phoneNumber);
-        }
-
     }
+
 
     private void sendUserToBackend(String name, String username, String email, String password, String phoneNumber) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -257,7 +232,7 @@ public class SignUpActivity extends AppCompatActivity {
         Call<User> response=apiService.registerUser(user);
         response.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 progressDialog.dismiss();
                 if(response.isSuccessful()){
                     User user1=response.body();
@@ -294,7 +269,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable throwable) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
                 progressDialog.dismiss();
                 Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
                 Log.e("SignUpActivity", "Error registering user", throwable);
