@@ -10,21 +10,17 @@
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="32dp"
-        app:contentPadding="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="12sp"
-            android:paddingStart="8sp"
-            android:paddingEnd="8sp">
+            android:padding="12sp"
+            >
 
             <!-- Dialog Title -->
             <TextView
@@ -47,7 +43,7 @@
                     android:id="@+id/dialog_name_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp" />
+                    android:padding="30dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Email Input with TextInputLayout -->
@@ -60,7 +56,7 @@
                     android:id="@+id/dialog_email_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16sp" />
+                    android:padding="30dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +68,7 @@
                     android:id="@+id/dialog_phone_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16sp" />
+                    android:padding="30dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Buttons -->

@@ -98,6 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
+                editor.clear();
                 editor.apply();
                 dialog.dismiss();
                 dialog.cancel();
@@ -106,6 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         dismissButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
