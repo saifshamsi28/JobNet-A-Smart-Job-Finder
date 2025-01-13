@@ -1,5 +1,6 @@
 package com.saif.jobnet.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -39,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
     ActivitySignUpBinding binding;
     SharedPreferences sharedPreferences;
     private boolean isPasswordVisible = false;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +82,9 @@ public class SignUpActivity extends AppCompatActivity {
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
                 .client((new OkHttpClient.Builder()
-                        .connectTimeout(60, TimeUnit.SECONDS)
-                        .readTimeout(60, TimeUnit.SECONDS)
-                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
                         .build()))
                 .addConverterFactory(GsonConverterFactory.create()).build();
 
@@ -161,6 +163,9 @@ public class SignUpActivity extends AppCompatActivity {
             binding.phoneNumber.setError("Phone number must be at least 10 digits.");
             return;
         }
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Registering user...");
+        progressDialog.show();
 
         // Save user data in SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -169,23 +174,70 @@ public class SignUpActivity extends AppCompatActivity {
 //        editor.putString("userEmail", email);
 //        editor.putString("userPassword", password);
 //        editor.putString("userPhoneNumber", phoneNumber);
-//
+//        if(checkEmailAlreadyExist(email)){
+//            binding.email.setError("Email already exist");
+//            binding.registerButton.setEnabled(false);
+//        }else{
+//        }
+        checkEmailAlreadyExist(name,username,email,password,phoneNumber);
+    }
 
-        editor.putBoolean("isRegistered", true);
-        editor.putBoolean("isLoggedIn", false);
-        editor.apply();
-        new Thread(new Runnable() {
+    private void checkEmailAlreadyExist(String name, String username, String email, String password, String phoneNumber) {
+        Retrofit retrofit =new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080/")
+                .client(new OkHttpClient().newBuilder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+
+        Call<Boolean> response=apiService.checkEmailAlreadyExist(email);
+//        final boolean[] isEmailExists = {false};
+
+        response.enqueue(new Callback<Boolean>() {
             @Override
-            public void run() {
-                sendUserToBackend(name, username, email, password, phoneNumber);
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    boolean isAvailable=response.body();
+                    System.out.println("isAvailable: "+isAvailable);
+                    if(!isAvailable){
+                        binding.email.setError("Email already exist");
+                        binding.registerButton.setEnabled(false);
+                        sharedPreferences.edit().putBoolean("isEmailExist", true).apply();
+                        progressDialog.dismiss();
+                    }else {
+                        binding.registerButton.setEnabled(true);
+                        binding.email.setError(null);
+                    }
+                    System.out.println("response successful");
+                }else{
+                    System.out.println("response not successful");
+                    progressDialog.dismiss();
+                }
             }
-        }).start();
 
-        Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable throwable) {
+                Toast.makeText(SignUpActivity.this, "Failed to check email", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
+        boolean isEmailExist=sharedPreferences.getBoolean("isEmailExist", false);
+        if(isEmailExist){
+            binding.email.setError("Email already exist");
+            binding.registerButton.setEnabled(false);
+            sharedPreferences.edit().putBoolean("isEmailExist", false).apply();
+            System.out.println("email already exist");
+            Toast.makeText(SignUpActivity.this, "Email already exist", Toast.LENGTH_SHORT).show();
+        }else {
+            System.out.println("sending user to backend");
+            sendUserToBackend(name, username, email, password, phoneNumber);
+        }
 
-        // Redirect to LoginActivity
-        startActivity(new Intent(this, LoginActivity.class));
-        finish();
     }
 
     private void sendUserToBackend(String name, String username, String email, String password, String phoneNumber) {
@@ -206,6 +258,7 @@ public class SignUpActivity extends AppCompatActivity {
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                progressDialog.dismiss();
                 if(response.isSuccessful()){
                     User user1=response.body();
                     if(user1!=null){
@@ -217,6 +270,23 @@ public class SignUpActivity extends AppCompatActivity {
                         System.out.println("Password: "+user1.getPassword());
                         System.out.println("Phone number: "+user1.getPhoneNumber());
                         System.out.println("saved jobs: "+user1.getSavedJobs());
+
+                        //save user details in shared prefs
+                        sharedPreferences.edit().putBoolean("userStored", true).apply();
+
+                        //save user details in shared prefs
+
+                        sharedPreferences.edit().putString("userId", user1.getId()).apply();
+                        sharedPreferences.edit().putString("name", user1.getName()).apply();
+                        sharedPreferences.edit().putString("userName", user1.getUserName()).apply();
+                        sharedPreferences.edit().putString("userEmail", user1.getEmail()).apply();
+                        sharedPreferences.edit().putString("phoneNumber", user1.getPhoneNumber()).apply();
+                        sharedPreferences.edit().putString("password", user1.getPassword()).apply();
+
+                        // going to Login Activity
+                        Intent intent=new Intent(SignUpActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
                     } else{
                         Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
                     }
@@ -225,7 +295,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable throwable) {
-
+                progressDialog.dismiss();
                 Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
                 Log.e("SignUpActivity", "Error registering user", throwable);
 

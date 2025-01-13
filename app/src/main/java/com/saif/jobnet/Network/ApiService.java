@@ -34,4 +34,7 @@ public interface ApiService {
     @POST("user/username/{username}")
     Call<Boolean> checkUserName(@Path("username") String username);
 
+    @POST("user/email/{email}")
+    Call<Boolean> checkEmailAlreadyExist(@Path("email") String email);
+
 }
