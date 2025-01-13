@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="Not yet registered? SignUp Now"
+        android:text="New to JobNet ? SignUp Now"
         android:textSize="14sp"
         android:textAlignment="center"
         android:id="@+id/signupText"

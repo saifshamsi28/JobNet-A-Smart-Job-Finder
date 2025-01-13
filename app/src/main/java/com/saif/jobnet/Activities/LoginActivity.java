@@ -47,15 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
 
         //to check user is registered or not
-        boolean isRegistered = sharedPreferences.getBoolean("isRegistered", false);
-        if (!isRegistered) {
-            // Redirect to SignUpActivity
-            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-            startActivity(intent);
-            finish();
-        }else {
-            binding.signupText.setVisibility(View.GONE);
-        }
+        binding.signupText.setVisibility(View.VISIBLE);
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (isLoggedIn) {
