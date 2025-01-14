@@ -277,11 +277,15 @@ public class ProfileActivity extends AppCompatActivity {
             if(dialog.getWindow()!=null){
                 dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             }
+            updatePassword();
             dialog.show();
         }else if(item.getItemId()==R.id.logout){
             showConfirmationDialogue();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updatePassword() {
     }
 
     @Override
