@@ -4,11 +4,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +20,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
@@ -39,6 +43,8 @@ public class ProfileActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     private User user;
     private ProgressDialog progressDialog;
+    private Dialog passwordUpdateDialog;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
 
+        System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {
@@ -271,55 +278,86 @@ public class ProfileActivity extends AppCompatActivity {
         if(item.getItemId()==R.id.update_profile){
             updateUserNameOrEmail();
         }else if(item.getItemId()==R.id.changed_password){
-            Dialog dialog=new Dialog(ProfileActivity.this);
-            dialog.setContentView(R.layout.password_update_layout);
-            if(dialog.getWindow()!=null){
-                dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
+            passwordUpdateDialog=new Dialog(ProfileActivity.this);
+            passwordUpdateDialog.setContentView(R.layout.password_update_layout);
+            if(passwordUpdateDialog.getWindow()!=null){
+                passwordUpdateDialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             }
-            EditText editText=dialog.findViewById(R.id.old_password);
+            EditText editText=passwordUpdateDialog.findViewById(R.id.old_password);
             System.out.println("old pass: "+editText.getText().toString());
 
-            updatePassword(dialog);
-            dialog.show();
+            updatePassword();
+            passwordUpdateDialog.show();
         }else if(item.getItemId()==R.id.logout){
             showConfirmationDialogue();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void updatePassword(Dialog dialog) {
-        Button cancelButton=dialog.findViewById(R.id.cancel_button);
-        Button confirmButton=dialog.findViewById(R.id.confirm_button);
+    private void updatePassword() {
+        System.out.println("in updatePassword() method");
+        Button passwordVerifyButton=passwordUpdateDialog.findViewById(R.id.password_verify_button);
+        Button cancelButton=passwordUpdateDialog.findViewById(R.id.cancel_button);
+        Button confirmButton=passwordUpdateDialog.findViewById(R.id.confirm_button);
+        TextInputLayout oldPasswordHeader=passwordUpdateDialog.findViewById(R.id.old_password_header);
+        EditText oldPasswordEdittext=passwordUpdateDialog.findViewById(R.id.old_password);
+        String oldPassword=oldPasswordEdittext.getText().toString();
+        oldPasswordEdittext.setOnTouchListener((v, event) -> handlePasswordVisibility(event));
+        String storedPassword=sharedPreferences.getString("password",null);
+        System.out.println("stored pass: "+storedPassword+" old pass: "+oldPassword+"inside verify button ");
         progressDialog=new ProgressDialog(this);
-        progressDialog.setMessage("Updating password...");
-        cancelButton.setOnClickListener(v -> dialog.dismiss());
-        confirmButton.setOnClickListener(new View.OnClickListener() {
+        progressDialog.setMessage("checking password...");
+        passwordVerifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText oldPassword=dialog.findViewById(R.id.old_password);
-                String oldPasswordText=oldPassword.getText().toString();
-                EditText newPassword=dialog.findViewById(R.id.new_password);
-                String newPasswordText=newPassword.getText().toString();
-                EditText confirmPassword=dialog.findViewById(R.id.confirm_password);
-                String confirmPasswordText=confirmPassword.getText().toString();
-                System.out.println("old password : "+oldPasswordText+" new password : "+newPasswordText+" confirm password : "+confirmPasswordText);
+                progressDialog.show();
+                System.out.println("stored pass: "+storedPassword+" old pass: "+oldPassword+"inside verify button ");
+                if(storedPassword!=null && storedPassword.equals(oldPassword)){
+                    progressDialog.dismiss();
+                    Toast.makeText(ProfileActivity.this, "Password verified", Toast.LENGTH_SHORT).show();
+                    //show all the fields and hide old password and verify button
+                    oldPasswordHeader.setVisibility(View.GONE);
+                    oldPasswordEdittext.setVisibility(View.GONE);
+                    passwordVerifyButton.setVisibility(View.GONE);
 
-                if(newPasswordText.equals(confirmPasswordText)){
-                    System.out.println("New password : "+newPasswordText+" confirm password : "+confirmPasswordText);
-                    checkAndUpdatePassword(dialog,oldPasswordText,newPasswordText
-                            ,confirmPasswordText,oldPassword,newPassword,confirmPassword);
+                    passwordUpdateDialog.findViewById(R.id.new_password_header).setVisibility(View.VISIBLE);
+                    passwordUpdateDialog.findViewById(R.id.new_password).setVisibility(View.VISIBLE);
+                    passwordUpdateDialog.findViewById(R.id.confirm_password_header).setVisibility(View.VISIBLE);
+                    passwordUpdateDialog.findViewById(R.id.confirm_password).setVisibility(View.VISIBLE);
+                    passwordUpdateDialog.findViewById(R.id.cancel_confirm_buttons_layout).setVisibility(View.VISIBLE);
+
                 }else{
-                    confirmPassword.setError("New password and confirm password must be same");
+                    progressDialog.dismiss();
+                    Toast.makeText(ProfileActivity.this, "Password is incorrect", Toast.LENGTH_SHORT).show();
+                    oldPasswordEdittext.requestFocus();
                 }
             }
         });
-
-
+        cancelButton.setOnClickListener(v -> passwordUpdateDialog.dismiss());
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText oldPassword=passwordUpdateDialog.findViewById(R.id.old_password);
+                String oldPasswordText=oldPassword.getText().toString();
+                String storedPassword=sharedPreferences.getString("password",null);
+                if(storedPassword!=null && storedPassword.equals(oldPasswordText)){
+                    checkAndUpdatePassword();
+                }
+            }
+        });
     }
 
-    private void checkAndUpdatePassword(Dialog dialog, String oldPasswordText, String newPasswordText,
-                                        String confirmPasswordText, EditText oldPassword,
-                                        EditText newPassword, EditText confirmPassword) {
+    private void checkAndUpdatePassword() {
+        EditText oldPassword=passwordUpdateDialog.findViewById(R.id.old_password);
+        String oldPasswordText=oldPassword.getText().toString();
+        EditText newPassword=passwordUpdateDialog.findViewById(R.id.new_password);
+        String newPasswordText=newPassword.getText().toString();
+        EditText confirmPassword=passwordUpdateDialog.findViewById(R.id.confirm_password);
+        String confirmPasswordText=confirmPassword.getText().toString();
+        if(!newPasswordText.equals(confirmPasswordText)){
+            confirmPassword.setError("New password and confirm password must be same");
+            return;
+        }
         progressDialog.show();
         //restore password from shared and match with old password
         String storedPassword=sharedPreferences.getString("password",null);
@@ -339,15 +377,58 @@ public class ProfileActivity extends AppCompatActivity {
                     .build();
 
             ApiService apiService = retrofit.create(ApiService.class);
-
+            Toast.makeText(this, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
         }else{
             progressDialog.dismiss();
             Toast.makeText(this, "Old password is incorrect", Toast.LENGTH_SHORT).show();
-            dialog.findViewById(R.id.old_password).requestFocus();
+            passwordUpdateDialog.findViewById(R.id.old_password).requestFocus();
         }
 
     }
 
+    private boolean handlePasswordVisibility(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            EditText oldPasswordEdittext=passwordUpdateDialog.findViewById(R.id.old_password);
+            Drawable drawableEnd =oldPasswordEdittext.getCompoundDrawablesRelative()[2]; // Right drawable
+            if (drawableEnd != null) {
+                int drawableWidth = drawableEnd.getBounds().width();
+                if (event.getRawX() >= (oldPasswordEdittext.getRight() - drawableWidth - oldPasswordEdittext.getPaddingEnd())) {
+                    togglePasswordVisibility(oldPasswordEdittext);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void togglePasswordVisibility(EditText oldPasswordEdittext) {
+        if (isPasswordVisible) {
+            // Hide password
+            oldPasswordEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            isPasswordVisible = false;
+        } else {
+            // Show password
+            oldPasswordEdittext.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            isPasswordVisible = true;
+        }
+        // Update the visibility icon
+        updatePasswordVisibilityIcon(oldPasswordEdittext);
+        // Maintain cursor position
+        oldPasswordEdittext.setSelection(oldPasswordEdittext.getText().length());
+    }
+
+    private void updatePasswordVisibilityIcon(EditText oldPasswordEdittext) {
+        Drawable eyeIcon = isPasswordVisible
+                ? ContextCompat.getDrawable(this, R.drawable.icon_open_eye)
+                : ContextCompat.getDrawable(this, R.drawable.icon_close_eye);
+
+        oldPasswordEdittext.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                null, // Start drawable
+                null, // Top drawable
+                eyeIcon, // End drawable
+                null // Bottom drawable
+        );
+    }
     @Override
     protected void onResume() {
         setTitle("Profile");

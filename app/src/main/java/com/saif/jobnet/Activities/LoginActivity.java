@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = sharedPreferences.getString("password", "password");
             String userId = sharedPreferences.getString("userId", "1");
             User user = new User(name,username, email, phoneNumber, password);
+            System.out.println("saved [password: "+password);
             user.setId(userId);
             redirectToProfile(user);
             return;
