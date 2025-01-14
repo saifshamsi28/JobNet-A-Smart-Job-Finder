@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.CompactDecimalFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
@@ -273,7 +275,7 @@ public class ProfileActivity extends AppCompatActivity {
             Dialog dialog=new Dialog(ProfileActivity.this);
             dialog.setContentView(R.layout.password_update_layout);
             if(dialog.getWindow()!=null){
-                dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.custom_update_bg));
+                dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             }
             dialog.show();
         }else if(item.getItemId()==R.id.logout){
