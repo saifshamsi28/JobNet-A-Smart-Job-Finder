@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.CompactDecimalFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -40,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     ActivityProfileBinding binding;
     SharedPreferences sharedPreferences;
     private User user;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +121,7 @@ public class ProfileActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(ProfileActivity.this);
         dialog.setContentView(R.layout.update_profile_layout);
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         }
 
@@ -277,7 +276,10 @@ public class ProfileActivity extends AppCompatActivity {
             if(dialog.getWindow()!=null){
                 dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             }
-            updatePassword();
+            EditText editText=dialog.findViewById(R.id.old_password);
+            System.out.println("old pass: "+editText.getText().toString());
+
+            updatePassword(dialog);
             dialog.show();
         }else if(item.getItemId()==R.id.logout){
             showConfirmationDialogue();
@@ -285,7 +287,65 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updatePassword() {
+    private void updatePassword(Dialog dialog) {
+        Button cancelButton=dialog.findViewById(R.id.cancel_button);
+        Button confirmButton=dialog.findViewById(R.id.confirm_button);
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Updating password...");
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText oldPassword=dialog.findViewById(R.id.old_password);
+                String oldPasswordText=oldPassword.getText().toString();
+                EditText newPassword=dialog.findViewById(R.id.new_password);
+                String newPasswordText=newPassword.getText().toString();
+                EditText confirmPassword=dialog.findViewById(R.id.confirm_password);
+                String confirmPasswordText=confirmPassword.getText().toString();
+                System.out.println("old password : "+oldPasswordText+" new password : "+newPasswordText+" confirm password : "+confirmPasswordText);
+
+                if(newPasswordText.equals(confirmPasswordText)){
+                    System.out.println("New password : "+newPasswordText+" confirm password : "+confirmPasswordText);
+                    checkAndUpdatePassword(dialog,oldPasswordText,newPasswordText
+                            ,confirmPasswordText,oldPassword,newPassword,confirmPassword);
+                }else{
+                    confirmPassword.setError("New password and confirm password must be same");
+                }
+            }
+        });
+
+
+    }
+
+    private void checkAndUpdatePassword(Dialog dialog, String oldPasswordText, String newPasswordText,
+                                        String confirmPasswordText, EditText oldPassword,
+                                        EditText newPassword, EditText confirmPassword) {
+        progressDialog.show();
+        //restore password from shared and match with old password
+        String storedPassword=sharedPreferences.getString("password",null);
+        if(storedPassword!=null && storedPassword.equals(oldPasswordText)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("password", newPasswordText);
+            editor.apply();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://10.162.1.53:8080/")
+                    .client(new OkHttpClient
+                            .Builder().connectTimeout(10, TimeUnit.SECONDS)
+                            .callTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
+                            .writeTimeout(10, TimeUnit.SECONDS)
+                            .build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            ApiService apiService = retrofit.create(ApiService.class);
+
+        }else{
+            progressDialog.dismiss();
+            Toast.makeText(this, "Old password is incorrect", Toast.LENGTH_SHORT).show();
+            dialog.findViewById(R.id.old_password).requestFocus();
+        }
+
     }
 
     @Override
