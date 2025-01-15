@@ -77,21 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
 //        });
     }
 
-    private void loadUserFromSharedPreferences() {
-        String userId = sharedPreferences.getString("userId", null);
-        String name = sharedPreferences.getString("userName", null);
-        String email = sharedPreferences.getString("userEmail", null);
-        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
-        String password = sharedPreferences.getString("password", null);
-
-        if (userId == null || name == null || email == null) {
-            redirectToLogin();
-        } else {
-            user = new User(name, name, email, phoneNumber, password);
-            user.setId(userId);
-        }
-    }
-
     private void showConfirmationDialogue() {
         Dialog dialog=new Dialog(ProfileActivity.this);
         dialog.setContentView(R.layout.confirmation_dialogue_layout);
@@ -198,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
             Call<User> response=apiService.registerUser(user);
             response.enqueue(new Callback<User>() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                     if(response.isSuccessful()){
                         User user1=response.body();
                         if(user1!=null) {
