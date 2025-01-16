@@ -13,17 +13,33 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Job Title -->
-        <TextView
-            android:id="@+id/job_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:paddingTop="8dp"
-            android:text="Role: Web Developer" />
-
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            >
+            <TextView
+                android:id="@+id/job_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:paddingTop="8dp"
+                android:layout_weight="1"
+                android:text="Role: Web Developer" />
+            <ImageView
+                android:id="@+id/save_jobs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="image for saving job"
+                android:src="@drawable/job_not_saved_icon"
+                android:layout_marginEnd="8sp"
+                android:padding="3sp"
+                />
+        </LinearLayout>
+        <!-- Job Title -->
         <!-- Company Name and Rating -->
         <LinearLayout
             android:layout_width="match_parent"

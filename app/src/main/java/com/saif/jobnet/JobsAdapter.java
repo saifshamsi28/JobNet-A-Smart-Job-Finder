@@ -54,6 +54,13 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.postDate.setText(job.getPostDate());
         setJobReviews(holder.binding, job.getReview());
 
+        holder.binding.saveJobs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //to save the job to local database
+
+            }
+        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
