@@ -397,14 +397,8 @@ public class ProfileActivity extends AppCompatActivity {
                     if(user1!=null){
                         Toast.makeText(ProfileActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
                         //print user details
-                        System.out.println("User Updated Successfully");
-                        System.out.println("Name: " + user1.getName());
-                        System.out.println("user name: " + user1.getUserName());
-                        System.out.println("Email: " + user1.getEmail());
-                        System.out.println("User id: " + user1.getId());
+                        System.out.println("Password Updated Successfully");
                         System.out.println("Password: " + user1.getPassword());
-                        System.out.println("Phone number: " + user1.getPhoneNumber());
-                        System.out.println("saved jobs: " + user1.getSavedJobs());
                     }
                 }else {
                     Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
