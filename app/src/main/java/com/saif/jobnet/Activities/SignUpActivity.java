@@ -249,7 +249,6 @@ public class SignUpActivity extends AppCompatActivity {
                         sharedPreferences.edit().putBoolean("userStored", true).apply();
 
                         //save user details in shared prefs
-
                         sharedPreferences.edit().putString("userId", user1.getId()).apply();
                         sharedPreferences.edit().putString("name", user1.getName()).apply();
                         sharedPreferences.edit().putString("userName", user1.getUserName()).apply();

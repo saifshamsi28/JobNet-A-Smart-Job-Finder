@@ -359,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         }
         call.enqueue(new Callback<List<Job>>() {
             @Override
-            public void onResponse(Call<List<Job>> call, Response<List<Job>> response) {
+            public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
                 if (response.isSuccessful()) {
                     List<Job> jobs = response.body();
                     if (jobs != null) {
@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Job>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable t) {
                 Log.e("API Error", "Failed to connect to Flask server", t);
                 setShimmerEffect();
 
