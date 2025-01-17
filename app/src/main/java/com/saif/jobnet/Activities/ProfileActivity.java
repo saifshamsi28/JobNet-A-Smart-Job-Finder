@@ -3,17 +3,21 @@ package com.saif.jobnet.Activities;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -67,14 +71,12 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
-        // Set up Log Out button
-//        binding.logoutButton.setOnClickListener(v -> {
-//            showConfirmationDialogue();
-//        });
-
-//        binding.editButton.setOnClickListener(v -> {
-//            updateUserNameOrEmail();
-//        });
+        binding.updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateUserNameOrEmail();
+            }
+        });
     }
 
     private void showConfirmationDialogue() {
@@ -112,60 +114,63 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateUserNameOrEmail() {
-        Dialog dialog = new Dialog(ProfileActivity.this);
-        dialog.setContentView(R.layout.update_profile_layout);
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        }
+//        Dialog dialog = new Dialog(ProfileActivity.this);
+//        dialog.setContentView(R.layout.update_profile_layout);
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
+//            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+//        }
 
-        EditText nameInput = dialog.findViewById(R.id.dialog_name_input);
-        nameInput.setText(binding.profileName.getText().toString().trim());
-        EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
-        emailInput.setText(binding.userEmail.getText().toString().trim());
-        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+//        EditText nameInput = dialog.findViewById(R.id.dialog_name_input);
+//        nameInput.setText(binding.profileName.getText().toString().trim());
+//        EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
+//        emailInput.setText(binding.userEmail.getText().toString().trim());
+//        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         // check if email is valid
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailInput.getText().toString().trim()).matches()) {
-            emailInput.setError("Invalid email address");
+        String name=binding.profileName.getText().toString().trim();
+        String email=binding.userEmail.getText().toString().trim();
+        String phoneNumber=binding.contactNumber.getText().toString().trim();
+        if(name.isEmpty()){
+            binding.profileName.setError("Please enter your name");
+            return;
         }
-        EditText phoneNumberInput = dialog.findViewById(R.id.dialog_phone_input);
-        phoneNumberInput.setText(binding.contactNumber.getText().toString().trim());
-        phoneNumberInput.setInputType(InputType.TYPE_CLASS_PHONE);
-
-        Button cancelButton = dialog.findViewById(R.id.cancel_button);
-        Button saveButton = dialog.findViewById(R.id.save_button);
-
-        cancelButton.setOnClickListener(v -> dialog.dismiss());
+        if(email.isEmpty()){
+            binding.userEmail.setError("Please enter your email");
+            return;
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.userEmail.setError("Invalid email address");
+            return;
+        }
+        if (isValidPhoneNumber(phoneNumber)) {
+            binding.contactNumber.setError("Phone number must be at least 10 digits.");
+            return;
+        }
 
         ProgressDialog progressDialog=new ProgressDialog(this);
-        saveButton.setOnClickListener(v -> {
+//        saveButton.setOnClickListener(v -> {
             progressDialog.setMessage("Updating profile...");
             progressDialog.show();
-            String newName = nameInput.getText().toString();
-            String newEmail = emailInput.getText().toString();
-            String newPhoneNumber = phoneNumberInput.getText().toString();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            if (!newName.isEmpty()) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userName", newName);
+            //name updation
+            editor.putString("name", name);
+            editor.apply();
+            user.setName(name);
+            binding.profileName.setText(name);
+
+            //email updation
+            editor.putString("userEmail", email);
+            editor.apply();
+            user.setEmail(email);
+            binding.userEmail.setText(email);
+            Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
+
+            if (!phoneNumber.isEmpty()) {
+                editor.putString("phoneNumber", phoneNumber);
                 editor.apply();
-                user.setName(newName);
-                binding.profileName.setText(newName);
-            }
-            if (!newEmail.isEmpty()) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("userEmail", newEmail);
-                editor.apply();
-                user.setEmail(newEmail);
-                binding.userEmail.setText(newEmail);
-                Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
-            }
-            if (!newPhoneNumber.isEmpty()) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("phoneNumber", newPhoneNumber);
-                editor.apply();
-                user.setPhoneNumber(newPhoneNumber);
-                binding.contactNumber.setText(newPhoneNumber);
+                user.setPhoneNumber(phoneNumber);
+                binding.contactNumber.setText(phoneNumber);
             }
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -177,7 +182,6 @@ public class ProfileActivity extends AppCompatActivity {
                             .build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-
 
             ApiService apiService=retrofit.create(ApiService.class);
             Call<User> response=apiService.registerUser(user);
@@ -198,13 +202,12 @@ public class ProfileActivity extends AppCompatActivity {
                             System.out.println("Phone number: " + user1.getPhoneNumber());
                             System.out.println("saved jobs: " + user1.getSavedJobs());
                             progressDialog.dismiss();
-
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<User> call, Throwable throwable) {
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
                     Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                     System.out.println("Error updating user");
                     progressDialog.dismiss();
@@ -212,9 +215,39 @@ public class ProfileActivity extends AppCompatActivity {
                     throwable.printStackTrace();
                 }
             });
-            dialog.dismiss();
-        });
-        dialog.show();
+//        });
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Remove leading and trailing spaces
+        phoneNumber = phoneNumber.trim();
+
+        // Check if it's empty
+        if (phoneNumber.isEmpty()) {
+            binding.contactNumber.setError("Phone number cannot be empty.");
+            return false;
+        }
+
+        // Check for minimum and maximum length (10-15 digits)
+        if (phoneNumber.length() < 10 || phoneNumber.length() > 15) {
+            binding.contactNumber.setError("Invalid phone number");
+            return false;
+        }
+
+        // Check if it contains only digits (allowing "+" at the start for international numbers)
+        if (!phoneNumber.matches("\\+?\\d+")) {
+            binding.contactNumber.setError("Phone number must contain only digits, optionally starting with '+'.");
+            return false;
+        }
+
+        // Optional: Check for valid starting digit (e.g., avoiding numbers starting with 0 in some regions)
+        if (!phoneNumber.matches("^\\+?[1-9]\\d{9,14}$")) {
+            binding.contactNumber.setError("Phone number must start with a valid digit.");
+            return false;
+        }
+
+        // If all checks pass
+        return true;
     }
 
     private void loadUserProfile() {
@@ -234,6 +267,37 @@ public class ProfileActivity extends AppCompatActivity {
             binding.contactNumber.setText(phoneNumber);
         }else{
             binding.contactNumber.setVisibility(View.GONE);
+        }
+        //enable/disable the editing of fields
+        userFieldsAccessibility(false);
+    }
+
+    private void userFieldsAccessibility(boolean b) {
+        if(b){
+            binding.profileName.setEnabled(true);
+            binding.username.setEnabled(true);
+            binding.userEmail.setEnabled(true);
+            binding.contactNumber.setEnabled(true);
+            binding.updateButton.setVisibility(View.VISIBLE);
+
+            binding.profileName.requestFocus();
+            binding.profileName.setSelection(binding.profileName.getText().length());
+            //disable on click method of email
+            binding.userEmail.setOnClickListener(null);
+            //open the soft keyboard pop up
+            new Handler().postDelayed(() -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(binding.profileName, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }, 100);
+
+        }else {
+            binding.profileName.setEnabled(false);
+            binding.username.setEnabled(false);
+            binding.userEmail.setEnabled(false);
+            binding.contactNumber.setEnabled(false);
+            binding.updateButton.setVisibility(View.GONE);
         }
     }
 
@@ -263,7 +327,8 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.update_profile){
-            updateUserNameOrEmail();
+//            updateUserNameOrEmail();
+            userFieldsAccessibility(true);
         }else if(item.getItemId()==R.id.changed_password){
             passwordUpdateDialog=new Dialog(ProfileActivity.this);
             passwordUpdateDialog.setContentView(R.layout.password_update_layout);

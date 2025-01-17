@@ -44,13 +44,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16sp"
             android:text="Name "
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_img"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_img" />
 
         <EditText
             android:id="@+id/profile_name"
@@ -58,11 +58,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16sp"
             android:layout_marginEnd="8dp"
-            android:padding="8dp"
+            android:background="@android:color/transparent"
             android:hint="saif shamsi"
             android:maxLines="2"
+            android:padding="8dp"
             android:textColor="@color/black"
-            android:background="@android:color/transparent"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -89,9 +89,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16sp"
             android:text="Username"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/tv_title_label"
             app:layout_constraintTop_toBottomOf="@+id/profile_name" />
 
@@ -101,11 +101,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16sp"
             android:layout_marginEnd="8dp"
-            android:padding="8dp"
-            android:hint="toxic_saif12"
             android:background="@android:color/transparent"
-            android:textSize="16sp"
+            android:hint="toxic_saif12"
+            android:padding="8dp"
             android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,24 +115,25 @@
             android:id="@+id/border_below_artist"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
             android:layout_marginStart="8sp"
             android:layout_marginEnd="8sp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
             app:layout_constraintBottom_toTopOf="@id/tv_album_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/username" />
+
         <TextView
             android:id="@+id/tv_album_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16sp"
             android:text="Email"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/tv_artist_label"
             app:layout_constraintTop_toBottomOf="@+id/username" />
 
@@ -142,12 +143,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16sp"
             android:layout_marginEnd="8dp"
-            android:padding="8dp"
-            android:hint="example@gmail.com"
-            android:textSize="16sp"
-            android:onClick="sendEmail"
-            android:textColor="@color/black"
             android:background="@android:color/transparent"
+            android:hint="example@gmail.com"
+            android:onClick="sendEmail"
+            android:padding="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -157,10 +158,10 @@
             android:id="@+id/border_below_album"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
             android:layout_marginStart="8sp"
             android:layout_marginEnd="8sp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
             app:layout_constraintBottom_toTopOf="@id/tv_duration_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -173,35 +174,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16sp"
             android:text="Contact"
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="@+id/tv_album_label"
             app:layout_constraintTop_toBottomOf="@+id/user_email" />
 
-        <TextView
+        <EditText
             android:id="@+id/contact_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="987645678"
-            android:textSize="16sp"
             android:textColor="@color/black"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
             app:layout_constraintStart_toStartOf="@+id/tv_duration_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_duration_label" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
             android:layout_marginStart="8sp"
             android:layout_marginEnd="8sp"
+            android:background="@color/fields_divider"
+            android:backgroundTint="@color/fields_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/contact_number" />
-        
+
+        <Button
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="Update"
+            android:background="@drawable/custom_update_bg"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/contact_number" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
