@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         if (isLoggedIn) {
             // Redirect to LoginActivity
             //restoring the user details from shared prefs
-            String name = sharedPreferences.getString("userName", "User Name");
+            String name = sharedPreferences.getString("name", "User Name");
             String username = sharedPreferences.getString("userName", "username");
             String email = sharedPreferences.getString("userEmail", "email@example.com");
             String phoneNumber = sharedPreferences.getString("phoneNumber", "9050346306");
