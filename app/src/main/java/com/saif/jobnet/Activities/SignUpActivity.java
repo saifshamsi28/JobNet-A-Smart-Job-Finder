@@ -156,8 +156,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        if (!phoneNumber.isEmpty() && phoneNumber.length() < 10) {
-            binding.phoneNumber.setError("Phone number must be at least 10 digits.");
+        if (isValidPhoneNumber(phoneNumber)) {
             return;
         }
         progressDialog=new ProgressDialog(this);
@@ -167,6 +166,37 @@ public class SignUpActivity extends AppCompatActivity {
         checkEmailAlreadyExist(name,username,email,password,phoneNumber);
     }
 
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Remove leading and trailing spaces
+        phoneNumber = phoneNumber.trim();
+
+        // Check if it's empty
+        if (phoneNumber.isEmpty()) {
+            binding.phoneNumber.setError("Phone number cannot be empty.");
+            return false;
+        }
+
+        // Check for minimum and maximum length (10-15 digits)
+        if (phoneNumber.length() < 10 || phoneNumber.length() > 15) {
+            binding.phoneNumber.setError("Invalid phone number");
+            return false;
+        }
+
+        // Check if it contains only digits (allowing "+" at the start for international numbers)
+        if (!phoneNumber.matches("\\+?\\d+")) {
+            binding.phoneNumber.setError("Phone number must contain only digits, optionally starting with '+'.");
+            return false;
+        }
+
+        // Optional: Check for valid starting digit (e.g., avoiding numbers starting with 0 in some regions)
+        if (!phoneNumber.matches("^\\+?[1-9]\\d{9,14}$")) {
+            binding.phoneNumber.setError("Phone number must start with a valid digit.");
+            return false;
+        }
+
+        // If all checks pass
+        return true;
+    }
     private void checkEmailAlreadyExist(String name, String username, String email, String password, String phoneNumber) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
