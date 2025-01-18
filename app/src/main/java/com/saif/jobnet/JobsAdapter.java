@@ -102,7 +102,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         Call<User> response=apiService.saveJobs(saveJobsModel);
         response.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if(response.isSuccessful()){
                     User user=response.body();
                     if(user!=null){
@@ -120,7 +120,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable throwable) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
                 System.out.println("Error saving job");
                 System.out.println(throwable);
                 throwable.printStackTrace();
