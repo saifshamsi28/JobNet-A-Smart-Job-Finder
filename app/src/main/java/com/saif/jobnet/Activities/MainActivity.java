@@ -342,9 +342,9 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(60, TimeUnit.SECONDS)
-                        .readTimeout(60, TimeUnit.SECONDS)
-                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .readTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(15, TimeUnit.SECONDS)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -367,6 +367,9 @@ public class MainActivity extends AppCompatActivity {
                         ;
                         endTime = System.currentTimeMillis();
                         Log.d("API Response", "Time taken: " + TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) + " seconds");
+                        for(Job job:jobs){
+                            System.out.println("job id: "+job.getJobId()+" , job title: "+job.getTitle()+" , job company: "+job.getCompany());
+                        }
                         populateTableWithJobs(jobs, query);
                     } else
                         Log.d("API Response", "No jobs found");
