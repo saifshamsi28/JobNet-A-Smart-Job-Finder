@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
 )
 public class Job {
     @PrimaryKey
-    @SerializedName("job_id")
+    @SerializedName("id")
     @NonNull
     private String jobId;
 
