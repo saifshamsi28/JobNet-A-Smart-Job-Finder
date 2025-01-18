@@ -1,16 +1,15 @@
 package com.saif.jobnet.Network;
 
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import java.util.List;
@@ -36,5 +35,8 @@ public interface ApiService {
 
     @POST("user/email/{email}")
     Call<Boolean> checkEmailAlreadyExist(@Path("email") String email);
+
+    @PUT("user/{id}")
+    Call<User> saveJobs(@Body SaveJobsModel saveJobsModel);
 
 }
