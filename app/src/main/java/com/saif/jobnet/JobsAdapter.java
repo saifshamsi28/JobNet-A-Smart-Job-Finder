@@ -2,19 +2,33 @@ package com.saif.jobnet;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.SaveJobsModel;
+import com.saif.jobnet.Models.User;
+import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.databinding.JobCardBinding;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.saif.jobnet.Activities.JobDetailActivity;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder> {
 
@@ -57,8 +71,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.saveJobs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //to save the job to local database
-
+                saveJobToBackend(job.getJobId());
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +82,50 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 intent.putExtra("url", job.getUrl());
                 context.startActivity(intent);
             }});
+    }
+
+    private void saveJobToBackend(String jobId) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080/")
+                .client(new OkHttpClient()
+                        .newBuilder().connectTimeout(10, TimeUnit.MILLISECONDS)
+                        .readTimeout(10, TimeUnit.MILLISECONDS)
+                        .writeTimeout(10, TimeUnit.MILLISECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
+        String userId=sharedPreferences.getString("userId",null);
+        SaveJobsModel saveJobsModel=new SaveJobsModel(userId,jobId);
+        Call<User> response=apiService.saveJobs(saveJobsModel);
+        response.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.isSuccessful()){
+                    User user=response.body();
+                    if(user!=null){
+                        System.out.println("Job saved successfully");
+                        Toast.makeText(context,"Job saved successfully",Toast.LENGTH_SHORT).show();
+                        for(String job:user.getSavedJobs()){
+                            System.out.println("Job id: "+job);
+                        }
+                    }
+                }else {
+                    System.out.println("Error saving job");
+                    System.out.println(response.message());
+                    Log.d("error",response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable throwable) {
+                System.out.println("Error saving job");
+                System.out.println(throwable);
+                throwable.printStackTrace();
+            }
+        });
     }
 
     @Override
