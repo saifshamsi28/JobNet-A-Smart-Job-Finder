@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -71,7 +72,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.saveJobs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveJobToBackend(job.getJobId());
+                saveJobToBackend(job.getJobId(),holder.binding.saveJobs);
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -84,13 +85,13 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             }});
     }
 
-    private void saveJobToBackend(String jobId) {
+    private void saveJobToBackend(String jobId, ImageView saveJobs) {
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl("http://10.162.1.53:8080/")
                 .client(new OkHttpClient()
-                        .newBuilder().connectTimeout(10, TimeUnit.MILLISECONDS)
-                        .readTimeout(10, TimeUnit.MILLISECONDS)
-                        .writeTimeout(10, TimeUnit.MILLISECONDS)
+                        .newBuilder().connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -99,15 +100,18 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
         String userId=sharedPreferences.getString("userId",null);
         SaveJobsModel saveJobsModel=new SaveJobsModel(userId,jobId);
+        System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
         Call<User> response=apiService.saveJobs(saveJobsModel);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                System.out.println("on response "+response);
                 if(response.isSuccessful()){
                     User user=response.body();
                     if(user!=null){
                         System.out.println("Job saved successfully");
                         Toast.makeText(context,"Job saved successfully",Toast.LENGTH_SHORT).show();
+                        saveJobs.setImageResource(R.drawable.job_saved_icon);
                         for(String job:user.getSavedJobs()){
                             System.out.println("Job id: "+job);
                         }
@@ -115,6 +119,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 }else {
                     System.out.println("Error saving job");
                     System.out.println(response.message());
+                    Toast.makeText(context,"Error saving job",Toast.LENGTH_SHORT).show();
+                    saveJobs.setImageResource(R.drawable.job_not_saved_icon);
                     Log.d("error",response.message());
                 }
             }
@@ -122,6 +128,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
                 System.out.println("Error saving job");
+                Toast.makeText(context,"Error saving job",Toast.LENGTH_SHORT).show();
+                saveJobs.setImageResource(R.drawable.job_not_saved_icon);
                 System.out.println(throwable);
                 throwable.printStackTrace();
             }
