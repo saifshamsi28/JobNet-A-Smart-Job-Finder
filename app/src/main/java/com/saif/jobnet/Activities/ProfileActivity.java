@@ -6,12 +6,18 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -20,6 +26,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,11 +37,13 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityProfileBinding;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -531,6 +541,157 @@ public class ProfileActivity extends AppCompatActivity {
                 eyeIcon, // End drawable
                 null // Bottom drawable
         );
+    }
+
+    // Function to dynamically add rows to the TableLayout
+    private void populateTableWithJobs(List<Job> jobs) {
+        TableLayout tableLayout = findViewById(R.id.job_table);
+        Log.d("Database", "fetched from database " + jobs.size() + " jobs");
+
+        // Clear previous rows (if any), while keeping the header row
+        if (tableLayout.getChildCount() > 1) {
+            tableLayout.removeViews(1, tableLayout.getChildCount() - 1);
+        }
+
+        int index = 1; // Starting serial number for jobs
+
+        binding.jobTable.setVisibility(View.VISIBLE);
+        for (Job job : jobs) {
+            // Create a new row
+            TableRow row = new TableRow(this);
+            row.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+
+            // Serial Number
+            TextView sno = new TextView(this);
+            sno.setText(String.valueOf(index++));
+            sno.setGravity(Gravity.CENTER);
+            sno.setTextColor(Color.BLACK);
+            sno.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1));
+            sno.setPadding(8, 8, 8, 8);
+//            sno.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.table_cell_border,null));
+            row.addView(sno);
+
+            // to set the Job Title
+            TextView jobTitle = new TextView(this);
+            jobTitle.setText(job.getTitle());
+            jobTitle.setLayoutParams(new TableRow.LayoutParams(500, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 3
+            jobTitle.setPadding(8, 8, 8, 8);
+            jobTitle.setTextColor(Color.BLACK);
+            row.addView(jobTitle);
+
+            // to set the Company
+            TextView company = new TextView(this);
+            company.setText(job.getCompany());
+            company.setLayoutParams(new TableRow.LayoutParams(300, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 2
+            company.setPadding(8, 8, 8, 8);
+            company.setMaxLines(jobTitle.getMaxLines());
+            company.setTextColor(Color.BLACK);
+            row.addView(company);
+
+            // to set the Location
+            TextView location = new TextView(this);
+            location.setText(job.getLocation());
+            location.setLayoutParams(new TableRow.LayoutParams(300, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 2
+            location.setPadding(8, 8, 8, 8);
+            location.setMaxLines(jobTitle.getMaxLines());
+            location.setEllipsize(TextUtils.TruncateAt.END);
+            location.setTextColor(Color.BLACK);
+            row.addView(location);
+
+            // to set the Salary
+            TextView salary = new TextView(this);
+            salary.setText(job.getSalary());
+            salary.setLayoutParams(new TableRow.LayoutParams(300, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 1
+            salary.setPadding(8, 8, 8, 8);
+            salary.setMaxLines(jobTitle.getMaxLines());
+            salary.setEllipsize(TextUtils.TruncateAt.END);
+            salary.setTextColor(Color.BLACK);
+            row.addView(salary);
+
+            //to set the ratings
+            TextView rating = new TextView(this);
+            rating.setText(String.valueOf(job.getRating()));
+            rating.setGravity(Gravity.CENTER);
+            rating.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 1
+            rating.setPadding(8, 8, 8, 8);
+            rating.setMaxLines(jobTitle.getMaxLines());
+            rating.setEllipsize(TextUtils.TruncateAt.END);
+            rating.setTextColor(Color.BLACK);
+            row.addView(rating);
+
+            //to set the reviews
+            TextView review = new TextView(this);
+            review.setText(String.valueOf(job.getReview()));
+            review.setGravity(Gravity.CENTER);
+            review.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 1
+            review.setPadding(8, 8, 8, 8);
+            review.setMaxLines(jobTitle.getMaxLines());
+            review.setEllipsize(TextUtils.TruncateAt.END);
+            review.setTextColor(Color.BLACK);
+            row.addView(review);
+
+            //to set the job post date
+            TextView postDate = new TextView(this);
+            postDate.setText(String.valueOf(job.getPostDate()));
+            postDate.setGravity(Gravity.CENTER);
+            postDate.setLayoutParams(new TableRow.LayoutParams(300, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 1
+            postDate.setPadding(8, 8, 8, 8);
+            postDate.setMaxLines(jobTitle.getMaxLines());
+            postDate.setEllipsize(TextUtils.TruncateAt.END);
+            postDate.setTextColor(Color.BLACK);
+            row.addView(postDate);
+
+            //to set the URL
+            TextView url = new TextView(this);
+            url.setText(job.getUrl());
+            url.setLayoutParams(new TableRow.LayoutParams(800, TableRow.LayoutParams.WRAP_CONTENT)); // Weight = 2
+            url.setPadding(8, 8, 8, 8);
+            url.setTextColor(getResources().getColor(R.color.blue));
+            url.setMaxLines(3);
+            url.setClickable(true);
+            url.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clicking the link
+            Linkify.addLinks(url, Linkify.WEB_URLS); // Automatically convert text to clickable link
+            row.addView(url);
+
+            //to set the description
+            TextView description = new TextView(this);
+            description.setText(job.getDescription());
+            description.setLayoutParams(new TableRow.LayoutParams(800, TableRow.LayoutParams.WRAP_CONTENT));
+            description.setPadding(8, 8, 8, 8);
+            description.setMaxLines(3);
+            description.setEllipsize(TextUtils.TruncateAt.END);
+            description.setTextColor(Color.BLACK);
+            row.addView(description);
+
+            //to set the description
+            TextView jobId = new TextView(this);
+            jobId.setText(job.getJobId());
+            jobId.setLayoutParams(new TableRow.LayoutParams(500, TableRow.LayoutParams.WRAP_CONTENT));
+            jobId.setPadding(8, 8, 8, 8);
+            jobId.setMaxLines(3);
+            jobId.setEllipsize(TextUtils.TruncateAt.END);
+            jobId.setTextColor(Color.BLACK);
+            row.addView(jobId);
+
+            // Adding OnClickListener to open Job Details activity
+            row.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileActivity.this, JobDetailActivity.class);
+                intent.putExtra("jobTitle", job.getTitle());
+                intent.putExtra("company", job.getCompany());
+                intent.putExtra("location", job.getLocation());
+                intent.putExtra("salary", job.getSalary());
+                intent.putExtra("description", job.getDescription());
+                intent.putExtra("rating", job.getRating());
+                intent.putExtra("reviews", job.getReview());
+                intent.putExtra("url", job.getUrl());
+                startActivity(intent);
+            });
+
+            // Add the row to the TableLayout
+            tableLayout.addView(row);
+            tableLayout.setStretchAllColumns(true);
+        }
     }
     @Override
     protected void onResume() {
