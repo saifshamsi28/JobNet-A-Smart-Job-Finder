@@ -36,7 +36,7 @@ public interface ApiService {
     @POST("user/email/{email}")
     Call<Boolean> checkEmailAlreadyExist(@Path("email") String email);
 
-    @PUT("user/{id}")
+    @PUT("user/save-jobs")
     Call<User> saveJobs(@Body SaveJobsModel saveJobsModel);
 
 }
