@@ -280,6 +280,47 @@ public class ProfileActivity extends AppCompatActivity {
         }
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Retrofit retrofit=new Retrofit.Builder()
+                        .baseUrl("http://10.162.1.53:8080/")
+                        .client(new OkHttpClient().newBuilder()
+                                .connectTimeout(15,TimeUnit.SECONDS)
+                                .callTimeout(15,TimeUnit.SECONDS)
+                                .readTimeout(15,TimeUnit.SECONDS)
+                                .writeTimeout(15,TimeUnit.SECONDS)
+                                .build())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+                ApiService apiService=retrofit.create(ApiService.class);
+                Call<User> response=apiService.getUserById(userId);
+                response.enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                        if(response.isSuccessful()){
+                            User user1=response.body();
+                            if(user1!=null){
+                                binding.savedJobsContainer.setVisibility(View.VISIBLE);
+                                user.setSavedJobs(user1.getSavedJobs());
+                                populateTableWithJobs(user.getSavedJobs());
+                            }else {
+                                binding.savedJobsContainer.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable throwable) {
+                        System.out.println("Error getting user");
+                        System.out.println(throwable);
+                        throwable.printStackTrace();
+                        binding.savedJobsContainer.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }).start();
+        populateTableWithJobs(user.getSavedJobs());
     }
 
     private void userFieldsAccessibility(boolean b) {
