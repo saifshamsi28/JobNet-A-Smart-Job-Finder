@@ -81,6 +81,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 //to go to job detail activity
                 Intent intent = new Intent(context, JobDetailActivity.class);
                 intent.putExtra("url", job.getUrl());
+                System.out.println("url to visit: "+job.getUrl());
                 context.startActivity(intent);
             }});
     }
@@ -112,8 +113,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                         System.out.println("Job saved successfully");
                         Toast.makeText(context,"Job saved successfully",Toast.LENGTH_SHORT).show();
                         saveJobs.setImageResource(R.drawable.job_saved_icon);
-                        for(String job:user.getSavedJobs()){
-                            System.out.println("Job id: "+job);
+                        for(Job job:user.getSavedJobs()){
+                            System.out.println("Job id: "+ job.getJobId()+" , title: "+job.getTitle());
                         }
                     }
                 }else {
