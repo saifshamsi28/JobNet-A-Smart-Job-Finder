@@ -11,7 +11,7 @@ public class User implements Serializable {
     private String email;
     private String password;
     private String phoneNumber;
-    private List<String> savedJobs=new ArrayList<>();
+    private List<Job> savedJobs=new ArrayList<>();
 
     public User(String name, String userName, String email, String password, String phoneNumber) {
         this.name = name;
@@ -69,11 +69,11 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<String> getSavedJobs() {
+    public List<Job> getSavedJobs() {
         return savedJobs;
     }
 
-    public void setSavedJobs(List<String> savedJobs) {
+    public void setSavedJobs(List<Job> savedJobs) {
         this.savedJobs = savedJobs;
     }
 }
