@@ -21,11 +21,14 @@ public interface ApiService {
     @GET("jobs")
     Call<List<Job>> searchJobs(@Query("job_title") String jobTitle);
 
-    @GET("/getJobDescription")
-    Call<Job> getJobDescription(@Query("job_url") String jobUrl);
+    @GET("url")
+    Call<Job> getJobDescription(@Query("job_url") String url);
 
     @POST("/user")
     Call<User> registerUser(@Body User user);
+
+    @GET("/user/id/{id}")
+    Call<User> getUserById(@Path("id") String id);
 
     @POST("/user/login")
     Call<User> loginUser(@Body UserLoginCredentials credentials);

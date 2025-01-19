@@ -72,7 +72,7 @@ public class JobDetailActivity extends AppCompatActivity {
         new Thread(() -> {
             Job cachedJob = jobDao.getJobByUrl(url);
             runOnUiThread(() -> {
-                if (cachedJob.getDescription().length()>250) {
+                if (cachedJob!=null && cachedJob.getDescription().length()>250) {
                     // Job found in database; display it directly
                     displayJobDetails(cachedJob);
                 } else {
@@ -85,7 +85,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
     private void fetchFromApi(String url) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.4.167:5000")
+                .baseUrl("http://10.162.1.53:5000")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
