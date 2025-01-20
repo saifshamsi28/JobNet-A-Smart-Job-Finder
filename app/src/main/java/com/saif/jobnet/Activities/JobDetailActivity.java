@@ -77,9 +77,6 @@ public class JobDetailActivity extends AppCompatActivity {
                     // Job found in database; display it directly
                     displayJobDetails(cachedJob);
                 } else {
-                    //Job not found in database; fetch from API
-//                    SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
-//                    String userId=sharedPreferences.getString("userId",null);
                     fetchFromApi(jobId,url);
                 }
             });
@@ -246,8 +243,6 @@ public class JobDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
-                        // Format and set the description
-//                        formatAndDisplayJobDescription(jobDescription);
                         System.out.println("received description: \n"+job.getDescription());
                         setDescriptioninViews(job);
                         setUpShimmerEffect();
@@ -360,7 +355,6 @@ public class JobDetailActivity extends AppCompatActivity {
 
             // Save the job in the database with the formatted description
             job.setDescription(description);
-//                        System.out.println("after update, description: "+job.getDescription());
             new Thread(() -> jobDao.updateJobDescription(job.getUrl(), description)).start();
         } else {
             displayFormattedDescription(job);
