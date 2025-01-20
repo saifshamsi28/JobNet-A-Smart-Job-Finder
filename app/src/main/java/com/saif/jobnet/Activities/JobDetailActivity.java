@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.saif.jobnet.Network.ApiService;
@@ -239,12 +240,12 @@ public class JobDetailActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<Job>() {
             @Override
-            public void onResponse(Call<Job> call, Response<Job> response) {
+            public void onResponse(@NonNull Call<Job> call, @NonNull Response<Job> response) {
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
                         System.out.println("received description: \n"+job.getDescription());
-                        setDescriptioninViews(job);
+                        setDescriptionInViews(job);
                         setUpShimmerEffect();
                     } else {
                         Log.d("API Response", "No job details found");
@@ -255,14 +256,14 @@ public class JobDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Job> call, Throwable t) {
+            public void onFailure(@NonNull Call<Job> call, @NonNull Throwable t) {
                 Log.e("API Error", "Failed to connect to Spring Boot server", t);
                 Toast.makeText(JobDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void setDescriptioninViews(Job job) {
+    private void setDescriptionInViews(Job job) {
         if(!job.getUrl().contains("indeed.com")) {
         Resources res = getResources();
             String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
