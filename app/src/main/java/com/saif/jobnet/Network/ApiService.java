@@ -21,8 +21,8 @@ public interface ApiService {
     @GET("jobs")
     Call<List<Job>> searchJobs(@Query("job_title") String jobTitle);
 
-    @GET("url")
-    Call<Job> getJobDescription(@Query("job_url") String url);
+    @GET("home/jobs/description/{id}")
+    Call<Job> getJobDescription(@Path("id") String jobId, @Query("url") String flaskUrl);
 
     @POST("/user")
     Call<User> registerUser(@Body User user);
