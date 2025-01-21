@@ -103,25 +103,16 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         ApiService apiService=retrofit.create(ApiService.class);
         SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
         String userId=sharedPreferences.getString("userId",null);
-        String tag = (String) saveJobs.getTag();
 
+        String tag = (String) saveJobs.getTag();
         SaveJobsModel saveJobsModel;
+
         if (tag.equals("0")) {
             // Job is not saved; save the job
-            saveJobs.setTag("1"); // Update the tag to reflect the new state
-            saveJobs.setImageResource(R.drawable.job_saved_icon);
             saveJobsModel=new SaveJobsModel(userId,jobId,true);
-            Toast.makeText(context, "Saving job", Toast.LENGTH_SHORT).show();
-
-            // Call backend to save job here
         } else {
             // Job is saved; unsave the job
-            saveJobs.setTag("0"); // Update the tag to reflect the new state
-            saveJobs.setImageResource(R.drawable.job_not_saved_icon);
             saveJobsModel=new SaveJobsModel(userId,jobId,false);
-            Toast.makeText(context, "Unsaving job", Toast.LENGTH_SHORT).show();
-
-            // Call backend to unsave job her
         }
 //        saveJobsModel=new SaveJobsModel(userId,jobId);
         System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
@@ -133,11 +124,13 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 if(response.isSuccessful()){
                     User user=response.body();
                     if(user!=null){
-                        System.out.println("Job saved successfully");
-                        Toast.makeText(context,"Job saved successfully",Toast.LENGTH_SHORT).show();
-                        saveJobs.setImageResource(R.drawable.job_saved_icon);
-                        for(Job job:user.getSavedJobs()){
-                            System.out.println("Job id: "+ job.getJobId()+" , title: "+job.getTitle());
+                        if (tag.equals("0")) {
+                            saveJobs.setTag("1"); // Update the tag to reflect the new state
+                            saveJobs.setImageResource(R.drawable.job_saved_icon);
+                            Toast.makeText(context, "Job saved Successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            saveJobs.setTag("0"); // Update the tag to reflect the new state
+                            saveJobs.setImageResource(R.drawable.job_not_saved_icon);
                         }
                     }
                 }else {
