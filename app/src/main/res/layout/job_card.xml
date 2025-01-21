@@ -33,6 +33,7 @@
                 android:id="@+id/save_jobs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:tag="0"
                 android:contentDescription="image for saving job"
                 android:src="@drawable/job_not_saved_icon"
                 android:layout_marginEnd="8sp"
