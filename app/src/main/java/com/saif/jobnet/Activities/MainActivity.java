@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -19,11 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.core.os.BuildCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.internal.GsonBuildConfig;
+import com.saif.jobnet.Config;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
@@ -339,8 +343,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to fetch job data from API
     private void fetchJobs(String query, String home) {
+        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(15, TimeUnit.SECONDS)
                         .readTimeout(15, TimeUnit.SECONDS)

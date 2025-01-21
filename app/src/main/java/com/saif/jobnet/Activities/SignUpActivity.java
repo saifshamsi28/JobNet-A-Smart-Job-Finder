@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.saif.jobnet.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
@@ -76,8 +77,9 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void checkUserNameAvailableOrNot(String userName) {
-        Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .client((new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
@@ -198,8 +200,9 @@ public class SignUpActivity extends AppCompatActivity {
         return true;
     }
     private void checkEmailAlreadyExist(String name, String username, String email, String password, String phoneNumber) {
+        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
@@ -245,8 +248,9 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void sendUserToBackend(String name, String username, String email, String password, String phoneNumber) {
+        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)

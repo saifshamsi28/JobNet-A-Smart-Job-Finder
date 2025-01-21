@@ -37,6 +37,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.saif.jobnet.Config;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
@@ -183,8 +184,9 @@ public class ProfileActivity extends AppCompatActivity {
                 binding.contactNumber.setText(phoneNumber);
             }
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.162.1.53:8080/")
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                     .client(new OkHttpClient.Builder()
                             .connectTimeout(60, TimeUnit.SECONDS)
                             .readTimeout(60, TimeUnit.SECONDS)
@@ -283,8 +285,9 @@ public class ProfileActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Retrofit retrofit=new Retrofit.Builder()
-                        .baseUrl("http://10.162.1.53:8080/")
+                String BASE_URL = Config.BASE_URL;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
                         .client(new OkHttpClient().newBuilder()
                                 .connectTimeout(15,TimeUnit.SECONDS)
                                 .callTimeout(15,TimeUnit.SECONDS)
@@ -491,8 +494,9 @@ public class ProfileActivity extends AppCompatActivity {
         String phoneNumber = sharedPreferences.getString("phoneNumber", null);
         user = new User(name, userName, email, newPasswordText,phoneNumber);
         user.setId(userId);
+        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient
                         .Builder().connectTimeout(10, TimeUnit.SECONDS)
                         .callTimeout(10, TimeUnit.SECONDS)

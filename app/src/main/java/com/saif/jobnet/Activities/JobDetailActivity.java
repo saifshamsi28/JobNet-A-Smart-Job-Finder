@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.saif.jobnet.Config;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
@@ -225,12 +226,13 @@ public class JobDetailActivity extends AppCompatActivity {
 //    }
 
     private void fetchFromApi(String jobId, String url) {
+        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080") // Spring Boot backend URL
+                .baseUrl(BASE_URL)  // Spring Boot backend URL
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(60, TimeUnit.SECONDS)
-                        .readTimeout(60, TimeUnit.SECONDS)
-                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .readTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(15, TimeUnit.SECONDS)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -259,6 +261,8 @@ public class JobDetailActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Job> call, @NonNull Throwable t) {
                 Log.e("API Error", "Failed to connect to Spring Boot server", t);
                 Toast.makeText(JobDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                setUpShimmerEffect();
+                finish();
             }
         });
     }
