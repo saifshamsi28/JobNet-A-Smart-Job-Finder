@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saif.jobnet.Models.Job;
@@ -88,8 +89,9 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     }
 
     private void saveJobToBackend(String jobId, ImageView saveJobs) {
-        Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient()
                         .newBuilder().connectTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
@@ -101,7 +103,27 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         ApiService apiService=retrofit.create(ApiService.class);
         SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
         String userId=sharedPreferences.getString("userId",null);
-        SaveJobsModel saveJobsModel=new SaveJobsModel(userId,jobId);
+        String tag = (String) saveJobs.getTag();
+
+        SaveJobsModel saveJobsModel;
+        if (tag.equals("0")) {
+            // Job is not saved; save the job
+            saveJobs.setTag("1"); // Update the tag to reflect the new state
+            saveJobs.setImageResource(R.drawable.job_saved_icon);
+            saveJobsModel=new SaveJobsModel(userId,jobId,true);
+            Toast.makeText(context, "Saving job", Toast.LENGTH_SHORT).show();
+
+            // Call backend to save job here
+        } else {
+            // Job is saved; unsave the job
+            saveJobs.setTag("0"); // Update the tag to reflect the new state
+            saveJobs.setImageResource(R.drawable.job_not_saved_icon);
+            saveJobsModel=new SaveJobsModel(userId,jobId,false);
+            Toast.makeText(context, "Unsaving job", Toast.LENGTH_SHORT).show();
+
+            // Call backend to unsave job her
+        }
+//        saveJobsModel=new SaveJobsModel(userId,jobId);
         System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
         Call<User> response=apiService.saveJobs(saveJobsModel);
         response.enqueue(new Callback<User>() {
