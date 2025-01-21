@@ -3,10 +3,12 @@ package com.saif.jobnet.Models;
 public class SaveJobsModel {
     private String userId;
     private String jobId;
+    private boolean wantToSave;
 
-    public SaveJobsModel(String userId, String jobId) {
+    public SaveJobsModel(String userId, String jobId, boolean wantToSave) {
         this.userId = userId;
         this.jobId = jobId;
+        this.wantToSave =wantToSave;
     }
 
     public String getUserId() {
