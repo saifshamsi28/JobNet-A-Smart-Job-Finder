@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.saif.jobnet.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 import com.saif.jobnet.Network.ApiService;
@@ -131,25 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkCredentials() {
         String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
-        String password = binding.password.getText().toString().trim();
-//        System.out.println("username or email: "+usernameOrEmail+" password: "+password);
-//
-//        boolean isUserStored = sharedPreferences.getBoolean("userStored", false);
-//        if (isUserStored) {
-//            //check the credentials with the stored credentials
-//            String storedEmail = sharedPreferences.getString("userEmail", "");
-//            String storedUserName = sharedPreferences.getString("userName", "");
-//            String storedPassword = sharedPreferences.getString("password", "");
-//            if (usernameOrEmail.equals(storedEmail) || usernameOrEmail.equals(storedUserName) && password.equals(storedPassword)) {
-//                sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
-//                System.out.println("stored email: "+storedEmail+" stored username: "+storedUserName+" stored password: "+storedPassword);
-//                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }else{
-//                binding.invalidCredentials.setVisibility(View.VISIBLE);
-//                binding.invalidCredentials.setText("Invalid username or password");
-//            }
+        String password = binding.password.getText().toString();
          {
             // Create login credentials object
             UserLoginCredentials credentials = new UserLoginCredentials();
@@ -160,8 +143,9 @@ public class LoginActivity extends AppCompatActivity {
             dialog.show();
 
             // Retrofit setup
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.162.1.53:8080")
+             String BASE_URL = Config.BASE_URL;
+             Retrofit retrofit = new Retrofit.Builder()
+                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
