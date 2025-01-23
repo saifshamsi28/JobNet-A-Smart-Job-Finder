@@ -27,9 +27,9 @@ public interface JobDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertJob(Job job);
 
-    //to update job description
-    @Query("UPDATE jobs SET description = :description WHERE url = :url")
-    void updateJobDescription(String url, String description);
+    //to update job shortDescription
+//    @Query("UPDATE jobs SET description = :description WHERE url = :url")
+//    void updateJobDescription(String url, String description);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllJobs(List<Job> jobs);

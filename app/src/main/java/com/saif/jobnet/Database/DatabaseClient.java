@@ -4,19 +4,17 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-    public class DatabaseClient {
-        private Context context;
-        private static DatabaseClient databaseClient;
-        private AppDatabase appDatabase;
+public class DatabaseClient {
+    private Context context;
+    private static DatabaseClient databaseClient;
+    private final AppDatabase appDatabase;
 
-        public DatabaseClient(Context context) {
-            this.context = context;
-            appDatabase = Room.databaseBuilder(context, AppDatabase.class, "jobs.db")
-                    .addMigrations(AppDatabase.MIGRATION_2_3) // Include the migration here
-//                    .fallbackToDestructiveMigration() // Optional: use destructive migration in development
-                    .build();
-        }
-
+    public DatabaseClient(Context context) {
+        this.context = context;
+        appDatabase = Room.databaseBuilder(context, AppDatabase.class, "jobs.db")
+                .fallbackToDestructiveMigration() // Use destructive migration to start fresh
+                .build();
+    }
 
     public static synchronized DatabaseClient getInstance(Context mCtx) {
         if (databaseClient == null) {
@@ -29,3 +27,4 @@ import androidx.room.Room;
         return appDatabase;
     }
 }
+
