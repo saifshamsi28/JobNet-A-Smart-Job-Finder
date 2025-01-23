@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -20,19 +19,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
-import androidx.core.os.BuildCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.internal.GsonBuildConfig;
-import com.saif.jobnet.Config;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
-import com.saif.jobnet.JobsAdapter;
+import com.saif.jobnet.Adapters.JobsAdapter;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityMainBinding;
@@ -112,28 +109,29 @@ public class MainActivity extends AppCompatActivity {
         int randomIndex = random.nextInt(jobTitles.size());
         Log.d("MainActivity", "Title selected: " + jobTitles.get(randomIndex));
         setShimmerEffect();
+        System.out.println("fetching this job for home: "+jobTitles.get(randomIndex));
         fetchJobs(jobTitles.get(randomIndex), "home");
         // Initialize the database
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
 
         //to check database has any item or not
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean isEmpty = jobDao.getAllJobs().isEmpty();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isEmpty) {
-                            binding.viewHistory.setVisibility(View.GONE);
-                        } else {
-                            binding.viewHistory.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                boolean isEmpty = jobDao.getAllJobs().isEmpty();
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (isEmpty) {
+//                            binding.viewHistory.setVisibility(View.GONE);
+//                        } else {
+//                            binding.viewHistory.setVisibility(View.VISIBLE);
+//                        }
+//                    }
+//                });
+//            }
+//        }).start();
 
         // Start showing titles
         displayJobTitles();
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).start();
 
-//                fetchJobs(query);
+                fetchJobs(query,"search bar");
                 return false;
             }
 
@@ -173,6 +171,21 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("source", "history button");
                 startActivity(intent);
             }
+        });
+
+        binding.bottomNavigation.setOnItemSelectedListener(item -> {
+                if (R.id.nav_home==item.getItemId()){
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else if (R.id.nav_search==item.getItemId()){
+                    Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
+                } else if (R.id.nav_saved_jobs==item.getItemId()) {
+                    Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
+                } else if (R.id.nav_profile==item.getItemId()){
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                }
+            return false;
         });
     }
 
@@ -347,13 +360,12 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(15, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
 
         ApiService apiService = retrofit.create(ApiService.class);
         Call<List<Job>> call;
@@ -365,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Job>>() {
             @Override
             public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
+//                setShimmerEffect();
                 if (response.isSuccessful()) {
                     List<Job> jobs = response.body();
                     if (jobs != null) {
@@ -372,9 +385,12 @@ public class MainActivity extends AppCompatActivity {
                         ;
                         endTime = System.currentTimeMillis();
                         Log.d("API Response", "Time taken: " + TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) + " seconds");
-                        for(Job job:jobs){
-                            System.out.println("job id: "+job.getJobId()+" , job title: "+job.getTitle()+" , job company: "+job.getCompany());
-                        }
+//                        for(Job job:jobs){
+//                            //printing all the details of jobs
+//                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
+//                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
+//                            +"\nurl: "+job.getUrl()+"\nrating: "+job.getRating()+"\nreviews: "+job.getReview());
+//                        }
                         populateTableWithJobs(jobs, query);
                     } else
                         Log.d("API Response", "No jobs found");
@@ -383,10 +399,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable t) {
-                Log.e("API Error", "Failed to connect to Flask server", t);
+                Log.e("API Error", "Failed to connect to spring boot server \n"+t);
                 setShimmerEffect();
 
-                Toast.makeText(MainActivity.this, "Failed to connect to Flask server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }
