@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home_icon"
+        android:title="Home" />
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/search_item"
+        android:iconTint="@color/black"
+        android:title="Search" />
+    <item
+        android:id="@+id/nav_saved_jobs"
+        android:icon="@drawable/job_saved_icon"
+        android:title="Saved Jobs" />
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/profile_icon"
+        android:iconTint="@color/black"
+        android:title="Profile" />
+</menu>
