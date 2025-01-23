@@ -1,4 +1,4 @@
-package com.saif.jobnet;
+package com.saif.jobnet.Utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;

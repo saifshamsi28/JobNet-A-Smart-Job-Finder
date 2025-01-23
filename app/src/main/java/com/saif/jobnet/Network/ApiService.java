@@ -5,6 +5,7 @@ import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -24,6 +25,9 @@ public interface ApiService {
     @GET("home/jobs/description/{id}")
     Call<Job> getJobDescription(@Path("id") String jobId, @Query("url") String flaskUrl);
 
+    @GET("url")
+    Call<Job> getJobDescriptionFromFlask(@Query("url") String url);
+
     @POST("/user")
     Call<User> registerUser(@Body User user);
 
@@ -40,6 +44,7 @@ public interface ApiService {
     Call<Boolean> checkEmailAlreadyExist(@Path("email") String email);
 
     @PUT("user/save-jobs")
-    Call<User> saveJobs(@Body SaveJobsModel saveJobsModel);
+    Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);
+
 
 }

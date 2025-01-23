@@ -259,6 +259,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:background="@drawable/searchview_background"
+                        android:backgroundTint="@color/colorActionBarBackground"
                         android:text="APPLY NOW" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

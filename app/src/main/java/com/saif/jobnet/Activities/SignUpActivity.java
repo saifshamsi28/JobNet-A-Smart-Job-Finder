@@ -17,11 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.saif.jobnet.Config;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
-import com.saif.jobnet.SimpleTextWatcher;
+import com.saif.jobnet.Utils.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivitySignUpBinding;
 
 import java.util.concurrent.TimeUnit;

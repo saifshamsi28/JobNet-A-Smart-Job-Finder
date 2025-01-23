@@ -22,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +36,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.saif.jobnet.Config;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
@@ -699,9 +698,9 @@ public class ProfileActivity extends AppCompatActivity {
             Linkify.addLinks(url, Linkify.WEB_URLS); // Automatically convert text to clickable link
             row.addView(url);
 
-            //to set the description
+            //to set the shortDescription
             TextView description = new TextView(this);
-            description.setText(job.getDescription());
+            description.setText(job.getShortDescription());
             description.setLayoutParams(new TableRow.LayoutParams(800, TableRow.LayoutParams.WRAP_CONTENT));
             description.setPadding(8, 8, 8, 8);
             description.setMaxLines(3);
@@ -709,7 +708,7 @@ public class ProfileActivity extends AppCompatActivity {
             description.setTextColor(Color.BLACK);
             row.addView(description);
 
-            //to set the description
+            //to set the shortDescription
             TextView jobId = new TextView(this);
             jobId.setText(job.getJobId());
             jobId.setLayoutParams(new TableRow.LayoutParams(500, TableRow.LayoutParams.WRAP_CONTENT));
@@ -722,11 +721,13 @@ public class ProfileActivity extends AppCompatActivity {
             // Adding OnClickListener to open Job Details activity
             row.setOnClickListener(v -> {
                 Intent intent = new Intent(ProfileActivity.this, JobDetailActivity.class);
+                System.out.println("job id: "+job.getJobId()+"inside onclick method and url="+job.getUrl());
+                intent.putExtra("jobId", job.getJobId());
                 intent.putExtra("jobTitle", job.getTitle());
                 intent.putExtra("company", job.getCompany());
                 intent.putExtra("location", job.getLocation());
                 intent.putExtra("salary", job.getSalary());
-                intent.putExtra("description", job.getDescription());
+                intent.putExtra("description", job.getShortDescription());
                 intent.putExtra("rating", job.getRating());
                 intent.putExtra("reviews", job.getReview());
                 intent.putExtra("url", job.getUrl());
