@@ -205,9 +205,9 @@ public class JobListActivity extends AppCompatActivity {
             Linkify.addLinks(url, Linkify.WEB_URLS); // Automatically convert text to clickable link
             row.addView(url);
 
-            //to set the description
+            //to set the shortDescription
             TextView description = new TextView(this);
-            description.setText(job.getDescription());
+            description.setText(job.getShortDescription());
             description.setLayoutParams(new TableRow.LayoutParams(800, TableRow.LayoutParams.WRAP_CONTENT));
             description.setPadding(8, 8, 8, 8);
             description.setMaxLines(3);
@@ -215,7 +215,7 @@ public class JobListActivity extends AppCompatActivity {
             description.setTextColor(Color.BLACK);
             row.addView(description);
 
-            //to set the description
+            //to set the shortDescription
             TextView jobId = new TextView(this);
             jobId.setText(job.getJobId());
             jobId.setLayoutParams(new TableRow.LayoutParams(500, TableRow.LayoutParams.WRAP_CONTENT));
@@ -232,7 +232,7 @@ public class JobListActivity extends AppCompatActivity {
                 intent.putExtra("company", job.getCompany());
                 intent.putExtra("location", job.getLocation());
                 intent.putExtra("salary", job.getSalary());
-                intent.putExtra("description", job.getDescription());
+                intent.putExtra("description", job.getShortDescription());
                 intent.putExtra("rating", job.getRating());
                 intent.putExtra("reviews", job.getReview());
                 intent.putExtra("url", job.getUrl());
@@ -302,7 +302,7 @@ public class JobListActivity extends AppCompatActivity {
                 table.addCell(new PdfPCell(new Phrase(job.getUrl())));
 
                 // Description with truncation
-                String description = job.getDescription().length() > 50 ? job.getDescription().substring(0, 50) + "..." : job.getDescription();
+                String description = job.getShortDescription().length() > 50 ? job.getShortDescription().substring(0, 50) + "..." : job.getShortDescription();
                 PdfPCell descCell = new PdfPCell(new Phrase(description));
                 table.addCell(descCell);
             }

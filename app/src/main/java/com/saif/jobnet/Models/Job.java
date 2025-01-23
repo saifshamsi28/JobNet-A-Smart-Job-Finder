@@ -56,7 +56,11 @@ public class Job {
 
     @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
     @SerializedName("description")
-    private String description;
+    private String shortDescription;
+
+    @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
+    @SerializedName("full_description")
+    private String fullDescription;
 
 
     public void setJobId(String jobId) {
@@ -87,8 +91,8 @@ public class Job {
         this.postDate = postDate;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
     public void setTitle(String title) {
@@ -142,10 +146,18 @@ public class Job {
         return postDate;
     }
 
-    public String getDescription() {
-        return description;
+    public String getShortDescription() {
+        return shortDescription;
     }
     public String getReview() {
         return review;
+    }
+
+    public String getFullDescription() {
+        return fullDescription;
+    }
+
+    public void setFullDescription(String fullDescription) {
+        this.fullDescription = fullDescription;
     }
 }

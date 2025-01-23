@@ -1,4 +1,4 @@
-package com.saif.jobnet;
+package com.saif.jobnet.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +11,24 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.R;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.JobCardBinding;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.saif.jobnet.Activities.JobDetailActivity;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +69,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         }
 
         holder.binding.salary.setText(job.getSalary());
-        holder.binding.description.setText(job.getDescription());
+        holder.binding.shortDescription.setText(job.getShortDescription());
         holder.binding.postDate.setText(job.getPostDate());
         setJobReviews(holder.binding, job.getReview());
 
@@ -116,41 +119,38 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         }
 //        saveJobsModel=new SaveJobsModel(userId,jobId);
         System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
-        Call<User> response=apiService.saveJobs(saveJobsModel);
-        response.enqueue(new Callback<User>() {
+        Call<ResponseBody> response=apiService.saveJobs(saveJobsModel);
+        response.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                System.out.println("on response "+response);
-                if(response.isSuccessful()){
-                    User user=response.body();
-                    if(user!=null){
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseMessage = response.body().string(); // Extract plain text
+                        System.out.println("responseMessage: "+responseMessage);
                         if (tag.equals("0")) {
-                            saveJobs.setTag("1"); // Update the tag to reflect the new state
+                            saveJobs.setTag("1");
                             saveJobs.setImageResource(R.drawable.job_saved_icon);
-                            Toast.makeText(context, "Job saved Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Job saved Successfully: " + responseMessage, Toast.LENGTH_SHORT).show();
                         } else {
-                            saveJobs.setTag("0"); // Update the tag to reflect the new state
+                            saveJobs.setTag("0");
                             saveJobs.setImageResource(R.drawable.job_not_saved_icon);
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                    System.out.println("Error saving job");
-                    System.out.println(response.message());
-                    Toast.makeText(context,"Error saving job",Toast.LENGTH_SHORT).show();
-                    saveJobs.setImageResource(R.drawable.job_not_saved_icon);
-                    Log.d("error",response.message());
+                } else {
+                    Toast.makeText(context, "Error saving job", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
-                System.out.println("Error saving job");
-                Toast.makeText(context,"Error saving job",Toast.LENGTH_SHORT).show();
-                saveJobs.setImageResource(R.drawable.job_not_saved_icon);
-                System.out.println(throwable);
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
+                Toast.makeText(context, "Error saving job", Toast.LENGTH_SHORT).show();
                 throwable.printStackTrace();
             }
         });
+
     }
 
     @Override

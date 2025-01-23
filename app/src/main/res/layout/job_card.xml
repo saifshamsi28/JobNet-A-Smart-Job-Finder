@@ -125,9 +125,9 @@
                 android:text="6 Lacs PA" />
         </LinearLayout>
 
-        <!--for description -->
+        <!--for shortDescription -->
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/shortDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"

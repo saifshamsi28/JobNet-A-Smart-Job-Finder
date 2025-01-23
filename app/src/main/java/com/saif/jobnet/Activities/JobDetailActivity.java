@@ -20,7 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.saif.jobnet.Config;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
@@ -75,7 +75,7 @@ public class JobDetailActivity extends AppCompatActivity {
         new Thread(() -> {
             Job cachedJob = jobDao.getJobByUrl(url);
             runOnUiThread(() -> {
-                if (cachedJob!=null && cachedJob.getDescription().length()>250) {
+                if (cachedJob!=null && cachedJob.getShortDescription().length()>250) {
                     // Job found in database; display it directly
                     displayJobDetails(cachedJob);
                 } else {
@@ -108,12 +108,12 @@ public class JobDetailActivity extends AppCompatActivity {
 //                    Job job = response.body();
 //                    if (job != null){
 //                            if(!job.getUrl().contains("indeed.com")) {
-//                                System.out.println("JobDetailActivity: description: "+job.getDescription());
+//                                System.out.println("JobDetailActivity: shortDescription: "+job.getShortDescription());
 //                                Resources res = getResources();
 //                                String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
-//                                // Format description with bullet points
-//                                String description = job.getDescription().replaceAll("\n+", "\n");
-//                                String[] contentItems = description.split("\n");
+//                                // Format shortDescription with bullet points
+//                                String shortDescription = job.getShortDescription().replaceAll("\n+", "\n");
+//                                String[] contentItems = shortDescription.split("\n");
 //
 //                                SpannableStringBuilder spannableContent = new SpannableStringBuilder();
 //                                for (String item : contentItems) {
@@ -197,16 +197,16 @@ public class JobDetailActivity extends AppCompatActivity {
 //                                binding.location.setText(job.getLocation());
 //                                binding.salary.setText(job.getSalary());
 //                                binding.descriptionContent.setText(spannableContent);
-////                        System.out.println("description: "+ spannableContent);
+////                        System.out.println("shortDescription: "+ spannableContent);
 //                                binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clickable links
 //
-//                                // Save the job in the database with the formatted description
-//                                job.setDescription(description);
-////                        System.out.println("after update, description: "+job.getDescription());
-//                                new Thread(() -> jobDao.updateJobDescription(url, description)).start();
+//                                // Save the job in the database with the formatted shortDescription
+//                                job.setShortDescription(shortDescription);
+////                        System.out.println("after update, shortDescription: "+job.getShortDescription());
+//                                new Thread(() -> jobDao.updateJobDescription(url, shortDescription)).start();
 //                            }else {
 //                                displayFormattedDescription(job);
-//                                new Thread(() -> jobDao.updateJobDescription(url, job.getDescription())).start();
+//                                new Thread(() -> jobDao.updateJobDescription(url, job.getShortDescription())).start();
 //                            }
 //                    } else {
 //                        Log.d("API Response", "No job details found");
@@ -226,34 +226,37 @@ public class JobDetailActivity extends AppCompatActivity {
 //    }
 
     private void fetchFromApi(String jobId, String url) {
-        String BASE_URL = Config.BASE_URL;
+//        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)  // Spring Boot backend URL
+                .baseUrl("http://10.162.1.53:8080/")
                 .client(new OkHttpClient.Builder()
-                        .connectTimeout(15, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
                         .build())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<Job> call = apiService.getJobDescription(jobId, url);
+        Call<Job> call = apiService.getJobDescription(jobId,url);
 
         call.enqueue(new Callback<Job>() {
             @Override
             public void onResponse(@NonNull Call<Job> call, @NonNull Response<Job> response) {
+                setUpShimmerEffect();
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
-                        System.out.println("received description: \n"+job.getDescription());
+                        System.out.println("received shortDescription: \n" + job.getShortDescription());
                         setDescriptionInViews(job);
-                        setUpShimmerEffect();
                     } else {
                         Log.d("API Response", "No job details found");
                     }
                 } else {
-                    Log.d("API Response in JobDetail", "Response not successful: " + response);
+                    Log.d("API Response in JobDetail", "Response not successful: " + response.errorBody());
+                    Toast.makeText(JobDetailActivity.this, "Failed to fetch job details", Toast.LENGTH_SHORT).show();
+                    setUpShimmerEffect();
+                    finish();
                 }
             }
 
@@ -271,8 +274,8 @@ public class JobDetailActivity extends AppCompatActivity {
         if(!job.getUrl().contains("indeed.com")) {
         Resources res = getResources();
             String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
-            // Format description with bullet points
-            String description = job.getDescription().replaceAll("\n+", "\n");
+            // Format shortDescription with bullet points
+            String description = job.getShortDescription().replaceAll("\n+", "\n");
             String[] contentItems = description.split("\n");
 
             SpannableStringBuilder spannableContent = new SpannableStringBuilder();
@@ -355,21 +358,21 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.location.setText(job.getLocation());
             binding.salary.setText(job.getSalary());
             binding.descriptionContent.setText(spannableContent);
-//                        System.out.println("description: "+ spannableContent);
+//                        System.out.println("shortDescription: "+ spannableContent);
             binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clickable links
 
-            // Save the job in the database with the formatted description
-            job.setDescription(description);
-            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), description)).start();
+            // Save the job in the database with the formatted shortDescription
+            job.setShortDescription(description);
+//            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), description)).start();
         } else {
             displayFormattedDescription(job);
-            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), job.getDescription())).start();
+//            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), job.getShortDescription())).start();
         }
     }
 
     //set up shimmer effect
     private void setUpShimmerEffect() {
-        if(binding.shimmerViewContainer.getVisibility()==View.VISIBLE){
+        if(binding.shimmerViewContainer.isShimmerStarted()){
             binding.shimmerViewContainer.setVisibility(View.GONE);
             binding.shimmerViewContainer.stopShimmer();
             binding.jobDetailsCardview.setVisibility(View.VISIBLE);
@@ -404,8 +407,8 @@ public class JobDetailActivity extends AppCompatActivity {
 
     public void displayFormattedDescription(Job job) {
         SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-        String description = job.getDescription();
-        System.out.println("JobDetailActivity: description: "+description);
+        String description = job.getShortDescription();
+        System.out.println("JobDetailActivity: shortDescription: "+description);
         String[] lines = description.split("\n");
 
         for (String line : lines) {
@@ -515,10 +518,10 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.applicants.setText("| Applicants: "+job.getApplicants().trim());
         }
 
-        // Retrieve the plain text description from the database
-        String description = job.getDescription();
+        // Retrieve the plain text shortDescription from the database
+        String description = job.getShortDescription();
 
-        // Split the description into lines to format with bullets
+        // Split the shortDescription into lines to format with bullets
         String[] contentItems = description.split("\n");
 
         // Use SpannableStringBuilder to format each line with bullets
