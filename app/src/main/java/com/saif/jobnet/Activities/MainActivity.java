@@ -34,6 +34,7 @@ import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityMainBinding;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private long endTime;
     private AppDatabase appDatabase;
     private JobDao jobDao;
+    private List<Job> savedJobs=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +183,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {
                     Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
+                    // Replace the fragment container with SavedJobsFragment
+                    SavedJobsFragment fragment = new SavedJobsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("savedJobs", (Serializable) savedJobs); // Pass the saved jobs list
+                    fragment.setArguments(bundle);
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
                 } else if (R.id.nav_profile==item.getItemId()){
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent);
@@ -192,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
     private void setNavigationDrawer() {
         binding.navigationView.setCheckedItem(R.id.home);
         binding.navigationView.bringToFront();
-
 
         // Get navigation menu and shared preferences
         Menu menu = binding.navigationView.getMenu();
@@ -410,11 +421,14 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
+        for(int i=0;i<10;i++){
+            savedJobs.add(jobs.get(i));
+        }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
         binding.recyclerViewJobs.setAdapter(jobsAdapter);
 //        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(this));
-//        new Thread(() -> jobDao.insertAllJobs(jobs)).start();
+        new Thread(() -> jobDao.insertAllJobs(jobs)).start();
     }
 
     @Override

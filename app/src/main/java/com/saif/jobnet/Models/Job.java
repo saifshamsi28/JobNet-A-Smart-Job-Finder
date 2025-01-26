@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.annotation.Annotation;
+
 @Entity(
         tableName = "jobs",
         indices = {
@@ -16,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
                 @Index(value = "url") // Index on URL for faster lookups
         }
 )
-public class Job {
+public class Job implements SerializedName{
     @PrimaryKey
     @SerializedName("id")
     @NonNull
@@ -159,5 +161,20 @@ public class Job {
 
     public void setFullDescription(String fullDescription) {
         this.fullDescription = fullDescription;
+    }
+
+    @Override
+    public String value() {
+        return "";
+    }
+
+    @Override
+    public String[] alternate() {
+        return new String[0];
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return null;
     }
 }
