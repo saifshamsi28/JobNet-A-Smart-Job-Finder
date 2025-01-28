@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.User;
 
 import java.util.List;
 
@@ -29,12 +30,25 @@ public interface JobDao {
 
     //to update job shortDescription
 //    @Query("UPDATE jobs SET description = :description WHERE url = :url")
-//    void updateJobDescription(String url, String description);
+//    void updateJobDescription(Job url, Job description);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllJobs(List<Job> jobs);
 
     @Query("DELETE FROM jobs")
     void deleteAllJobs();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertOrUpdateUser(User user);
+
+    @Query("SELECT * FROM jobs WHERE jobId = :id")
+    Job getJobById(String id);
+
+    @Query("SELECT * FROM user")
+    User getCurrentUser();
+
+    // Clear all user data (e.g., during logout)
+    @Query("DELETE FROM user")
+    void clearUsers();
 
 }
