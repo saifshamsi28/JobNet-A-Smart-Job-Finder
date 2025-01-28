@@ -124,19 +124,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updateUserNameOrEmail() {
-//        Dialog dialog = new Dialog(ProfileActivity.this);
-//        dialog.setContentView(R.layout.update_profile_layout);
-//        if (dialog.getWindow() != null) {
-//            dialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
-//            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-//        }
-
-//        EditText nameInput = dialog.findViewById(R.id.dialog_name_input);
-//        nameInput.setText(binding.profileName.getText().toString().trim());
-//        EditText emailInput = dialog.findViewById(R.id.dialog_email_input);
-//        emailInput.setText(binding.userEmail.getText().toString().trim());
-//        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        // check if email is valid
         String name=binding.profileName.getText().toString().trim();
         String email=binding.userEmail.getText().toString().trim();
         String phoneNumber=binding.contactNumber.getText().toString().trim();

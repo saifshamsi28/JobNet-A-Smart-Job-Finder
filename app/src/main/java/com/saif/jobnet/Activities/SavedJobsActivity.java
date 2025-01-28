@@ -37,6 +37,16 @@ public class SavedJobsActivity extends AppCompatActivity {
             @Override
             public void run() {
                 currentUser=jobDao.getCurrentUser();
+                if(currentUser==null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(SavedJobsActivity.this, "Please login first", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(SavedJobsActivity.this, LoginActivity.class));
+                            finish();
+                        }
+                    });
+                }
                 System.out.println("current user: "+currentUser.getSavedJobs().size());
                 for (int i = 0; i < currentUser.getSavedJobs().size(); i++) {
                     System.out.println("saved job title: "+currentUser.getSavedJobs().get(i).getTitle());
