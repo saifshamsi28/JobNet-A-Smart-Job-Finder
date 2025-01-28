@@ -184,15 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {
                     Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
                     // Replace the fragment container with SavedJobsFragment
-                    SavedJobsFragment fragment = new SavedJobsFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("savedJobs", (Serializable) savedJobs); // Pass the saved jobs list
-                    fragment.setArguments(bundle);
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
                 } else if (R.id.nav_profile==item.getItemId()){
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent);
@@ -209,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
         Menu menu = binding.navigationView.getMenu();
         SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-        //get header menu and set the name and email from stored preferences
 
 
         // Show or hide Login and Profile items based on login status
