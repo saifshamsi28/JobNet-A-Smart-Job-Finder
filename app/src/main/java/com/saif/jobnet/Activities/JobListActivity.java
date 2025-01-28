@@ -79,7 +79,7 @@ public class JobListActivity extends AppCompatActivity {
         new Thread(() -> {
 //            if ("history button".equals(source)) {
 
-                jobs=jobDao.getAllJobs();
+                jobs =jobDao.getAllJobs();
 //            } else {
 //                //first fetch from database if not then request through retrofit
 //                jobs = jobDao.getJobsByTitle(searchedTitle);
@@ -348,7 +348,7 @@ public class JobListActivity extends AppCompatActivity {
 //
 //            // Define column widths
 //            int[] columnWidths = {50, 120, 120, 120, 100, 80, 100, 160,200}; // Adjust widths as needed
-//            String[] headers = {"S.No", "Job Title", "Company", "Location", "Salary", "Rating", "Reviews", "Post Date", "URL"};
+//            Job[] headers = {"S.No", "Job Title", "Company", "Location", "Salary", "Rating", "Reviews", "Post Date", "URL"};
 //
 //            paint.setTextSize(14);
 //            paint.setFakeBoldText(true);
@@ -371,12 +371,12 @@ public class JobListActivity extends AppCompatActivity {
 //                int maxRowHeight = 0;
 //
 //                // Draw Serial Number
-//                canvas.drawText(String.valueOf(serialNumber), x, y, paint);
+//                canvas.drawText(Job.valueOf(serialNumber), x, y, paint);
 //                x += columnWidths[0];
 //
 //                // Job Title (Word wrapping)
-//                List<String> titleLines = breakTextIntoLines(job.getTitle(), paint, columnWidths[1]);
-//                for (String line : titleLines) {
+//                List<Job> titleLines = breakTextIntoLines(job.getTitle(), paint, columnWidths[1]);
+//                for (Job line : titleLines) {
 //                    canvas.drawText(line, x, y, paint);
 //                    y += 20; // Line spacing
 //                }
@@ -385,8 +385,8 @@ public class JobListActivity extends AppCompatActivity {
 //                y = startY; // Reset Y for alignment
 //
 //                // Company (Word wrapping)
-//                List<String> companyLines = breakTextIntoLines(job.getCompany(), paint, columnWidths[2]);
-//                for (String line : companyLines) {
+//                List<Job> companyLines = breakTextIntoLines(job.getCompany(), paint, columnWidths[2]);
+//                for (Job line : companyLines) {
 //                    canvas.drawText(line, x, y, paint);
 //                    y += 20;
 //                }
@@ -395,8 +395,8 @@ public class JobListActivity extends AppCompatActivity {
 //                y = startY;
 //
 //                // Location (Word wrapping)
-//                List<String> locationLines = breakTextIntoLines(job.getLocation(), paint, columnWidths[3]);
-//                for (String line : locationLines) {
+//                List<Job> locationLines = breakTextIntoLines(job.getLocation(), paint, columnWidths[3]);
+//                for (Job line : locationLines) {
 //                    canvas.drawText(line, x, y, paint);
 //                    y += 20;
 //                }
@@ -405,8 +405,8 @@ public class JobListActivity extends AppCompatActivity {
 //                y = startY;
 //
 //                // Salary
-//                List<String> salaryLines = breakTextIntoLines(job.getSalary(), paint, columnWidths[4]);
-//                for (String line : salaryLines) {
+//                List<Job> salaryLines = breakTextIntoLines(job.getSalary(), paint, columnWidths[4]);
+//                for (Job line : salaryLines) {
 //                    canvas.drawText(line, x, y, paint);
 //                    y += 20;
 //                }
@@ -415,11 +415,11 @@ public class JobListActivity extends AppCompatActivity {
 //                y = startY;
 //
 //                // Rating
-//                canvas.drawText(String.valueOf(job.getRating()), x, y, paint);
+//                canvas.drawText(Job.valueOf(job.getRating()), x, y, paint);
 //                x += columnWidths[5];
 //
 //                // Reviews
-//                canvas.drawText(String.valueOf(job.getReview()), x, y, paint);
+//                canvas.drawText(Job.valueOf(job.getReview()), x, y, paint);
 //                x += columnWidths[6];
 //
 //                // Post Date
@@ -427,7 +427,7 @@ public class JobListActivity extends AppCompatActivity {
 //                x += columnWidths[7];
 //
 //                // URL (truncate if too long)
-//                String url = job.getUrl();
+//                Job url = job.getUrl();
 //                if (paint.measureText(url) > columnWidths[7]) {
 //                    url = url.substring(0, 30) + "...";
 //                }
@@ -473,12 +473,12 @@ public class JobListActivity extends AppCompatActivity {
 //
 //
 //    // Break text into lines, keeping whole words
-//    private List<String> breakTextIntoLines(String text, Paint paint, int maxWidth) {
-//        List<String> lines = new ArrayList<>();
-//        String[] words = text.split(" ");
+//    private List<Job> breakTextIntoLines(Job text, Paint paint, int maxWidth) {
+//        List<Job> lines = new ArrayList<>();
+//        Job[] words = text.split(" ");
 //        StringBuilder line = new StringBuilder();
 //
-//        for (String word : words) {
+//        for (Job word : words) {
 //            if (paint.measureText(line.toString() + " " + word) > maxWidth) {
 //                lines.add(line.toString());
 //                line = new StringBuilder(word);

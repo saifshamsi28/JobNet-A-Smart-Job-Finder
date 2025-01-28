@@ -20,10 +20,10 @@ public interface ApiService {
     Call<List<Job>> showJobs();
 
     @GET("jobs")
-    Call<List<Job>> searchJobs(@Query("job_title") String jobTitle);
+    Call<List<Job>> searchJobs(@Query("job_title") String stringTitle);
 
     @GET("home/jobs/description/{id}")
-    Call<Job> getJobDescription(@Path("id") String jobId, @Query("url") String flaskUrl);
+    Call<Job> getJobDescription(@Path("id") String stringId, @Query("url") String flaskUrl);
 
     @GET("url")
     Call<Job> getJobDescriptionFromFlask(@Query("url") String url);

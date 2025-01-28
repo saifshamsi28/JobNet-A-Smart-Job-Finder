@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -24,17 +25,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.navigation.NavigationView;
+import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
-import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Adapters.JobsAdapter;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityMainBinding;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private static final float END_SCALE = 0.7f;
     private ActivityMainBinding binding;
     private SearchView searchView;
-    private final ArrayList<String> jobTitles = new ArrayList<>();
+    private final ArrayList<String> stringTitles = new ArrayList<>();
     ProgressDialog progressDialog;
     private long startTime;
     private long endTime;
     private AppDatabase appDatabase;
     private JobDao jobDao;
-    private List<Job> savedJobs=new ArrayList<>();
+    private List<Job> savedJobs =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,18 +101,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //setting up different job titles
-        Collections.addAll(jobTitles, "Web Developer", "Android Developer", "Java Developer",
+        Collections.addAll(stringTitles, "Web Developer", "Android Developer", "Java Developer",
                 "Python Developer", "Flutter Developer", "IOS Developer", "Data Scientist", "Data Analyst", "Data Engineer"
                 , "Front-end Developer", "Back-end Developer");
 
 
         //to select random title from list
         Random random = new Random();
-        int randomIndex = random.nextInt(jobTitles.size());
-        Log.d("MainActivity", "Title selected: " + jobTitles.get(randomIndex));
+        int randomIndex = random.nextInt(stringTitles.size());
+        Log.d("MainActivity", "Title selected: " + stringTitles.get(randomIndex));
         setShimmerEffect();
-        System.out.println("fetching this job for home: "+jobTitles.get(randomIndex));
-        fetchJobs(jobTitles.get(randomIndex), "home");
+        System.out.println("fetching this job for home: "+ stringTitles.get(randomIndex));
+        fetchJobs(stringTitles.get(randomIndex), "home");
         // Initialize the database
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {
                     Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
                     // Replace the fragment container with SavedJobsFragment
+                    Intent intent = new Intent(MainActivity.this, SavedJobsActivity.class);
+                    intent.putExtra("source", "bottom navigation");
+                    startActivity(intent);
                 } else if (R.id.nav_profile==item.getItemId()){
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent);
@@ -288,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayJobTitles() {
         new Thread(() -> {
             while (true) {
-                for (String title : jobTitles) {
+                for (String title : stringTitles) {
                     // Build the title character by character
                     StringBuilder displayedTitle = new StringBuilder("Search ");
                     // Create a SpannableString for styling

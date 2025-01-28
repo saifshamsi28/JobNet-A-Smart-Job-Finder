@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">JobNet</string>
+    <string name="app_version">1.0</string>
     <string name="app_slogan">A Smart Job Finder</string>
     <string name="example_name">Saif Shamsi</string>
     <string name="example_email">Example@gmail.com</string>

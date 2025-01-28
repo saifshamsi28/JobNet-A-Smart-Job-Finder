@@ -1,18 +1,45 @@
 package com.saif.jobnet.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+
+import com.saif.jobnet.Utils.Converters;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User implements Serializable {
-    private String id;
+@Entity(tableName = "user")
+public class User {
+    @PrimaryKey
+    @NonNull
+    private String id; // Same as the backend-provided ID
+
     private String name;
     private String userName;
     private String email;
     private String password;
     private String phoneNumber;
-    private List<Job> savedJobs=new ArrayList<>();
 
+    @TypeConverters(Converters.class) // Convert List<Job> to a storable format
+    private List<Job> savedJobs = new ArrayList<>();
+
+    // Constructor for Room
+    public User(@NonNull String id, String name, String userName, String email, String password, String phoneNumber) {
+        this.id = id;
+        this.name = name;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
+
+    // Constructor for new users (e.g., registration)
+    @Ignore
     public User(String name, String userName, String email, String password, String phoneNumber) {
         this.name = name;
         this.userName = userName;
@@ -21,11 +48,13 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    // Getters and Setters
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -77,4 +106,3 @@ public class User implements Serializable {
         this.savedJobs = savedJobs;
     }
 }
-

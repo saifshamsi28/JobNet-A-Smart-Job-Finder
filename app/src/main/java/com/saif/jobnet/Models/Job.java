@@ -1,5 +1,8 @@
 package com.saif.jobnet.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -8,17 +11,15 @@ import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.lang.annotation.Annotation;
-
 @Entity(
         tableName = "jobs",
         indices = {
                 @Index(value = "title"), // Index on title for faster searches
-                @Index(value = "jobId", unique = true), // Unique index on jobId
+                @Index(value = "jobId", unique = true), // Unique index on stringId
                 @Index(value = "url") // Index on URL for faster lookups
         }
 )
-public class Job implements SerializedName{
+public class Job implements Parcelable {
     @PrimaryKey
     @SerializedName("id")
     @NonNull
@@ -64,9 +65,63 @@ public class Job implements SerializedName{
     @SerializedName("full_description")
     private String fullDescription;
 
+    // Constructor
+    public Job() {}
 
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
+    // Parcelable implementation
+    protected Job(Parcel in) {
+        jobId = in.readString();
+        title = in.readString();
+        company = in.readString();
+        location = in.readString();
+        salary = in.readString();
+        url = in.readString();
+        rating = in.readString();
+        review = in.readString();
+        postDate = in.readString();
+        openings = in.readString();
+        applicants = in.readString();
+        shortDescription = in.readString();
+        fullDescription = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(jobId);
+        dest.writeString(title);
+        dest.writeString(company);
+        dest.writeString(location);
+        dest.writeString(salary);
+        dest.writeString(url);
+        dest.writeString(rating);
+        dest.writeString(review);
+        dest.writeString(postDate);
+        dest.writeString(openings);
+        dest.writeString(applicants);
+        dest.writeString(shortDescription);
+        dest.writeString(fullDescription);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Job> CREATOR = new Creator<Job>() {
+        @Override
+        public Job createFromParcel(Parcel in) {
+            return new Job(in);
+        }
+
+        @Override
+        public Job[] newArray(int size) {
+            return new Job[size];
+        }
+    };
+
+
+    public void setJobId(String stringId) {
+        this.jobId = stringId;
     }
 
     public void setLocation(String location) {
@@ -161,20 +216,5 @@ public class Job implements SerializedName{
 
     public void setFullDescription(String fullDescription) {
         this.fullDescription = fullDescription;
-    }
-
-    @Override
-    public String value() {
-        return "";
-    }
-
-    @Override
-    public String[] alternate() {
-        return new String[0];
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return null;
     }
 }

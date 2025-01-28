@@ -14,7 +14,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
+import com.saif.jobnet.Database.AppDatabase;
+import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
@@ -33,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isPasswordVisible = false; // Track visibility state
     ActivityLoginBinding binding;
     SharedPreferences sharedPreferences;
+    private AppDatabase appDatabase;
+    private JobDao jobDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
+        appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
+        jobDao=appDatabase.jobDao();
+
 
         //to check user is registered or not
         binding.signupText.setVisibility(View.VISIBLE);
@@ -168,6 +177,7 @@ public class LoginActivity extends AppCompatActivity {
                             editor.putString("phoneNumber", user.getPhoneNumber());
                             editor.putString("password", user.getPassword());
                             editor.putBoolean("userStored", true);
+                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
                             editor.apply();
                             dialog.dismiss();
                             redirectToProfile(user);
@@ -220,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void redirectToProfile(User user) {
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-        intent.putExtra("user", user);
+//        intent.putExtra("user", user);
         //store the user details in shared prefs
         sharedPreferences.edit().putString("userId", user.getId()).apply();
         sharedPreferences.edit().putString("name", user.getName()).apply();

@@ -3,7 +3,6 @@ package com.saif.jobnet.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.SaveJobsModel;
-import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
@@ -84,9 +82,9 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             public void onClick(View v) {
                 //to go to job detail activity
                 Intent intent = new Intent(context, JobDetailActivity.class);
-                intent.putExtra("jobId", job.getJobId());
+                intent.putExtra("stringId", job.getJobId());
                 intent.putExtra("url", job.getUrl());
-                System.out.println("url to visit: "+job.getUrl());
+                System.out.println("url to visit: "+ job.getUrl());
                 context.startActivity(intent);
             }});
     }
@@ -112,12 +110,12 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
         if (tag.equals("0")) {
             // Job is not saved; save the job
-            saveJobsModel=new SaveJobsModel(userId,jobId,true);
+            saveJobsModel=new SaveJobsModel(userId,jobId ,true);
         } else {
             // Job is saved; unsave the job
-            saveJobsModel=new SaveJobsModel(userId,jobId,false);
+            saveJobsModel=new SaveJobsModel(userId, jobId,false);
         }
-//        saveJobsModel=new SaveJobsModel(userId,jobId);
+//        saveJobsModel=new SaveJobsModel(userId,stringId);
         System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
         Call<ResponseBody> response=apiService.saveJobs(saveJobsModel);
         response.enqueue(new Callback<ResponseBody>() {
@@ -130,7 +128,12 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                         if (tag.equals("0")) {
                             saveJobs.setTag("1");
                             saveJobs.setImageResource(R.drawable.job_saved_icon);
-                            Toast.makeText(context, "Job saved Successfully: " + responseMessage, Toast.LENGTH_SHORT).show();
+
+                            //split the response by title
+                            String[] parts = responseMessage.split("title:");
+                            System.out.println("responseTitle: "+parts[1]);
+
+                            Toast.makeText(context, "Job saved Successfully: " + parts[1], Toast.LENGTH_SHORT).show();
                         } else {
                             saveJobs.setTag("0");
                             saveJobs.setImageResource(R.drawable.job_not_saved_icon);
@@ -141,6 +144,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                     }
                 } else {
                     Toast.makeText(context, "Error saving job", Toast.LENGTH_SHORT).show();
+                    System.out.println("response: "+ response);
                 }
             }
 

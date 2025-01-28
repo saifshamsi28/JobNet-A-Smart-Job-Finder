@@ -20,11 +20,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
-import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityJobDetailBinding;
@@ -56,11 +56,11 @@ public class JobDetailActivity extends AppCompatActivity {
         setUpShimmerEffect();
 
         Intent intent = getIntent();
-        String jobId = intent.getStringExtra("jobId");
+        String stringId = intent.getStringExtra("stringId");
         String url = intent.getStringExtra("url");
 
         Log.d("JobDetailActivity", "Received URL: calling fetchFullDetails");
-        fetchFullDetails(jobId,url);
+        fetchFullDetails(stringId,url);
 
         binding.applyNow.setOnClickListener(v -> {
             //to open the url in browser
@@ -71,21 +71,21 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
 
-    private void fetchFullDetails(String jobId, String url) {
+    private void fetchFullDetails(String stringId, String url) {
         new Thread(() -> {
             Job cachedJob = jobDao.getJobByUrl(url);
             runOnUiThread(() -> {
-                if (cachedJob!=null && cachedJob.getShortDescription().length()>250) {
+                if (cachedJob !=null && cachedJob.getShortDescription().length()>250) {
                     // Job found in database; display it directly
                     displayJobDetails(cachedJob);
                 } else {
-                    fetchFromApi(jobId,url);
+                    fetchFromApi(stringId,url);
                 }
             });
         }).start();
     }
 
-//    private void fetchFromApi(String url) {
+//    private void fetchFromApi(Job url) {
 //        Retrofit retrofit = new Retrofit.Builder()
 //                .baseUrl("http://10.162.1.53:5000")
 //                .client(new OkHttpClient.Builder()
@@ -110,16 +110,16 @@ public class JobDetailActivity extends AppCompatActivity {
 //                            if(!job.getUrl().contains("indeed.com")) {
 //                                System.out.println("JobDetailActivity: shortDescription: "+job.getShortDescription());
 //                                Resources res = getResources();
-//                                String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
+//                                Job[] headingsArray = res.getStringArray(R.array.job_heading_terms);
 //                                // Format shortDescription with bullet points
-//                                String shortDescription = job.getShortDescription().replaceAll("\n+", "\n");
-//                                String[] contentItems = shortDescription.split("\n");
+//                                Job shortDescription = job.getShortDescription().replaceAll("\n+", "\n");
+//                                Job[] contentItems = shortDescription.split("\n");
 //
 //                                SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-//                                for (String item : contentItems) {
+//                                for (Job item : contentItems) {
 //                                    item = item.trim(); // Trim each item for cleaner formatting
 //                                    boolean isHeading = false;
-//                                    for (String heading : headingsArray) {
+//                                    for (Job heading : headingsArray) {
 //                                        if (item.length() < 25 && item.contains(heading)) {
 //                                            isHeading = true;
 //                                            break;
@@ -136,9 +136,9 @@ public class JobDetailActivity extends AppCompatActivity {
 //
 //                                    // Check if the line contains a heading (e.g., "Key Skills:", "Experience:", etc.)
 //                                    if (item.contains(":") && !item.contains("http")) {
-//                                        String[] parts = item.split(":", 2);
-//                                        String heading = parts[0] + ":";
-//                                        String content = parts.length > 1 ? parts[1] : "";
+//                                        Job[] parts = item.split(":", 2);
+//                                        Job heading = parts[0] + ":";
+//                                        Job content = parts.length > 1 ? parts[1] : "";
 //
 //                                        // Apply bold and larger text to headings
 //                                        SpannableString headingSpannable = new SpannableString(heading);
@@ -161,7 +161,7 @@ public class JobDetailActivity extends AppCompatActivity {
 //                               setUpShimmerEffect();
 //
 //                                // Set formatted text to TextView and save it in database
-//                                String rating = job.getRating();
+//                                Job rating = job.getRating();
 //                                if (rating == null || rating.equals("null")) {
 //                                    binding.jobRating.setVisibility(View.GONE);
 //                                    binding.ratingImg.setVisibility(View.GONE);
@@ -173,7 +173,7 @@ public class JobDetailActivity extends AppCompatActivity {
 //                                //to set reviews
 //                                setJobReviews(job.getReview());
 //
-//                                String openings = job.getOpenings();
+//                                Job openings = job.getOpenings();
 //                                if (openings == null || job.getOpenings().equals("N/A")) {
 //                                    binding.openings.setVisibility(View.GONE);
 //                                    binding.openingsLogo.setVisibility(View.GONE);
@@ -182,7 +182,7 @@ public class JobDetailActivity extends AppCompatActivity {
 //                                    binding.openingsLogo.setVisibility(View.VISIBLE);
 //                                    binding.openings.setText("Openings: " + job.getOpenings().trim());
 //                                }
-//                                String applicants = job.getApplicants();
+//                                Job applicants = job.getApplicants();
 //                                if (applicants == null || job.getApplicants().equals("N/A")) {
 //                                    binding.applicants.setVisibility(View.GONE);
 //                                    binding.applicantsLogo.setVisibility(View.GONE);
@@ -225,7 +225,7 @@ public class JobDetailActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private void fetchFromApi(String jobId, String url) {
+    private void fetchFromApi(String stringId, String url) {
         String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -238,7 +238,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<Job> call = apiService.getJobDescription(jobId,url);
+        Call<Job> call = apiService.getJobDescription(stringId,url);
 
         call.enqueue(new Callback<Job>() {
             @Override
@@ -430,7 +430,7 @@ public class JobDetailActivity extends AppCompatActivity {
         }
 
         binding.descriptionContent.setText(spannableContent);
-        binding.postDate.setText("Posted: "+job.getPostDate().trim());
+        binding.postDate.setText("Posted: "+ job.getPostDate().trim());
         binding.jobTitle.setText(job.getTitle());
         binding.companyName.setText(job.getCompany());
         binding.location.setText(job.getLocation());
@@ -468,7 +468,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
     // Helper method to display job details from the database
     private void displayJobDetails(Job job) {
-        if(job==null){
+        if(job ==null){
             Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -479,7 +479,7 @@ public class JobDetailActivity extends AppCompatActivity {
         Resources res = getResources();
         String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
         setUpShimmerEffect();
-        String rating=job.getRating();
+        String rating= job.getRating();
         System.out.println("rating : "+rating);
         if (rating == null || rating.equals("N/A")) {
             binding.jobRating.setVisibility(View.GONE);
@@ -499,23 +499,23 @@ public class JobDetailActivity extends AppCompatActivity {
         spannableString.setSpan(Color.BLACK, 0, spannableString.length(), 0);
         binding.postDate.setText("Posted: "+spannableString);
 
-        String openings=job.getOpenings();
+        String openings= job.getOpenings();
         if(openings==null || job.getOpenings().equals("N/A")){
             binding.openings.setVisibility(View.GONE);
             binding.openingsLogo.setVisibility(View.GONE);
         }else {
             binding.openings.setVisibility(View.VISIBLE);
             binding.openingsLogo.setVisibility(View.VISIBLE);
-            binding.openings.setText("| Openings: "+job.getOpenings().trim());
+            binding.openings.setText("| Openings: "+ job.getOpenings().trim());
         }
-        String applicants=job.getApplicants();
+        String applicants= job.getApplicants();
         if(applicants==null || job.getApplicants().equals("N/A")){
             binding.applicants.setVisibility(View.GONE);
             binding.applicantsLogo.setVisibility(View.GONE);
         }else {
             binding.applicants.setVisibility(View.VISIBLE);
             binding.applicantsLogo.setVisibility(View.VISIBLE);
-            binding.applicants.setText("| Applicants: "+job.getApplicants().trim());
+            binding.applicants.setText("| Applicants: "+ job.getApplicants().trim());
         }
 
         // Retrieve the plain text shortDescription from the database
@@ -559,7 +559,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 // to make the link clickable
                 SpannableString clickableLink = new SpannableString(item);
                 clickableLink.setSpan(new URLSpan(item), 0, clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                //parsing string to url
+                //parsing job to url
 
                 Linkify.addLinks(binding.descriptionContent, Linkify.WEB_URLS);
                 spannableContent.append(clickableLink).append("\n");

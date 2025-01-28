@@ -36,8 +36,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
@@ -721,8 +721,8 @@ public class ProfileActivity extends AppCompatActivity {
             // Adding OnClickListener to open Job Details activity
             row.setOnClickListener(v -> {
                 Intent intent = new Intent(ProfileActivity.this, JobDetailActivity.class);
-                System.out.println("job id: "+job.getJobId()+"inside onclick method and url="+job.getUrl());
-                intent.putExtra("jobId", job.getJobId());
+                System.out.println("job id: "+ job.getJobId()+"inside onclick method and url="+ job.getUrl());
+                intent.putExtra("stringId", job.getJobId());
                 intent.putExtra("jobTitle", job.getTitle());
                 intent.putExtra("company", job.getCompany());
                 intent.putExtra("location", job.getLocation());
