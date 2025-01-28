@@ -12,8 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saif.jobnet.Database.AppDatabase;
+import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.SaveJobsModel;
+import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
@@ -37,10 +41,21 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
     private final List<Job> jobList;
     private final Context context;
+    private AppDatabase appDatabase;
+    private JobDao jobDao;
+    private User currentUser;
 
     public JobsAdapter(Context context, List<Job> jobList) {
         this.context = context;
         this.jobList = jobList;
+        appDatabase= DatabaseClient.getInstance(context).getAppDatabase();
+        jobDao = appDatabase.jobDao();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                currentUser = jobDao.getCurrentUser();
+            }
+        }).start();
     }
 
     @NonNull
@@ -74,7 +89,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.saveJobs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveJobToBackend(job.getJobId(),holder.binding.saveJobs);
+                saveJobToBackend(job,holder.binding.saveJobs);
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +104,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             }});
     }
 
-    private void saveJobToBackend(String jobId, ImageView saveJobs) {
+    private void saveJobToBackend(Job job, ImageView saveJobs) {
         String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -103,17 +118,16 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
         ApiService apiService=retrofit.create(ApiService.class);
         SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
-        String userId=sharedPreferences.getString("userId",null);
-
+        String userId= currentUser.getId();
         String tag = (String) saveJobs.getTag();
         SaveJobsModel saveJobsModel;
 
         if (tag.equals("0")) {
             // Job is not saved; save the job
-            saveJobsModel=new SaveJobsModel(userId,jobId ,true);
+            saveJobsModel=new SaveJobsModel(userId, job.getJobId(),true);
         } else {
             // Job is saved; unsave the job
-            saveJobsModel=new SaveJobsModel(userId, jobId,false);
+            saveJobsModel=new SaveJobsModel(userId, job.getJobId(), false);
         }
 //        saveJobsModel=new SaveJobsModel(userId,stringId);
         System.out.println("before request: job id: "+saveJobsModel.getJobId()+" , user id: "+saveJobsModel.getUserId());
@@ -125,18 +139,25 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                     try {
                         String responseMessage = response.body().string(); // Extract plain text
                         System.out.println("responseMessage: "+responseMessage);
-                        if (tag.equals("0")) {
+                        //split the response by title
+                        String[] parts = responseMessage.split("title:");
+                        System.out.println("responseTitle: "+parts[1]);
+                        if(responseMessage.contains("saved")){
+                            Toast.makeText(context, "Successfully saved the job: " + parts[1], Toast.LENGTH_SHORT).show();
                             saveJobs.setTag("1");
                             saveJobs.setImageResource(R.drawable.job_saved_icon);
-
-                            //split the response by title
-                            String[] parts = responseMessage.split("title:");
-                            System.out.println("responseTitle: "+parts[1]);
-
-                            Toast.makeText(context, "Job saved Successfully: " + parts[1], Toast.LENGTH_SHORT).show();
-                        } else {
+                            //save job in user in room database
+                            currentUser.getSavedJobs().add(job);
+                            currentUser.setSavedJobs(currentUser.getSavedJobs());
+                            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
+                        }else {
                             saveJobs.setTag("0");
                             saveJobs.setImageResource(R.drawable.job_not_saved_icon);
+                            Toast.makeText(context, "Successfully removed the job: " + parts[1], Toast.LENGTH_SHORT).show();
+                            //remove job from user in room database
+                            currentUser.getSavedJobs().remove(job);
+                            currentUser.setSavedJobs(currentUser.getSavedJobs());
+                            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -147,7 +168,6 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                     System.out.println("response: "+ response);
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                 Toast.makeText(context, "Error saving job", Toast.LENGTH_SHORT).show();
