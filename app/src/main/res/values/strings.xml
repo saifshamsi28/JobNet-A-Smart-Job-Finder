@@ -28,7 +28,8 @@
     <!-- for storing different job title like java developer, web developer, android developer -->
     <string-array name="job_titles">
         "Web Developer", "Android Developer", "Java Developer",
-        "Python Developer", "Flutter Developer", "IOS Developer", "Data Scientist", "Data Analyst", "Data Engineer"
+        "Python Developer", "Flutter Developer", "IOS Developer", "Data Scientist", "Data Analyst",
+        "Data Engineer"
         , "Front-end Developer", "Back-end Developer"
     </string-array>
 

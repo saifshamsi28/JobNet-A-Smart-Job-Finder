@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16sp"
+            android:padding="8sp"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,14 +39,15 @@
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:padding="8sp"
-                    android:text="Android Developer" />
+                    android:text="Android Developer"
+                    android:textColor="@color/colorActionBarBackground"/>
 
-                <ImageView
-                    android:id="@+id/rating_img"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="5dp"
-                    android:src="@drawable/rating_img" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/rating_img"-->
+<!--                    android:layout_width="24dp"-->
+<!--                    android:layout_height="24dp"-->
+<!--                    android:layout_marginEnd="5dp"-->
+<!--                    android:src="@drawable/rating_img" />-->
 
                 <TextView
                     android:id="@+id/job_rating"
@@ -54,7 +55,9 @@
                     android:layout_height="wrap_content"
                     android:text="2.3"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/yellow"
+                    app:drawableStartCompat="@drawable/rate_icon" />
             </LinearLayout>
 
 
@@ -62,19 +65,41 @@
                 android:id="@+id/company_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8sp"
+                android:padding="3dp"
                 android:textSize="16sp"
                 android:text="Microsoft"
                 />
 
-            <TextView
-                android:id="@+id/location"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8sp"
-                android:text="Remote"
-                android:textSize="16sp"
-                app:drawableStartCompat="@drawable/location_img" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingEnd="3dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:layout_weight="1"
+                    android:text="Remote"
+                    android:textSize="16sp"
+                    android:maxLines="3"
+                    app:drawableStartCompat="@drawable/location_img" />
+                <TextView
+                    android:id="@+id/salary"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="5 lpa"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:maxLines="3"
+                    android:paddingEnd="3dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    app:drawableStartCompat="@drawable/rupees_img" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
