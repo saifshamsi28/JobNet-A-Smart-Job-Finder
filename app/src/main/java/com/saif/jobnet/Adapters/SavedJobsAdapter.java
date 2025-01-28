@@ -8,34 +8,44 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.JobCardBinding;
 import com.saif.jobnet.databinding.SavedJobsLayoutBinding;
 
+import java.util.List;
+
 public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobViewHolder>{
     private Context context;
+    private List<Job> savedJobs;
 
-    public SavedJobsAdapter() {
+    public SavedJobsAdapter(Context context,List<Job> savedJobs) {
+        this.savedJobs = savedJobs;
+        System.out.println("in saved jobs adapter constructor, saved jobs size: "+savedJobs.size());
+        this.context = context;
     }
 
     @NonNull
     @Override
     public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_jobs_layout,parent,false);
+        View view= LayoutInflater.from(context).inflate(R.layout.saved_jobs_layout,parent,false);
         return new JobViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
-        holder.binding.jobTitle.setText("Job Title");
-        holder.binding.companyName.setText("Company Name");
-        holder.binding.location.setText("Location");
-        holder.binding.salary.setText("Salary");
+        Job job=savedJobs.get(position);
+        holder.binding.jobTitle.setText(job.getTitle());
+        holder.binding.companyName.setText(job.getCompany());
+        holder.binding.location.setText(job.getLocation());
+        holder.binding.salary.setText(job.getSalary());
+//        holder.binding.shortDescription.setText(job.getShortDescription());
+//        holder.binding.postDate.setText(job.getPostDate());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return savedJobs.size();
     }
 
     static class JobViewHolder extends RecyclerView.ViewHolder {
