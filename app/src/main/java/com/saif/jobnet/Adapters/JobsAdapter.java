@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     private AppDatabase appDatabase;
     private JobDao jobDao;
     private User currentUser;
+    private ProgressBar progressBar;
 
     public JobsAdapter(Context context, List<Job> jobList) {
         this.context = context;
@@ -71,6 +73,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.jobTitle.setText(job.getTitle());
         holder.binding.companyName.setText(job.getCompany());
         holder.binding.location.setText(job.getLocation());
+
+        progressBar=holder.binding.savedJobsProgressbar;
         String numericReview = job.getReview().replaceAll("[^\\d]", "");
         if(numericReview.isEmpty()){
             holder.binding.jobRating.setVisibility(View.GONE);
@@ -89,6 +93,9 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.binding.saveJobs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setIndeterminate(true);
+                holder.binding.saveJobs.setVisibility(View.GONE);
                 saveJobToBackend(job,holder.binding.saveJobs);
             }
         });
@@ -135,6 +142,9 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         response.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                progressBar.setVisibility(View.GONE);
+                progressBar.setIndeterminate(false);
+                saveJobs.setVisibility(View.VISIBLE);
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseMessage = response.body().string(); // Extract plain text
@@ -172,6 +182,9 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                 Toast.makeText(context, "Error saving job", Toast.LENGTH_SHORT).show();
                 throwable.printStackTrace();
+                progressBar.setVisibility(View.GONE);
+                progressBar.setIndeterminate(false);
+                saveJobs.setVisibility(View.VISIBLE);
             }
         });
 

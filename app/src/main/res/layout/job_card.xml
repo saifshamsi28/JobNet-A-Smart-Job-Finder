@@ -38,7 +38,18 @@
                 android:src="@drawable/job_not_saved_icon"
                 android:layout_marginEnd="8sp"
                 android:padding="3sp"
+
                 />
+            <ProgressBar
+                android:id="@+id/saved_jobs_progressbar"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_marginEnd="8sp"
+                android:indeterminateTint="@color/black"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"
+                />
+
         </LinearLayout>
         <!-- Job Title -->
         <!-- Company Name and Rating -->
