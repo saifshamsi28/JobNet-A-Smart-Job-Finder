@@ -1,6 +1,7 @@
 package com.saif.jobnet.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saif.jobnet.Activities.JobDetailActivity;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.JobCardBinding;
@@ -48,6 +50,16 @@ public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobV
             holder.binding.jobRating.setText(job.getRating());
             holder.binding.ratingImg.setVisibility(View.VISIBLE);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, JobDetailActivity.class);
+                intent.putExtra("stringId", job.getJobId());
+                intent.putExtra("url", job.getUrl());
+                System.out.println("url to visit: "+ job.getUrl());
+                context.startActivity(intent);
+            }
+        });
 //        holder.binding.shortDescription.setText(job.getShortDescription());
 //        holder.binding.postDate.setText(job.getPostDate());
     }

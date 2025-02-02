@@ -104,7 +104,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             public void onClick(View v) {
                 //to go to job detail activity
                 Intent intent = new Intent(context, JobDetailActivity.class);
-                intent.putExtra("stringId", job.getJobId());
+                intent.putExtra("jobId", job.getJobId());
                 intent.putExtra("url", job.getUrl());
                 System.out.println("url to visit: "+ job.getUrl());
                 context.startActivity(intent);
