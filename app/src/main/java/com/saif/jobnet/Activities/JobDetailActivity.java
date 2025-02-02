@@ -56,11 +56,12 @@ public class JobDetailActivity extends AppCompatActivity {
         setUpShimmerEffect();
 
         Intent intent = getIntent();
-        String stringId = intent.getStringExtra("stringId");
+        String jobId = intent.getStringExtra("jobId");
+        System.out.println("JobDetailActivity: jobId got from intent: "+jobId);
         String url = intent.getStringExtra("url");
 
         Log.d("JobDetailActivity", "Received URL: calling fetchFullDetails");
-        fetchFullDetails(stringId,url);
+        fetchFullDetails(jobId,url);
 
         binding.applyNow.setOnClickListener(v -> {
             //to open the url in browser
@@ -71,7 +72,7 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
 
-    private void fetchFullDetails(String stringId, String url) {
+    private void fetchFullDetails(String jobId, String url) {
         new Thread(() -> {
             Job cachedJob = jobDao.getJobByUrl(url);
             runOnUiThread(() -> {
@@ -79,7 +80,7 @@ public class JobDetailActivity extends AppCompatActivity {
                     // Job found in database; display it directly
                     displayJobDetails(cachedJob);
                 } else {
-                    fetchFromApi(stringId,url);
+                    fetchFromApi(jobId,url);
                 }
             });
         }).start();
@@ -225,7 +226,10 @@ public class JobDetailActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private void fetchFromApi(String stringId, String url) {
+    private void fetchFromApi(String jobId, String url) {
+        Log.d("JobDetailActivity", "Received URL: calling fetchFromApi");
+        Log.d("JobDetailActivity", "jobId to fetch: "+jobId);
+        Log.d("JobDetailActivity", "url to fetch: "+url);
         String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -238,7 +242,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<Job> call = apiService.getJobDescription(stringId,url);
+        Call<Job> call = apiService.getJobDescription(jobId,url);
 
         call.enqueue(new Callback<Job>() {
             @Override
