@@ -158,17 +158,15 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                             saveJobs.setImageResource(R.drawable.job_saved_icon);
                             //save job in user in room database
                             currentUser.getSavedJobs().add(job);
-                            currentUser.setSavedJobs(currentUser.getSavedJobs());
-                            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
                         }else {
                             saveJobs.setTag("0");
                             saveJobs.setImageResource(R.drawable.job_not_saved_icon);
                             Toast.makeText(context, "Successfully removed the job: " + parts[1], Toast.LENGTH_SHORT).show();
                             //remove job from user in room database
                             currentUser.getSavedJobs().remove(job);
-                            currentUser.setSavedJobs(currentUser.getSavedJobs());
-                            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
                         }
+                        currentUser.setSavedJobs(currentUser.getSavedJobs());
+                        new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(context, "Error parsing response", Toast.LENGTH_SHORT).show();

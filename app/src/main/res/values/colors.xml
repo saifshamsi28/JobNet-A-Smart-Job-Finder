@@ -9,6 +9,7 @@
     <color name="green">#669900</color>
     <color name="grey">#6A6969</color>
     <color name="teal">#03A9F4</color>
+    <color name="teal_low">#C103A9F4</color>
     <color name="red">#B61409</color>
     <color name="orange">#E64817</color>
     <color name="highlight">#79DB09</color>

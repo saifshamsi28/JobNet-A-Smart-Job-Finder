@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    app:cardCornerRadius="12sp"
+    app:cardElevation="12sp"
+    android:layout_margin="5dp"
     android:layout_height="wrap_content">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="16sp"
-        app:cardElevation="32dp"
-        android:layout_marginTop="8sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="8sp"
+            android:padding="16sp"
             >
+                <TextView
+                    android:id="@+id/job_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/teal"
+                    android:maxLines="1"
+                    android:padding="3dp"
+                    android:text="Role: Web Developer" />
+            <!-- Company Name and Rating -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:id="@+id/job_title"
+                    android:id="@+id/company_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:textStyle="bold"
+                    android:padding="3dp"
                     android:textSize="16sp"
-                    android:padding="8sp"
-                    android:text="Android Developer"
-                    android:textColor="@color/colorActionBarBackground"/>
+                    android:text="Google" />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/rating_img"-->
-<!--                    android:layout_width="24dp"-->
-<!--                    android:layout_height="24dp"-->
-<!--                    android:layout_marginEnd="5dp"-->
-<!--                    android:src="@drawable/rating_img" />-->
+                <ImageView
+                    android:id="@+id/rating_img"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/rating_img" />
 
                 <TextView
                     android:id="@+id/job_rating"
@@ -56,51 +54,45 @@
                     android:layout_height="wrap_content"
                     android:text="2.3"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/yellow"
-                    app:drawableStartCompat="@drawable/rate_icon" />
+                    android:textStyle="bold" />
             </LinearLayout>
-
 
             <TextView
-                android:id="@+id/company_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="3dp"
-                android:textSize="16sp"
-                android:text="Microsoft"
-                />
-
-            <LinearLayout
+                android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingEnd="3dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    android:layout_weight="1"
-                    android:text="Remote"
-                    android:textSize="16sp"
-                    android:maxLines="3"
-                    app:drawableStartCompat="@drawable/location_img" />
-                <TextView
-                    android:id="@+id/salary"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="5 lpa"
-                    android:textSize="16sp"
-                    android:layout_weight="1"
-                    android:maxLines="3"
-                    android:paddingEnd="3dp"
-                    android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    app:drawableStartCompat="@drawable/rupees_img" />
-            </LinearLayout>
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:padding="3dp"
+                android:textSize="16sp"
+                android:text="California, Long Address for Testing Purpose"
+                app:drawableStartCompat="@drawable/location_img"
+                app:drawableTint="@color/teal_low" />
+
+            <TextView
+                android:id="@+id/salary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:padding="3dp"
+                android:text="6 Lacs PA"
+                app:drawableStartCompat="@drawable/rupees_img"
+                app:drawableTint="@color/teal_low"/>
+
+            <TextView
+                android:id="@+id/post_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:text="Few hours ago"
+                android:padding="3dp"
+                app:drawableStartCompat="@drawable/calender"
+                android:drawableTint="@color/teal_low"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

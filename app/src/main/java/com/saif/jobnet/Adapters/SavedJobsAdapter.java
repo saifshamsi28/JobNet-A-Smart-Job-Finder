@@ -39,6 +39,15 @@ public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobV
         holder.binding.companyName.setText(job.getCompany());
         holder.binding.location.setText(job.getLocation());
         holder.binding.salary.setText(job.getSalary());
+        String numericReview = job.getReview().replaceAll("[^\\d]", "");
+        if(numericReview.isEmpty()){
+            holder.binding.jobRating.setVisibility(View.GONE);
+            holder.binding.ratingImg.setVisibility(View.GONE);
+        }else {
+            holder.binding.jobRating.setVisibility(View.VISIBLE);
+            holder.binding.jobRating.setText(job.getRating());
+            holder.binding.ratingImg.setVisibility(View.VISIBLE);
+        }
 //        holder.binding.shortDescription.setText(job.getShortDescription());
 //        holder.binding.postDate.setText(job.getPostDate());
     }
