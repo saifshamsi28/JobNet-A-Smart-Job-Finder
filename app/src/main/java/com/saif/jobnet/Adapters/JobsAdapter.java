@@ -55,11 +55,13 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         new Thread(new Runnable() {
             @Override
             public void run() {
-                currentUser = jobDao.getCurrentUser();
+                //get user id from shared preferences
+                SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
+                String userId= sharedPreferences.getString("userId",null);
+                currentUser = jobDao.getCurrentUser(userId);
             }
         }).start();
     }
-
     @NonNull
     @Override
     public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -96,6 +98,14 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 progressBar.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
                 holder.binding.saveJobs.setVisibility(View.GONE);
+                //check user is logged in or not and save job to backend
+                if(currentUser==null){
+                    Toast.makeText(context, "Login first to save the job", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    progressBar.setIndeterminate(false);
+                    holder.binding.saveJobs.setVisibility(View.VISIBLE);
+                    return;
+                }
                 saveJobToBackend(job,holder.binding.saveJobs);
             }
         });

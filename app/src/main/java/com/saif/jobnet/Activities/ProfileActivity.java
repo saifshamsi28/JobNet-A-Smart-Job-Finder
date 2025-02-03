@@ -36,6 +36,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
@@ -61,6 +63,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private Dialog passwordUpdateDialog;
     private boolean isPasswordVisible = false;
+    private JobDao jobDao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
+        jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
 
         System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
@@ -135,85 +140,19 @@ public class ProfileActivity extends AppCompatActivity {
             binding.userEmail.setError("Please enter your email");
             return;
         }
+        if (!isValidPhoneNumber(phoneNumber)) {
+            return;
+        }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.userEmail.setError("Invalid email address");
-            return;
-        }
-        if (isValidPhoneNumber(phoneNumber)) {
-            binding.contactNumber.setError("Phone number must be at least 10 digits.");
-            return;
-        }
-
-        ProgressDialog progressDialog=new ProgressDialog(this);
-//        saveButton.setOnClickListener(v -> {
-            progressDialog.setMessage("Updating profile...");
-            progressDialog.show();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-            //name updation
-            editor.putString("name", name);
-            editor.apply();
-            user.setName(name);
-            binding.profileName.setText(name);
-
-            //email updation
-            editor.putString("userEmail", email);
-            editor.apply();
-            user.setEmail(email);
-            binding.userEmail.setText(email);
-            Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
-
-            if (!phoneNumber.isEmpty()) {
-                editor.putString("phoneNumber", phoneNumber);
-                editor.apply();
-                user.setPhoneNumber(phoneNumber);
-                binding.contactNumber.setText(phoneNumber);
+        }else {
+            String emailFromShared=sharedPreferences.getString("userEmail",null);
+            if(emailFromShared!=null && emailFromShared.equals(email)){
+                updateUserDetails(email,phoneNumber,name);
+            }else {
+                checkEmailAlreadyExistsAndProceed(email,phoneNumber,name);
             }
-
-        String BASE_URL = Config.BASE_URL;
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                    .client(new OkHttpClient.Builder()
-                            .connectTimeout(60, TimeUnit.SECONDS)
-                            .readTimeout(60, TimeUnit.SECONDS)
-                            .writeTimeout(60, TimeUnit.SECONDS)
-                            .build())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            ApiService apiService=retrofit.create(ApiService.class);
-            Call<User> response=apiService.registerUser(user);
-            response.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                    if(response.isSuccessful()){
-                        User user1=response.body();
-                        if(user1!=null) {
-                            Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
-                            //print user details received in response
-                            System.out.println("User Updated Successfully");
-                            System.out.println("Name: " + user1.getName());
-                            System.out.println("user name: " + user1.getUserName());
-                            System.out.println("Email: " + user1.getEmail());
-                            System.out.println("User id: " + user1.getId());
-                            System.out.println("Password: " + user1.getPassword());
-                            System.out.println("Phone number: " + user1.getPhoneNumber());
-                            System.out.println("saved jobs: " + user1.getSavedJobs());
-                            progressDialog.dismiss();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
-                    Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
-                    System.out.println("Error updating user");
-                    progressDialog.dismiss();
-                    System.out.println(throwable);
-                    throwable.printStackTrace();
-                }
-            });
-//        });
+        }
     }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
@@ -227,7 +166,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         // Check for minimum and maximum length (10-15 digits)
-        if (phoneNumber.length() < 10 || phoneNumber.length() > 15) {
+        if (phoneNumber.length() < 10) {
             binding.contactNumber.setError("Invalid phone number");
             return false;
         }
@@ -244,8 +183,155 @@ public class ProfileActivity extends AppCompatActivity {
             return false;
         }
 
+        //check number not exceed length if exceed then check country code given
+        if(phoneNumber.length()>10){
+            if(!phoneNumber.startsWith("+")){
+                binding.contactNumber.setError("Number with Country code must start with '+'");
+                return false;
+            }else {
+                if(phoneNumber.length()==11){
+                    binding.contactNumber.setError("Country code missing");
+                    return false;
+                }else {
+                    if(phoneNumber.charAt(1)=='0'){
+                        binding.contactNumber.setError("Invalid country code");
+                        return false;
+                    }else {
+                        binding.contactNumber.setError(null);
+                    }
+                }
+            }
+        }
+
         // If all checks pass
         return true;
+    }
+
+    private void checkEmailAlreadyExistsAndProceed(String email, String phoneNumber, String name) {
+        ProgressDialog progressDialog=new ProgressDialog(this);
+        progressDialog.setMessage("Checking email...");
+        progressDialog.show();
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        Call<Boolean> response = apiService.checkEmailAlreadyExist(email);
+        boolean isv=true;
+
+        response.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.body() != null) {
+                    boolean isAvailable = response.body();
+                    if (!isAvailable) {
+                        // Email already exists
+                        binding.userEmail.setError("Email already exists");
+                        Toast.makeText(ProfileActivity.this, "Email already exists", Toast.LENGTH_SHORT).show();
+                        binding.updateButton.setEnabled(false);
+                    } else {
+                        // Email is available
+                        binding.userEmail.setError(null);
+                        updateUserDetails(email,phoneNumber,name);
+                    }
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Error checking email availability.", Toast.LENGTH_SHORT).show();
+                    binding.updateButton.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable throwable) {
+                progressDialog.dismiss();
+                Toast.makeText(ProfileActivity.this, "Failed to check email. Try again.", Toast.LENGTH_SHORT).show();
+                binding.updateButton.setEnabled(true);
+            }
+        });
+    }
+
+    private void updateUserDetails(String email, String phoneNumber, String name) {
+
+        ProgressDialog progressDialog=new ProgressDialog(this);
+//        saveButton.setOnClickListener(v -> {
+        progressDialog.setMessage("Updating profile...");
+        progressDialog.show();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //name updation
+        editor.putString("name", name);
+        editor.apply();
+        user.setName(name);
+        binding.profileName.setText(name);
+
+        //email updation
+        editor.putString("userEmail", email);
+        editor.apply();
+        user.setEmail(email);
+        binding.userEmail.setText(email);
+        Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
+
+        if (!phoneNumber.isEmpty()) {
+            editor.putString("phoneNumber", phoneNumber);
+            editor.apply();
+            user.setPhoneNumber(phoneNumber);
+            binding.contactNumber.setText(phoneNumber);
+        }
+
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        Call<User> response=apiService.registerUser(user);
+        response.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if(response.isSuccessful()){
+                    User user1=response.body();
+                    if(user1!=null) {
+                        Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
+                        //print user details received in response
+                        System.out.println("User Updated Successfully");
+                        System.out.println("Name: " + user1.getName());
+                        System.out.println("user name: " + user1.getUserName());
+                        System.out.println("Email: " + user1.getEmail());
+                        System.out.println("User id: " + user1.getId());
+                        System.out.println("Password: " + user1.getPassword());
+                        System.out.println("Phone number: " + user1.getPhoneNumber());
+                        System.out.println("saved jobs: " + user1.getSavedJobs());
+                        progressDialog.dismiss();
+                        new Thread(() -> jobDao.insertOrUpdateUser(user1)).start();
+                        userFieldsAccessibility(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
+                Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                System.out.println("Error updating user");
+                progressDialog.dismiss();
+                System.out.println(throwable);
+                throwable.printStackTrace();
+            }
+        });
+//        });
     }
 
     private void loadUserProfile() {
@@ -290,9 +376,11 @@ public class ProfileActivity extends AppCompatActivity {
                         if(response.isSuccessful()){
                             User user1=response.body();
                             if(user1!=null){
-                                binding.savedJobsContainer.setVisibility(View.VISIBLE);
-                                user.setSavedJobs(user1.getSavedJobs());
-                                populateTableWithJobs(user.getSavedJobs());
+                                if(user1.getSavedJobs()!=null && !user1.getSavedJobs().isEmpty()){
+                                    binding.savedJobsContainer.setVisibility(View.VISIBLE);
+                                    user.setSavedJobs(user1.getSavedJobs());
+                                    populateTableWithJobs(user.getSavedJobs());
+                                }
                             }else {
                                 binding.savedJobsContainer.setVisibility(View.GONE);
                             }
@@ -309,13 +397,12 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
         }).start();
-        populateTableWithJobs(user.getSavedJobs());
     }
 
     private void userFieldsAccessibility(boolean b) {
         if(b){
             binding.profileName.setEnabled(true);
-            binding.username.setEnabled(true);
+            binding.username.setEnabled(false); //username can't be changed
             binding.userEmail.setEnabled(true);
             binding.contactNumber.setEnabled(true);
             binding.updateButton.setVisibility(View.VISIBLE);
@@ -440,7 +527,6 @@ public class ProfileActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(v -> passwordUpdateDialog.dismiss());
         confirmButton.setOnClickListener(v -> checkAndUpdatePassword());
     }
-
 
     private void checkAndUpdatePassword() {
         EditText oldPassword=passwordUpdateDialog.findViewById(R.id.old_password);
