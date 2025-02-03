@@ -1,6 +1,7 @@
 package com.saif.jobnet.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -36,7 +37,10 @@ public class SavedJobsActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                currentUser=jobDao.getCurrentUser();
+                //get user id from shared preferences
+                SharedPreferences sharedPreferences=getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
+                String userId= sharedPreferences.getString("userId",null);
+                currentUser=jobDao.getCurrentUser(userId);
                 if(currentUser==null){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -47,10 +51,10 @@ public class SavedJobsActivity extends AppCompatActivity {
                         }
                     });
                 }
-                System.out.println("current user: "+currentUser.getSavedJobs().size());
-                for (int i = 0; i < currentUser.getSavedJobs().size(); i++) {
-                    System.out.println("saved job title: "+currentUser.getSavedJobs().get(i).getTitle());
-                }
+//                System.out.println("current user: "+currentUser.getSavedJobs().size());
+//                for (int i = 0; i < currentUser.getSavedJobs().size(); i++) {
+//                    System.out.println("saved"+currentUser.getSavedJobs().get(i).getJobId()+" job title: "+currentUser.getSavedJobs().get(i).getTitle());
+//                }
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -63,7 +67,5 @@ public class SavedJobsActivity extends AppCompatActivity {
                 });
             }
         }).start();
-
-
     }
 }
