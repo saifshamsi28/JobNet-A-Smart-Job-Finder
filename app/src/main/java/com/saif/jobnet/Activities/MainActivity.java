@@ -181,7 +181,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finishAffinity();
                 } else if (R.id.nav_search==item.getItemId()){
-                    Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {
                     Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
                     // Replace the fragment container with SavedJobsFragment

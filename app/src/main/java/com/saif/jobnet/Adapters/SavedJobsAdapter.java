@@ -60,8 +60,6 @@ public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobV
                 context.startActivity(intent);
             }
         });
-//        holder.binding.shortDescription.setText(job.getShortDescription());
-//        holder.binding.postDate.setText(job.getPostDate());
     }
 
     @Override
