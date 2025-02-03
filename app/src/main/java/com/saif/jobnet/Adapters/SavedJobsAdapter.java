@@ -54,7 +54,7 @@ public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobV
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, JobDetailActivity.class);
-                intent.putExtra("stringId", job.getJobId());
+                intent.putExtra("jobId", job.getJobId());
                 intent.putExtra("url", job.getUrl());
                 System.out.println("url to visit: "+ job.getUrl());
                 context.startActivity(intent);

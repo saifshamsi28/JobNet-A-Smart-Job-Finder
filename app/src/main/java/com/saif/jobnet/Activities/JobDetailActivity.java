@@ -1,6 +1,7 @@
 package com.saif.jobnet.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.Database.AppDatabase;
@@ -43,7 +45,7 @@ public class JobDetailActivity extends AppCompatActivity {
     ActivityJobDetailBinding binding;
     private AppDatabase appDatabase;
     private JobDao jobDao;
-
+    private User currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,14 @@ public class JobDetailActivity extends AppCompatActivity {
 
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
-
+        SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                currentUser=jobDao.getCurrentUser(userId);
+            }
+        }).start();
         setUpShimmerEffect();
 
         Intent intent = getIntent();
@@ -367,7 +376,9 @@ public class JobDetailActivity extends AppCompatActivity {
 
             // Save the job in the database with the formatted shortDescription
             job.setShortDescription(description);
-//            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), description)).start();
+            currentUser.getSavedJobs().add(job);
+            currentUser.setSavedJobs(currentUser.getSavedJobs());
+            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
         } else {
             displayFormattedDescription(job);
 //            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), job.getShortDescription())).start();
@@ -426,7 +437,9 @@ public class JobDetailActivity extends AppCompatActivity {
             } else if (line.startsWith("[BULLET]")) {
                 String bulletText = line.replace("[BULLET]", "").trim();
                 spannableLine = new SpannableString(bulletText + "\n");
-                spannableLine.setSpan(new BulletSpan(15), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                if(!spannableLine.toString().startsWith("•"))
+                        spannableLine.setSpan(new BulletSpan(15), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             } else {
                 spannableLine = new SpannableString(line + "\n");
             }
