@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 if (R.id.nav_home==item.getItemId()){
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
                     startActivity(intent);
+                    finishAffinity();
                 } else if (R.id.nav_search==item.getItemId()){
                     Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {

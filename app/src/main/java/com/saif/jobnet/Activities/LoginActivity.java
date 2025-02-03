@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             boolean hasError = false;
 
             if (binding.usernameOrEmail.getText().toString().isEmpty() ) {
-                binding.usernameOrEmail.setError("Username is required");
+                binding.usernameOrEmail.setError("Username or email is required");
                 hasError = true;
             }
 
@@ -142,7 +142,6 @@ public class LoginActivity extends AppCompatActivity {
     private void checkCredentials() {
         String usernameOrEmail = binding.usernameOrEmail.getText().toString().trim();
         String password = binding.password.getText().toString();
-         {
             // Create login credentials object
             UserLoginCredentials credentials = new UserLoginCredentials();
             credentials.setUserNameOrEmail(usernameOrEmail);
@@ -195,7 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
-        }
+
     }
 
 

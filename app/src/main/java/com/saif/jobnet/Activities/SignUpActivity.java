@@ -60,12 +60,21 @@ public class SignUpActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(s.toString().contains(" ")){
+                    binding.username.setError("Username cannot contain blank spaces");
+                    binding.registerButton.setEnabled(false);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                checkUserNameAvailableOrNot(s.toString());
+                if(s.toString().contains(" ")){
+                    binding.username.setError("Username cannot contain blank spaces");
+                    binding.registerButton.setEnabled(false);
+                }else {
+                    binding.username.setError(null);
+                    checkUserNameAvailableOrNot(s.toString());
+                }
             }
         });
 
@@ -141,9 +150,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         // Enable or disable the register button
         binding.registerButton.setEnabled(isFormValid);
-        binding.registerButton.setBackgroundColor(isFormValid
-                ? ContextCompat.getColor(this, R.color.colorActionBarBackground)
-                : ContextCompat.getColor(this, R.color.disable_btn));
+//        binding.registerButton.setBackgroundColor(isFormValid
+//                ? ContextCompat.getColor(this, R.color.colorActionBarBackground)
+//                : ContextCompat.getColor(this, R.color.disable_btn));
     }
 
     private void registerUser() {
@@ -158,7 +167,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        if (isValidPhoneNumber(phoneNumber)) {
+        if (!isValidPhoneNumber(phoneNumber)) {
             return;
         }
         progressDialog=new ProgressDialog(this);
@@ -179,7 +188,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         // Check for minimum and maximum length (10-15 digits)
-        if (phoneNumber.length() < 10 || phoneNumber.length() > 15) {
+        if (phoneNumber.length() < 10) {
             binding.phoneNumber.setError("Invalid phone number");
             return false;
         }
@@ -194,6 +203,26 @@ public class SignUpActivity extends AppCompatActivity {
         if (!phoneNumber.matches("^\\+?[1-9]\\d{9,14}$")) {
             binding.phoneNumber.setError("Phone number must start with a valid digit.");
             return false;
+        }
+
+        //check number not exceed length if exceed then check country code given
+        if(phoneNumber.length()>10){
+            if(!phoneNumber.startsWith("+")){
+                binding.phoneNumber.setError("Number with Country code must start with '+'");
+                return false;
+            }else {
+                if(phoneNumber.length()==11){
+                    binding.phoneNumber.setError("Country code missing");
+                    return false;
+                }else {
+                    if(phoneNumber.charAt(1)=='0'){
+                        binding.phoneNumber.setError("Invalid country code");
+                        return false;
+                    }else {
+                        binding.phoneNumber.setError(null);
+                    }
+                }
+            }
         }
 
         // If all checks pass
@@ -313,10 +342,12 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean isPasswordStrong(String password) {
         return password.length() >= 8
-                && password.matches(".*[A-Z].*")
-                && password.matches(".*\\d.*")
-                && password.matches(".*[@#$%^&+=!].*");
+                && password.matches(".*[A-Z].*")   // At least one uppercase letter
+                && password.matches(".*\\d.*")     // At least one digit
+                && password.matches(".*[@#$%^&+=!].*") // At least one special character
+                && !password.contains(" ");        // No spaces allowed
     }
+
 
     private boolean handlePasswordVisibility(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {

@@ -44,8 +44,8 @@ public interface JobDao {
     @Query("SELECT * FROM jobs WHERE jobId = :id")
     Job getJobById(String id);
 
-    @Query("SELECT * FROM user")
-    User getCurrentUser();
+    @Query("SELECT * FROM user where id=:id")
+    User getCurrentUser(String id);
 
     // Clear all user data (e.g., during logout)
     @Query("DELETE FROM user")
