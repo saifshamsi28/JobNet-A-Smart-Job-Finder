@@ -37,6 +37,12 @@ public class Job implements Parcelable {
     @SerializedName("salary")
     private String salary;
 
+    @SerializedName("minSalary")
+    private long minSalary;
+
+    @SerializedName("maxSalary")
+    private long maxSalary;
+
     @SerializedName("link")
     private String url;
 
@@ -150,6 +156,22 @@ public class Job implements Parcelable {
 
     public void setShortDescription(String shortDescription) {
         this.shortDescription = shortDescription;
+    }
+
+    public long getMinSalary() {
+        return minSalary;
+    }
+
+    public void setMinSalary(long minSalary) {
+        this.minSalary = minSalary;
+    }
+
+    public long getMaxSalary() {
+        return maxSalary;
+    }
+
+    public void setMaxSalary(long maxSalary) {
+        this.maxSalary = maxSalary;
     }
 
     public void setTitle(String title) {
