@@ -364,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchJobs(String query, String home) {
         String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://10.162.1.53:8080/")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -391,12 +391,12 @@ public class MainActivity extends AppCompatActivity {
                         ;
                         endTime = System.currentTimeMillis();
                         Log.d("API Response", "Time taken: " + TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) + " seconds");
-//                        for(Job job:jobs){
-//                            //printing all the details of jobs
-//                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
-//                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
-//                            +"\nurl: "+job.getUrl()+"\nrating: "+job.getRating()+"\nreviews: "+job.getReview());
-//                        }
+                        for(Job job:jobs){
+                            //printing all the details of jobs
+                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
+                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
+                            +"\n min salary: "+job.getMinSalary()+"\n max salary: "+job.getMaxSalary()+"\n");
+                        }
                         populateTableWithJobs(jobs, query);
                     } else
                         Log.d("API Response", "No jobs found");
@@ -416,9 +416,9 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
-        for(int i=0;i<10;i++){
-            savedJobs.add(jobs.get(i));
-        }
+//        for(int i=0;i<10;i++){
+//            savedJobs.add(jobs.get(i));
+//        }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
         binding.recyclerViewJobs.setAdapter(jobsAdapter);
 //        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
