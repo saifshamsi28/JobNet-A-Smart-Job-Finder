@@ -46,5 +46,12 @@ public interface ApiService {
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);
 
+    //get job by title and other fields
+    @GET("home/jobs")
+    Call<List<Job>> fetchJobsByTitle(@Query("title") String title,
+                                     @Query("location") String location,
+                                     @Query("company") String company,
+                                     @Query("minSalary") Integer minSalary,
+                                     @Query("jobType") String jobType);
 
 }
