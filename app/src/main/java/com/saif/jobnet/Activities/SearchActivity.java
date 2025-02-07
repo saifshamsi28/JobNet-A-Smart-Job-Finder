@@ -1,6 +1,11 @@
 package com.saif.jobnet.Activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -231,13 +236,41 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void formatSearchedQuery(String title, String location, String company, String jobType, String salary) {
-        String searchedQuery="Showing results for:" +
-                "\n Title: "+title+
-                "\n Company: "+company+
-                "\n Minimum Salary: "+salary+" Lac PA"+
-                "\n Location: "+location+
-                "\n Job Type: "+jobType;
+        // Default values if fields are empty
+        title = title.isEmpty() ? "Any title" : title;
+        company = company.isEmpty() ? "Any company" : company;
+        salary = salary.isEmpty() ? "Any salary" : salary + " LPA";
+        location = location.isEmpty() ? "Any location" : location;
+        jobType = jobType.isEmpty() ? "Any job type" : jobType;
 
-        binding.searchedQuery.setText(searchedQuery);
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+
+        // Helper function to format each line
+        appendStyledText(builder, "Showing results for:\n", Color.BLACK, true);
+        appendStyledText(builder, "Title: ", Color.BLUE, true);
+        appendStyledText(builder, title + "\n", Color.DKGRAY, false);
+        appendStyledText(builder, "Company: ", Color.BLUE, true);
+        appendStyledText(builder, company + "\n", Color.DKGRAY, false);
+        appendStyledText(builder, "Minimum Salary: ", Color.BLUE, true);
+        appendStyledText(builder, salary + "\n", Color.DKGRAY, false);
+        appendStyledText(builder, "Location: ", Color.BLUE, true);
+        appendStyledText(builder, location + "\n", Color.DKGRAY, false);
+        appendStyledText(builder, "Job Type: ", Color.BLUE, true);
+        appendStyledText(builder, jobType, Color.DKGRAY, false);
+
+        binding.searchedQuery.setText(builder);
+    }
+
+    // Helper function to apply color and bold style
+    private void appendStyledText(SpannableStringBuilder builder, String text, int color, boolean isBold) {
+        int start = builder.length();
+        builder.append(text);
+        int end = builder.length();
+
+        builder.setSpan(new ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (isBold) {
+            builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
     }
 }
