@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:padding="16dp"
-    tools:context=".Activities.SearchActivity"
-    android:background="@color/white">
+    tools:context=".Activities.SearchActivity">
+
+    <!-- Search Bar -->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        app:iconifiedByDefault="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:queryHint="Search jobs..." />
+
+    <TextView
+        android:id="@+id/searched_query"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="showing result for"
+        android:visibility="gone"
+        android:textColor="@color/colorActionBarBackground"
+        app:layout_constraintStart_toStartOf="@id/searchView"
+        app:layout_constraintTop_toBottomOf="@id/searchView" />
 
     <!-- CardView for Search & Filters -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/preferences_cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -20,44 +42,34 @@
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/searched_query">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <!-- Search Bar -->
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                app:iconifiedByDefault="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:queryHint="Search jobs..." />
 
             <!-- Location AutoCompleteTextView -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/location_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="postalAddress"
                 android:hint="Location"
+                android:padding="16sp"
                 app:endIconMode="dropdown_menu"
                 app:hintEnabled="true"
-                android:autofillHints="postalAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchView">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16sp"
-                    android:completionThreshold="1" />
+                    android:completionThreshold="1"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Salary (Min Salary) -->
@@ -66,6 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Minimum Salary"
+                android:padding="16sp"
                 app:endIconMode="dropdown_menu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,9 +86,11 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteSalary"
-                    android:padding="16sp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Company Name -->
@@ -84,15 +99,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Company"
+                android:padding="16sp"
                 app:endIconMode="dropdown_menu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/salary_container">
 
                 <AutoCompleteTextView
-                    android:id="@+id/editTextCompany"
+                    android:id="@+id/autoCompleteCompany"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Job Type -->
@@ -101,6 +120,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="Job Type"
+                android:padding="16sp"
                 app:endIconMode="dropdown_menu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +129,10 @@
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteJobType"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Filter Button -->
@@ -118,10 +141,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="@color/colorActionBarBackground"
                 android:gravity="center"
                 android:text="Apply Filters"
                 app:cornerRadius="100dp"
-                android:background="@color/colorActionBarBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/job_type_container" />
@@ -138,7 +161,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/preferences_cardView" />
 
     <!-- Shimmer Loading Effect -->
     <com.facebook.shimmer.ShimmerFrameLayout
@@ -149,7 +172,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_cardView"
         app:shimmer_auto_start="true">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -157,4 +180,18 @@
             android:layout_height="match_parent" />
     </com.facebook.shimmer.ShimmerFrameLayout>
 
+    <TextView
+        android:id="@+id/no_jobs_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No Jobs Found"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 </androidx.constraintlayout.widget.ConstraintLayout>
