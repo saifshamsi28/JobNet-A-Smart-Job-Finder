@@ -1,5 +1,6 @@
 package com.saif.jobnet.Activities;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -25,6 +26,7 @@ import com.saif.jobnet.Adapters.JobsAdapter;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.ActivitySearchBinding;
 
 import java.util.List;
@@ -40,11 +42,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivity extends AppCompatActivity {
 
     private ActivitySearchBinding binding;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        progressDialog = new ProgressDialog(this);
 
 //        EdgeToEdge.enable();
 
@@ -163,6 +168,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void finJobsByTitleAndPreferences(String title) {
+        progressDialog.setMessage("Searching jobs...");
+        progressDialog.show();
         binding.searchView.clearFocus();
         String location = binding.autoCompleteLocation.getText().toString().trim();
         String company=binding.autoCompleteCompany.getText().toString().trim();
@@ -178,8 +185,10 @@ public class SearchActivity extends AppCompatActivity {
 
         formatSearchedQuery(title,location,company,jobType,salaryInString);
 
+        String BASE_URL=Config.BASE_URL;
+
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -194,6 +203,7 @@ public class SearchActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<Job>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
+                        progressDialog.dismiss();
                         if(response.isSuccessful()){
                             List<Job> jobs=response.body();
                             if (jobs != null) {
@@ -229,6 +239,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable throwable) {
+                        progressDialog.dismiss();
                         System.out.println("Error in fetching jobs by title: "+throwable.getMessage());
                         throwable.printStackTrace();
                     }
@@ -251,7 +262,7 @@ public class SearchActivity extends AppCompatActivity {
         appendStyledText(builder, title + "\n", Color.DKGRAY, false);
         appendStyledText(builder, "Company: ", Color.BLUE, true);
         appendStyledText(builder, company + "\n", Color.DKGRAY, false);
-        appendStyledText(builder, "Minimum Salary: ", Color.BLUE, true);
+        appendStyledText(builder, "Minm Salary: ", Color.BLUE, true);
         appendStyledText(builder, salary + "\n", Color.DKGRAY, false);
         appendStyledText(builder, "Location: ", Color.BLUE, true);
         appendStyledText(builder, location + "\n", Color.DKGRAY, false);
