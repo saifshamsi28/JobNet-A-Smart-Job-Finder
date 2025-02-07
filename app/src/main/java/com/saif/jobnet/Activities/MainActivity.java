@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                     startActivity(intent);
                 } else if (R.id.nav_saved_jobs==item.getItemId()) {
-                    Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Saved Jobs", Toast.LENGTH_SHORT).show();
                     // Replace the fragment container with SavedJobsFragment
                     Intent intent = new Intent(MainActivity.this, SavedJobsActivity.class);
                     intent.putExtra("source", "bottom navigation");
