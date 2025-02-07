@@ -40,31 +40,35 @@ public class SavedJobsActivity extends AppCompatActivity {
                 //get user id from shared preferences
                 SharedPreferences sharedPreferences=getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
                 String userId= sharedPreferences.getString("userId",null);
-                currentUser=jobDao.getCurrentUser(userId);
-                if(currentUser==null){
+                if(userId==null){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            sharedPreferences.edit().clear().apply();
                             Toast.makeText(SavedJobsActivity.this, "Please login first", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SavedJobsActivity.this, LoginActivity.class));
                             finish();
                         }
                     });
+                }else{
+                    System.out.println("saved jobs activity: userId: "+userId);
+                    currentUser=jobDao.getCurrentUser(userId);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(currentUser!=null) {
+                                SavedJobsAdapter adapter = new SavedJobsAdapter(SavedJobsActivity.this, currentUser.getSavedJobs());
+                                binding.savedJobsRecyclerView.setAdapter(adapter);
+                                binding.savedJobsRecyclerView.setLayoutManager(new LinearLayoutManager(SavedJobsActivity.this));
+                            }else {
+                                sharedPreferences.edit().clear().apply();
+                                Toast.makeText(SavedJobsActivity.this, "Please login first", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(SavedJobsActivity.this, LoginActivity.class));
+                                finish();
+                            }
+                        }
+                    });
                 }
-//                System.out.println("current user: "+currentUser.getSavedJobs().size());
-//                for (int i = 0; i < currentUser.getSavedJobs().size(); i++) {
-//                    System.out.println("saved"+currentUser.getSavedJobs().get(i).getJobId()+" job title: "+currentUser.getSavedJobs().get(i).getTitle());
-//                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SavedJobsAdapter adapter=new SavedJobsAdapter(SavedJobsActivity.this,currentUser.getSavedJobs());
-                        binding.savedJobsRecyclerView.setAdapter(adapter);
-                        binding.savedJobsRecyclerView.setLayoutManager(new LinearLayoutManager(SavedJobsActivity.this));
-//                        binding.savedJobsRecyclerView.
-                    }
-                });
             }
         }).start();
     }
