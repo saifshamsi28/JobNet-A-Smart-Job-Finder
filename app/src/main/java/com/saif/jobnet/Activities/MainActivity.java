@@ -364,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     private void fetchJobs(String query, String home) {
         String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
