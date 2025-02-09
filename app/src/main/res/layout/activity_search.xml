@@ -69,7 +69,7 @@
                     android:completionThreshold="1"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="8sp" />
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Salary (Min Salary) -->
@@ -77,20 +77,20 @@
                 android:id="@+id/salary_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="Sort by Salary"
+                android:hint="Minimum Salary"
                 android:padding="16sp"
                 app:endIconMode="dropdown_menu"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/location_container">
+
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteSalary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="8sp"
-                    android:focusable="false"/>
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Company Name -->
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="8sp" />
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Job Type -->
@@ -132,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:padding="8sp" />
+                    android:padding="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Filter Button -->

@@ -1,6 +1,9 @@
 package com.saif.jobnet.Activities;
 
+<<<<<<< HEAD
 import android.app.ProgressDialog;
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -26,7 +29,10 @@ import com.saif.jobnet.Adapters.JobsAdapter;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Network.ApiService;
 import com.saif.jobnet.R;
+<<<<<<< HEAD
 import com.saif.jobnet.Utils.Config;
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
 import com.saif.jobnet.databinding.ActivitySearchBinding;
 
 import java.util.List;
@@ -42,15 +48,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivity extends AppCompatActivity {
 
     private ActivitySearchBinding binding;
+<<<<<<< HEAD
     private ProgressDialog progressDialog;
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+<<<<<<< HEAD
         progressDialog = new ProgressDialog(this);
 
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
 //        EdgeToEdge.enable();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -121,14 +133,23 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         });
 
+<<<<<<< HEAD
 //        //implement on back press
+=======
+
+//        //implement onbackpress
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
 
             @Override
             public void handleOnBackPressed() {
                 //set the visibility of the auto complete views to visible
                 if(binding.preferencesCardView.getVisibility()==View.VISIBLE){
+<<<<<<< HEAD
                     //default behaviour of back pressed is to finish the activity
+=======
+                    //default behaviour of backpressed is to finish the activity
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
                     showPreferences(false);
                 }else {
                     if(!getOnBackPressedDispatcher().hasEnabledCallbacks()) {
@@ -167,8 +188,11 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void finJobsByTitleAndPreferences(String title) {
+<<<<<<< HEAD
         progressDialog.setMessage("Searching jobs...");
         progressDialog.show();
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
         binding.searchView.clearFocus();
         String location = binding.autoCompleteLocation.getText().toString().trim();
         String company=binding.autoCompleteCompany.getText().toString().trim();
@@ -184,10 +208,15 @@ public class SearchActivity extends AppCompatActivity {
 
         formatSearchedQuery(title,location,company,jobType,salaryInString);
 
+<<<<<<< HEAD
         String BASE_URL=Config.BASE_URL;
 
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+=======
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080")
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -202,7 +231,10 @@ public class SearchActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<Job>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
+<<<<<<< HEAD
                         progressDialog.dismiss();
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
                         if(response.isSuccessful()){
                             List<Job> jobs=response.body();
                             if (jobs != null) {
@@ -229,14 +261,23 @@ public class SearchActivity extends AppCompatActivity {
                                 binding.noJobsFound.setVisibility(View.VISIBLE);
                                 showPreferences(false);
                                 binding.noJobsFound.setText("No jobs found for given preferences\nTry removing/modifying the preferences");
+<<<<<<< HEAD
                                 System.out.println("No jobs found");
+=======
+                                //set all the fiel
+                                System.out.println("No jobs found");
+
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
                             }
                             Log.e("SearchActivity","Error in fetching jobs by title response code: "+response.code()+"response message: "+response.message());
                         }
                     }
                     @Override
                     public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable throwable) {
+<<<<<<< HEAD
                         progressDialog.dismiss();
+=======
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
                         System.out.println("Error in fetching jobs by title: "+throwable.getMessage());
                         throwable.printStackTrace();
                     }
@@ -259,7 +300,11 @@ public class SearchActivity extends AppCompatActivity {
         appendStyledText(builder, title + "\n", Color.DKGRAY, false);
         appendStyledText(builder, "Company: ", Color.BLUE, true);
         appendStyledText(builder, company + "\n", Color.DKGRAY, false);
+<<<<<<< HEAD
         appendStyledText(builder, "Minm Salary: ", Color.BLUE, true);
+=======
+        appendStyledText(builder, "Minimum Salary: ", Color.BLUE, true);
+>>>>>>> b2645cdbece7dd6dda8395a327f1aa519a48bc5f
         appendStyledText(builder, salary + "\n", Color.DKGRAY, false);
         appendStyledText(builder, "Location: ", Color.BLUE, true);
         appendStyledText(builder, location + "\n", Color.DKGRAY, false);
