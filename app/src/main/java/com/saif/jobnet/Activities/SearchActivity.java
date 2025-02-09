@@ -121,15 +121,14 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         });
 
-
-//        //implement onbackpress
+//        //implement on back press
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
 
             @Override
             public void handleOnBackPressed() {
                 //set the visibility of the auto complete views to visible
                 if(binding.preferencesCardView.getVisibility()==View.VISIBLE){
-                    //default behaviour of backpressed is to finish the activity
+                    //default behaviour of back pressed is to finish the activity
                     showPreferences(false);
                 }else {
                     if(!getOnBackPressedDispatcher().hasEnabledCallbacks()) {
@@ -230,9 +229,7 @@ public class SearchActivity extends AppCompatActivity {
                                 binding.noJobsFound.setVisibility(View.VISIBLE);
                                 showPreferences(false);
                                 binding.noJobsFound.setText("No jobs found for given preferences\nTry removing/modifying the preferences");
-                                //set all the fiel
                                 System.out.println("No jobs found");
-
                             }
                             Log.e("SearchActivity","Error in fetching jobs by title response code: "+response.code()+"response message: "+response.message());
                         }
