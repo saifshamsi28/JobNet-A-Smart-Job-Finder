@@ -160,7 +160,8 @@
                 android:id="@+id/post_date_logo"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/calender" />
+                android:layout_gravity="center"
+                android:src="@drawable/posted_ago_icon" />
 
             <TextView
                 android:id="@+id/post_date"
