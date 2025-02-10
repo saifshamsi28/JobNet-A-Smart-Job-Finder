@@ -1,0 +1,147 @@
+[33mff3f98a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: commit: added post date icon
+[33m6cc819e[m HEAD@{1}: commit: updated the SDK
+[33mb2645cd[m HEAD@{2}: checkout: moving from feature-saved-jobs to main
+[33m6dffe90[m[33m ([m[1;32mfeature-saved-jobs[m[33m)[m HEAD@{3}: commit (merge): resolved the conflicts
+[33m80d0fc6[m HEAD@{4}: pull origin feature-saved-jobs --rebase (finish): returning to refs/heads/feature-saved-jobs
+[33m80d0fc6[m HEAD@{5}: pull origin feature-saved-jobs --rebase (pick): updated the SDK
+[33m31cf037[m HEAD@{6}: pull origin feature-saved-jobs --rebase (pick): updated the sdk
+[33ma145ab6[m HEAD@{7}: pull origin feature-saved-jobs --rebase (pick): modify search activity
+[33m1ac97ea[m HEAD@{8}: pull origin feature-saved-jobs --rebase (pick): replaced local url with hostel url
+[33me305c30[m HEAD@{9}: pull origin feature-saved-jobs --rebase (pick): formatted the searched query
+[33m0f15d6a[m HEAD@{10}: pull origin feature-saved-jobs --rebase (pick): implemented full functionality to fetch jobs by titles and preferences
+[33m15eaa08[m HEAD@{11}: pull origin feature-saved-jobs --rebase (pick): improved the error handling
+[33m1b6cf7f[m HEAD@{12}: pull origin feature-saved-jobs --rebase (pick): improved the layout with meaningful views
+[33m8099d5b[m HEAD@{13}: pull origin feature-saved-jobs --rebase (pick): created layout for title and preferences
+[33mc7e2fc4[m HEAD@{14}: pull origin feature-saved-jobs --rebase (pick): added intent and created resource for searching
+[33m1008632[m HEAD@{15}: pull origin feature-saved-jobs --rebase (pick): created search activity to introduce full fledged searching
+[33m3143e8f[m HEAD@{16}: pull origin feature-saved-jobs --rebase (pick): fixed some bugs
+[33m3116950[m HEAD@{17}: pull origin feature-saved-jobs --rebase (start): checkout 3116950659de6ff544d57bccc071c6b8f77b2cc1
+[33ma3de875[m HEAD@{18}: commit: updated the SDK
+[33m7c04d98[m HEAD@{19}: checkout: moving from searchjobs to feature-saved-jobs
+[33m2fd22e9[m[33m ([m[1;31morigin/searchjobs[m[33m, [m[1;32msearchjobs[m[33m)[m HEAD@{20}: checkout: moving from feature-saved-jobs to searchjobs
+[33m7c04d98[m HEAD@{21}: commit: updated the sdk
+[33me7a30f6[m HEAD@{22}: commit: modify search activity
+[33m7662b13[m HEAD@{23}: commit: replaced local url with hostel url
+[33mb2645cd[m HEAD@{24}: rebase (finish): returning to refs/heads/feature-saved-jobs
+[33mb2645cd[m HEAD@{25}: rebase (start): checkout main
+[33m0e6da89[m HEAD@{26}: checkout: moving from main to feature-saved-jobs
+[33mb2645cd[m HEAD@{27}: commit (merge): formatted the searchjobs
+[33m5736ae3[m HEAD@{28}: pull: Fast-forward
+[33mee6ea4d[m HEAD@{29}: checkout: moving from searchjobs to main
+[33m2fd22e9[m[33m ([m[1;31morigin/searchjobs[m[33m, [m[1;32msearchjobs[m[33m)[m HEAD@{30}: checkout: moving from main to searchjobs
+[33mee6ea4d[m HEAD@{31}: checkout: moving from searchjobs to main
+[33m2fd22e9[m[33m ([m[1;31morigin/searchjobs[m[33m, [m[1;32msearchjobs[m[33m)[m HEAD@{32}: commit: formatted the searched query
+[33m6db00c7[m HEAD@{33}: commit: implemented full functionality to fetch jobs by titles and preferences
+[33me03a46c[m HEAD@{34}: commit: improved the error handling
+[33m675a250[m HEAD@{35}: commit: improved the layout with meaningful views
+[33mded8e28[m HEAD@{36}: commit: created layout for title and preferences
+[33mee6ea4d[m HEAD@{37}: checkout: moving from main to searchjobs
+[33mee6ea4d[m HEAD@{38}: commit: added intent and created resource for searching
+[33md2ad508[m HEAD@{39}: commit: created search activity to introduce full fledged searching
+[33mdfea3ef[m HEAD@{40}: commit: fixed some bugs
+[33m97ac9b9[m HEAD@{41}: checkout: moving from main to main
+[33m97ac9b9[m HEAD@{42}: commit (merge): added functionality to fetch saved jobs by user id
+[33md1ba5ef[m HEAD@{43}: pull origin main: Fast-forward
+[33m47776a1[m HEAD@{44}: checkout: moving from feature-saved-jobs to main
+[33m0e6da89[m HEAD@{45}: commit: added functionality to fetch jobs by user id
+[33m87efa6a[m HEAD@{46}: commit: improved phone number validity
+[33m0904c50[m HEAD@{47}: commit: making consistency between local and cloud database
+[33m031059d[m HEAD@{48}: commit: added click listeners on saved jobs
+[33m47776a1[m HEAD@{49}: Branch: renamed refs/heads/new-branch-name to refs/heads/feature-saved-jobs
+[33m47776a1[m HEAD@{51}: checkout: moving from main to new-branch-name
+[33m47776a1[m HEAD@{52}: commit: added extra fields in saved jobs layout
+[33m618a27a[m HEAD@{53}: commit: resolved the error
+[33m4519e83[m HEAD@{54}: commit: implemented dialogue animation on logout confirmation
+[33mc976dee[m HEAD@{55}: commit: fixed glitches
+[33mc23aa18[m HEAD@{56}: commit: added and implemented a progress bar while saving the job
+[33mcdbc08f[m HEAD@{57}: commit: made the consistency between backend and local database
+[33m48f6aae[m HEAD@{58}: commit: implemented functionality to show saved jobs
+[33m080ed29[m HEAD@{59}: commit: implemented theme to show title bar
+[33m4a36d5f[m HEAD@{60}: commit: created saved jobs adapter to show in the saved jobs activity
+[33m825c520[m HEAD@{61}: commit: resolved the error occurred due to refactor
+[33me76edaa[m HEAD@{62}: commit: implemented method to interact with room database
+[33m1e063fa[m HEAD@{63}: commit: created activity to show the saved jobs
+[33m4359c19[m HEAD@{64}: commit: created converter to stored the saved user in room database
+[33m8034307[m HEAD@{65}: commit: modified changes
+[33meafeb69[m HEAD@{66}: commit: removed fragment and components
+[33m15bf56f[m HEAD@{67}: commit: removed placeholder
+[33m272adf0[m HEAD@{68}: commit: removed fragment launching
+[33mb45001a[m HEAD@{69}: commit: created saved jobs activity
+[33md03a6c0[m HEAD@{70}: commit: updated code for saved jobs
+[33m101a307[m HEAD@{71}: commit: created saved jobs fragment
+[33m9f99116[m HEAD@{72}: commit: added fragment container in MainActivity.java
+[33mea3c0da[m HEAD@{73}: commit: created saved jobs layout
+[33m119d01b[m HEAD@{74}: commit: improved the code
+[33mcea1fc4[m HEAD@{75}: commit: updated room database schema
+[33m1d329e5[m HEAD@{76}: commit: added configuration class for backend url
+[33mf731d78[m HEAD@{77}: commit: added full description field in job along with short description
+[33m49a218b[m HEAD@{78}: commit: implemented bottom navigation
+[33m13f1e77[m HEAD@{79}: commit: created bottom navigation menu
+[33m2a8fe00[m HEAD@{80}: commit: added bottom navigation on home screen
+[33mfd1cc8e[m HEAD@{81}: commit: improve the readiness
+[33m594bdda[m HEAD@{82}: commit: updated the dependency file
+[33m2c5a8cb[m HEAD@{83}: commit: created configuration class to improve the maintenance
+[33mbf0b657[m HEAD@{84}: commit: added functionality to update the icon based on save/unsave
+[33m8fcbd67[m HEAD@{85}: commit: introduce a variable to save/unsave the job
+[33m0222d1c[m HEAD@{86}: commit: updated the local url with public url and cleaned the code
+[33mf336ef7[m HEAD@{87}: commit: updated the local url with Render hosted spring boot url
+[33maba6617[m HEAD@{88}: commit: added tag in the save icon to track job to save or unsave
+[33mf9c330a[m HEAD@{89}: commit: remove the warnings
+[33mdb0a0bd[m HEAD@{90}: commit: cleaned the code
+[33m12b5e42[m HEAD@{91}: commit: implemented jobdetails fetching functionality
+[33m57311c5[m HEAD@{92}: commit: storing jobId to shared pref on which it is clicked
+[33mb88947f[m HEAD@{93}: commit: modified the saved jobs
+[33m6f387c9[m HEAD@{94}: commit: fetching saved jobs in background
+[33m88fdbda[m HEAD@{95}: commit: added logs
+[33m6ebca98[m HEAD@{96}: commit: getting full description from flask backend
+[33mba334c8[m HEAD@{97}: commit: reduced the timeout second
+[33mc3982cb[m HEAD@{98}: commit: added logs to better debugging
+[33me3d3b5a[m HEAD@{99}: commit: changes the variable
+[33m961dc89[m HEAD@{100}: commit: updated the methods to save jobs
+[33mf155169[m HEAD@{101}: commit: update the routes of save method
+[33m69d1571[m HEAD@{102}: commit: create a method to save jobs to user profile
+[33m9e67965[m HEAD@{103}: commit: setting onclcik on save button
+[33mf002a7c[m HEAD@{104}: commit: added saved jobs class
+[33m8ea58fe[m HEAD@{105}: commit: adding rows dynamically
+[33m66b54de[m HEAD@{106}: commit: adding tables to user profile to show the saved jobs
+[33m7f1049b[m HEAD@{107}: commit: remove profile updating by popup dialogue
+[33me3922b7[m HEAD@{108}: commit: phone number checking updated
+[33m40fc1b5[m HEAD@{109}: commit: phone number checking updated
+[33mec11e3d[m HEAD@{110}: commit: implementing the save unsave functionality
+[33m2f3fb7c[m HEAD@{111}: commit: created save unsave job icon
+[33m7b16f71[m HEAD@{112}: commit: updated user model
+[33m36a80fd[m HEAD@{113}: commit: updated jobcard
+[33m3d7e05f[m HEAD@{114}: commit: logging the updation
+[33mce9968c[m HEAD@{115}: commit: resolved the warnings
+[33mcd9dd30[m HEAD@{116}: commit: implemented full functionality of password update
+[33m238718f[m HEAD@{117}: commit: updated the layout of update password
+[33m062999f[m HEAD@{118}: commit: updated the layout of update password
+[33ma64483e[m HEAD@{119}: commit: updated the layout of update password
+[33mc1af242[m HEAD@{120}: commit: password check working fine
+[33m32ba203[m HEAD@{121}: commit: modify password layout
+[33m0b91a84[m HEAD@{122}: commit: setting up update password dialogue
+[33maf718d1[m HEAD@{123}: commit: popping update password dialogue
+[33m7f3df5d[m HEAD@{124}: commit: created dialogue layout to update password
+[33m967cdde[m HEAD@{125}: commit: updated user registration method
+[33m26ff7d2[m HEAD@{126}: commit: added functionality to check email already exist
+[33meeba112[m HEAD@{127}: commit: added register button
+[33m2d3f2d7[m HEAD@{128}: commit: updating profile layout
+[33mc7c1a93[m HEAD@{129}: commit: checking credentials through backend only
+[33m27da215[m HEAD@{130}: commit: updating user layout
+[33m2350959[m HEAD@{131}: commit: update the profile layout
+[33m33b68c5[m HEAD@{132}: commit: made some changes to navigation drawer
+[33mdda99d2[m HEAD@{133}: commit: remove the extra buttons
+[33med2dfdc[m HEAD@{134}: commit: set profile menu in profile activity
+[33m2fe7f14[m HEAD@{135}: commit: created user profile menu
+[33m9d0630a[m HEAD@{136}: reset: moving to HEAD
+[33m9d0630a[m HEAD@{137}: commit: fetch jobs implemented
+[33m081f20b[m HEAD@{138}: commit: checking the availability of user name
+[33mde4b2be[m HEAD@{139}: commit: added username availability textview
+[33m73c5227[m HEAD@{140}: commit: added user name availability checkup functionality
+[33m9449f3b[m HEAD@{141}: commit: added profile updation functionality
+[33m50d3c38[m HEAD@{142}: commit: updating user profile
+[33m02303f3[m HEAD@{143}: commit: implemented user validation using email and pass
+[33mc7b01b3[m HEAD@{144}: commit: storing the details locally
+[33m5490f28[m HEAD@{145}: commit: storing the user session in Shared preferences
+[33md1528ec[m HEAD@{146}: Branch: renamed refs/heads/main to refs/heads/main
+[33md1528ec[m HEAD@{148}: commit (initial): first commit
