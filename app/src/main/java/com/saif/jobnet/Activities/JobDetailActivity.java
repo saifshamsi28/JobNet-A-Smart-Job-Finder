@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.saif.jobnet.GeminiAPI;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Config;
@@ -62,7 +64,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 currentUser=jobDao.getCurrentUser(userId);
             }
         }).start();
-        setUpShimmerEffect();
+        setUpShimmerEffect(true);
 
         Intent intent = getIntent();
         String jobId = intent.getStringExtra("jobId");
@@ -256,7 +258,7 @@ public class JobDetailActivity extends AppCompatActivity {
         call.enqueue(new Callback<Job>() {
             @Override
             public void onResponse(@NonNull Call<Job> call, @NonNull Response<Job> response) {
-                setUpShimmerEffect();
+                setUpShimmerEffect(false);
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
@@ -268,7 +270,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 } else {
                     Log.d("API Response in JobDetail", "Response not successful: " + response.errorBody());
                     Toast.makeText(JobDetailActivity.this, "Failed to fetch job details", Toast.LENGTH_SHORT).show();
-                    setUpShimmerEffect();
+                    setUpShimmerEffect(false);
                     finish();
                 }
             }
@@ -277,117 +279,161 @@ public class JobDetailActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Job> call, @NonNull Throwable t) {
                 Log.e("API Error", "Failed to connect to Spring Boot server", t);
                 Toast.makeText(JobDetailActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                setUpShimmerEffect();
+                setUpShimmerEffect(false);
                 finish();
             }
         });
     }
 
     private void setDescriptionInViews(Job job) {
-        if(!job.getUrl().contains("indeed.com")) {
-        Resources res = getResources();
-            String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
-            // Format shortDescription with bullet points
-            String description = job.getShortDescription().replaceAll("\n+", "\n");
-            String[] contentItems = description.split("\n");
+        if (!job.getUrl().contains("indeed.com")) {
+            setUpShimmerEffect(true); // Start shimmer effect
 
-            SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-            for (String item : contentItems) {
-                item = item.trim(); // Trim each item for cleaner formatting
-                boolean isHeading = false;
-                for (String heading : headingsArray) {
-                    if (item.length() < 25 && item.contains(heading)) {
-                        isHeading = true;
-                        break;
-                    }
+            GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
+                @Override
+                public void onSuccess(String formattedText) {
+                    runOnUiThread(() -> {
+                        // Convert **bold** style to proper HTML formatting
+                        String formattedHtml = formatTextWithHtml(formattedText);
+
+                        // Set formatted text with HTML rendering
+                        binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
+
+                        setUpShimmerEffect(false); // Stop shimmer effect
+                    });
                 }
 
-                if (isHeading) {
-                    SpannableString boldHeading = new SpannableString(item);
-                    boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-                    boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
-                    spannableContent.append(boldHeading).append("\n");
-                    continue;
+                @Override
+                public void onFailure(String error) {
+                    runOnUiThread(() -> {
+                        binding.descriptionContent.setText("Error: " + error);
+                        setUpShimmerEffect(false);
+                    });
                 }
-
-                // Check if the line contains a heading (e.g., "Key Skills:", "Experience:", etc.)
-                if (item.contains(":") && !item.contains("http")) {
-                    String[] parts = item.split(":", 2);
-                    String heading = parts[0] + ":";
-                    String content = parts.length > 1 ? parts[1] : "";
-
-                    // Apply bold and larger text to headings
-                    SpannableString headingSpannable = new SpannableString(heading);
-                    headingSpannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, headingSpannable.length(), 0);
-                    headingSpannable.setSpan(new RelativeSizeSpan(1.2f), 0, headingSpannable.length(), 0); // 1.2x size for headings
-
-                    // Append formatted heading and content
-                    spannableContent.append(headingSpannable).append(content).append("\n");
-                } else if (item.contains("http")) {
-                    // For clickable links
-                    SpannableString linkSpannable = new SpannableString(item);
-                    linkSpannable.setSpan(new URLSpan(item), 0, linkSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spannableContent.append(linkSpannable).append("\n");
-                } else {
-                    SpannableString bulletItem = new SpannableString(item);
-                    bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    spannableContent.append(bulletItem).append("\n");
-                }
-            }
-            // Set formatted text to TextView and save it in database
-            String rating = job.getRating();
-            if (rating == null || rating.equals("null")) {
-                binding.jobRating.setVisibility(View.GONE);
-                binding.ratingImg.setVisibility(View.GONE);
-            } else {
-                binding.jobRating.setVisibility(View.VISIBLE);
-                binding.jobRating.setText(rating);
-            }
-
-            //to set reviews
-            setJobReviews(job.getReview());
-
-            String openings = job.getOpenings();
-            if (openings == null || job.getOpenings().equals("N/A")) {
-                binding.openings.setVisibility(View.GONE);
-                binding.openingsLogo.setVisibility(View.GONE);
-            } else {
-                binding.openings.setVisibility(View.VISIBLE);
-                binding.openingsLogo.setVisibility(View.VISIBLE);
-                binding.openings.setText("Openings: " + job.getOpenings().trim());
-            }
-            String applicants = job.getApplicants();
-            if (applicants == null || job.getApplicants().equals("N/A")) {
-                binding.applicants.setVisibility(View.GONE);
-                binding.applicantsLogo.setVisibility(View.GONE);
-            } else {
-                binding.applicants.setVisibility(View.VISIBLE);
-                binding.applicantsLogo.setVisibility(View.VISIBLE);
-                binding.applicants.setText("Applicants: " + job.getApplicants().trim());
-            }
-            binding.postDate.setText("Posted: " + job.getPostDate().trim());
-            binding.jobTitle.setText(job.getTitle());
-            binding.companyName.setText(job.getCompany());
-            binding.location.setText(job.getLocation());
-            binding.salary.setText(job.getSalary());
-            binding.descriptionContent.setText(spannableContent);
-//                        System.out.println("shortDescription: "+ spannableContent);
-            binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clickable links
-
-            // Save the job in the database with the formatted shortDescription
-            job.setShortDescription(description);
-            currentUser.getSavedJobs().add(job);
-            currentUser.setSavedJobs(currentUser.getSavedJobs());
-            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
+            });
         } else {
             displayFormattedDescription(job);
-//            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), job.getShortDescription())).start();
         }
     }
 
+
+    private String formatTextWithHtml(String text) {
+        // Replace Markdown-style bold **Heading** with HTML <b>Heading</b>
+        text = text.replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>");
+
+        // Convert new lines to <br> for proper line breaks in TextView
+        text = text.replace("\n", "<br>");
+
+        return text;
+    }
+
+
+
+//    private void setDescriptionInViews(Job job) {
+//        if(!job.getUrl().contains("indeed.com")) {
+//        Resources res = getResources();
+//            String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
+//            // Format shortDescription with bullet points
+//            String description = job.getShortDescription().replaceAll("\n+", "\n");
+//            String[] contentItems = description.split("\n");
+//
+//            SpannableStringBuilder spannableContent = new SpannableStringBuilder();
+//            for (String item : contentItems) {
+//                item = item.trim(); // Trim each item for cleaner formatting
+//                boolean isHeading = false;
+//                for (String heading : headingsArray) {
+//                    if (item.length() < 25 && item.contains(heading)) {
+//                        isHeading = true;
+//                        break;
+//                    }
+//                }
+//
+//                if (isHeading) {
+//                    SpannableString boldHeading = new SpannableString(item);
+//                    boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
+//                    boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
+//                    spannableContent.append(boldHeading).append("\n");
+//                    continue;
+//                }
+//
+//                // Check if the line contains a heading (e.g., "Key Skills:", "Experience:", etc.)
+//                if (item.contains(":") && !item.contains("http")) {
+//                    String[] parts = item.split(":", 2);
+//                    String heading = parts[0] + ":";
+//                    String content = parts.length > 1 ? parts[1] : "";
+//
+//                    // Apply bold and larger text to headings
+//                    SpannableString headingSpannable = new SpannableString(heading);
+//                    headingSpannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, headingSpannable.length(), 0);
+//                    headingSpannable.setSpan(new RelativeSizeSpan(1.2f), 0, headingSpannable.length(), 0); // 1.2x size for headings
+//
+//                    // Append formatted heading and content
+//                    spannableContent.append(headingSpannable).append(content).append("\n");
+//                } else if (item.contains("http")) {
+//                    // For clickable links
+//                    SpannableString linkSpannable = new SpannableString(item);
+//                    linkSpannable.setSpan(new URLSpan(item), 0, linkSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    spannableContent.append(linkSpannable).append("\n");
+//                } else {
+//                    SpannableString bulletItem = new SpannableString(item);
+//                    bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    spannableContent.append(bulletItem).append("\n");
+//                }
+//            }
+//            // Set formatted text to TextView and save it in database
+//            String rating = job.getRating();
+//            if (rating == null || rating.equals("null")) {
+//                binding.jobRating.setVisibility(View.GONE);
+//                binding.ratingImg.setVisibility(View.GONE);
+//            } else {
+//                binding.jobRating.setVisibility(View.VISIBLE);
+//                binding.jobRating.setText(rating);
+//            }
+//
+//            //to set reviews
+//            setJobReviews(job.getReview());
+//
+//            String openings = job.getOpenings();
+//            if (openings == null || job.getOpenings().equals("N/A")) {
+//                binding.openings.setVisibility(View.GONE);
+//                binding.openingsLogo.setVisibility(View.GONE);
+//            } else {
+//                binding.openings.setVisibility(View.VISIBLE);
+//                binding.openingsLogo.setVisibility(View.VISIBLE);
+//                binding.openings.setText("Openings: " + job.getOpenings().trim());
+//            }
+//            String applicants = job.getApplicants();
+//            if (applicants == null || job.getApplicants().equals("N/A")) {
+//                binding.applicants.setVisibility(View.GONE);
+//                binding.applicantsLogo.setVisibility(View.GONE);
+//            } else {
+//                binding.applicants.setVisibility(View.VISIBLE);
+//                binding.applicantsLogo.setVisibility(View.VISIBLE);
+//                binding.applicants.setText("Applicants: " + job.getApplicants().trim());
+//            }
+//            binding.postDate.setText("Posted: " + job.getPostDate().trim());
+//            binding.jobTitle.setText(job.getTitle());
+//            binding.companyName.setText(job.getCompany());
+//            binding.location.setText(job.getLocation());
+//            binding.salary.setText(job.getSalary());
+//            binding.descriptionContent.setText(spannableContent);
+////                        System.out.println("shortDescription: "+ spannableContent);
+//            binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clickable links
+//
+//            // Save the job in the database with the formatted shortDescription
+//            job.setShortDescription(description);
+//            currentUser.getSavedJobs().add(job);
+//            currentUser.setSavedJobs(currentUser.getSavedJobs());
+//            new Thread(() -> jobDao.insertOrUpdateUser(currentUser)).start();
+//        } else {
+//            displayFormattedDescription(job);
+////            new Thread(() -> jobDao.updateJobDescription(job.getUrl(), job.getShortDescription())).start();
+//        }
+//    }
+
     //set up shimmer effect
-    private void setUpShimmerEffect() {
-        if(binding.shimmerViewContainer.isShimmerStarted()){
+    private void setUpShimmerEffect(boolean toStart) {
+        if(!toStart){
             binding.shimmerViewContainer.setVisibility(View.GONE);
             binding.shimmerViewContainer.stopShimmer();
             binding.jobDetailsCardview.setVisibility(View.VISIBLE);
@@ -480,7 +526,7 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.applicantsLogo.setVisibility(View.VISIBLE);
             binding.applicants.setText("Applicants: " + job.getApplicants().trim());
         }
-        setUpShimmerEffect();
+        setUpShimmerEffect(false);
     }
 
     // Helper method to display job details from the database
@@ -495,7 +541,7 @@ public class JobDetailActivity extends AppCompatActivity {
         }
         Resources res = getResources();
         String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
-        setUpShimmerEffect();
+        setUpShimmerEffect(false);
         String rating= job.getRating();
         System.out.println("rating : "+rating);
         if (rating == null || rating.equals("N/A")) {

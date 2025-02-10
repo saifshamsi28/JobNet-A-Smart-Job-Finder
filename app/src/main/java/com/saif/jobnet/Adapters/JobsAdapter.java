@@ -195,7 +195,6 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 saveJobs.setVisibility(View.VISIBLE);
             }
         });
-
     }
 
     @Override
