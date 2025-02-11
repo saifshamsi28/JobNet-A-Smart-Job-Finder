@@ -183,9 +183,9 @@ public class SearchActivity extends AppCompatActivity {
                 " salary: "+salary);
 
         formatSearchedQuery(title,location,company,jobType,salaryInString);
-        String BASE_URL= Config.BASE_URL;
+//        String BASE_URL= Config.BASE_URL;
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://10.162.1.53:8080")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)

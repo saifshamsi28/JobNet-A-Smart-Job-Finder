@@ -114,6 +114,12 @@ public class ProfileActivity extends AppCompatActivity {
                 editor.apply();
                 dialog.dismiss();
                 dialog.cancel();
+                //clear the local database also
+                new Thread(()
+                        -> {
+                    jobDao.clearUser();
+                }
+                ).start();
                 Toast.makeText(ProfileActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
                 redirectToLogin();
                 finish();

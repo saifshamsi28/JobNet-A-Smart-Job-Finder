@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -362,9 +364,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to fetch job data from API
     private void fetchJobs(String query, String home) {
-        String BASE_URL = Config.BASE_URL;
+//        String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://10.162.1.53:8080")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -416,13 +418,25 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
-//        for(int i=0;i<10;i++){
-//            savedJobs.add(jobs.get(i));
-//        }
+        int i=0;
+        for(Job job:jobs){
+            if(i<10){
+                //print each field of job
+                System.out.println(job);
+                i++;
+            }else {
+                break;
+            }
+        }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
         binding.recyclerViewJobs.setAdapter(jobsAdapter);
 //        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(this));
+        LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(this, R.anim.fall_down_anim);
+        binding.recyclerViewJobs.setLayoutAnimation(controller);
+        binding.recyclerViewJobs.scheduleLayoutAnimation();
+
         new Thread(() -> jobDao.insertAllJobs(jobs)).start();
     }
 

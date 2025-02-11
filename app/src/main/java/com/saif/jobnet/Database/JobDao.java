@@ -49,6 +49,5 @@ public interface JobDao {
 
     // Clear all user data (e.g., during logout)
     @Query("DELETE FROM user")
-    void clearUsers();
-
+    void clearUser();
 }

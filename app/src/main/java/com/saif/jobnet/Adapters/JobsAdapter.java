@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -119,8 +121,15 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 System.out.println("url to visit: "+ job.getUrl());
                 context.startActivity(intent);
             }});
+
+        // Set animation when a job item appears
+        setAnimation(holder.itemView, position);
     }
 
+    private void setAnimation(View view, int position) {
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.item_slide_in);
+        view.startAnimation(animation);
+    }
     private void saveJobToBackend(Job job, ImageView saveJobs) {
         String BASE_URL = Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
