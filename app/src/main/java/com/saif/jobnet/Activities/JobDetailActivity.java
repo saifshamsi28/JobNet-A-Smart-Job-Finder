@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.saif.jobnet.GeminiAPI;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.JobUpdateDTO;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Network.ApiService;
@@ -92,6 +93,7 @@ public class JobDetailActivity extends AppCompatActivity {
     private void fetchFullDetails(String jobId, String url) {
         new Thread(() -> {
             currentJob = jobDao.getJobByUrl(url);
+            System.out.println("JobDetailActivity: currentJob(fetched from local database: "+currentJob);
             runOnUiThread(() -> {
                 if (currentJob !=null && currentJob.getFullDescription()!=null) {
                     // Job found in database; display it directly
@@ -162,21 +164,15 @@ public class JobDetailActivity extends AppCompatActivity {
                     public void onSuccess(String formattedText) {
                         runOnUiThread(() -> {
                             String formattedHtml = formatTextWithHtml(formattedText);
-                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
+//                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
 
                             //save job in database
-                            job.setFullDescription(formattedText);
-                            currentJob.setFullDescription(formattedText);
+                            job.setFullDescription(formattedHtml);
+                            currentJob.setFullDescription(formattedHtml);
                             new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), formattedHtml)).start();
-
+                            updateJobDescriptionOnServer(currentJob);
                             setUpShimmerEffect(false); // Stop shimmer effect
                             displayJobDetails(currentJob);
-                            // Start animations after data is loaded
-//                            animateSequentially(
-//                                    binding.jobDetailsCardview,
-//                                    binding.descriptionHeading,
-//                                    binding.descriptionCardview
-//                            );
                         });
                     }
 
@@ -231,6 +227,37 @@ public class JobDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void updateJobDescriptionOnServer(Job job) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.162.1.53:8080/")
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService jobApiService = retrofit.create(ApiService.class);
+        JobUpdateDTO jobUpdateDTO = new JobUpdateDTO(job.getUrl(), job.getFullDescription());
+
+        Call<Void> call = jobApiService.updateJobDescription(job.getJobId(),jobUpdateDTO);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("JobUpdate", "Job description updated successfully");
+                } else {
+                    Log.e("JobUpdate", "Failed to update job description: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("JobUpdate", "Error: " + t.getMessage());
+            }
+        });
+    }
 
 //    private void setDescriptionInViews(Job job) {
 //        if(!job.getUrl().contains("indeed.com")) {
@@ -434,6 +461,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
     // Helper method to display job details from the database
     private void displayJobDetails(Job job) {
+        System.out.println("job details in JobDetailActivity: "+job);
         if(job ==null){
             Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
             return;
