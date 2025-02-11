@@ -216,6 +216,15 @@ public class SearchActivity extends AppCompatActivity {
                                     System.out.println(job.getLocation());
                                     System.out.println(job.getCompany());
                                     System.out.println(job.getSalary());
+//                                    System.out.println(job.getJobType());
+//                                    System.out.println(job.getUrl());
+                                    System.out.println(job.getPostDate());
+                                    System.out.println(job.getRating());
+                                    System.out.println(job.getReview());
+                                    System.out.println(job.getShortDescription());
+//                                    System.out.println(job.getReviewsRating());
+//                                    System.out.println(job.getReviewsCount());
+
                                 }
                             }else {
                                 System.out.println("No jobs found");

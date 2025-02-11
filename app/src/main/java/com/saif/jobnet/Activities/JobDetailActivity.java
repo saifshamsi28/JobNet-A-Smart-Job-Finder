@@ -1,10 +1,14 @@
 package com.saif.jobnet.Activities;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -48,6 +52,7 @@ public class JobDetailActivity extends AppCompatActivity {
     private AppDatabase appDatabase;
     private JobDao jobDao;
     private User currentUser;
+    private Job currentJob;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,18 +63,19 @@ public class JobDetailActivity extends AppCompatActivity {
         jobDao = appDatabase.jobDao();
         SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                currentUser=jobDao.getCurrentUser(userId);
-            }
-        }).start();
-        setUpShimmerEffect(true);
 
         Intent intent = getIntent();
         String jobId = intent.getStringExtra("jobId");
         System.out.println("JobDetailActivity: jobId got from intent: "+jobId);
         String url = intent.getStringExtra("url");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                currentUser=jobDao.getCurrentUser(userId);
+//                currentJob=jobDao.getJobByUrl(url);
+            }
+        }).start();
+        setUpShimmerEffect(true);
 
         Log.d("JobDetailActivity", "Received URL: calling fetchFullDetails");
         fetchFullDetails(jobId,url);
@@ -85,11 +91,11 @@ public class JobDetailActivity extends AppCompatActivity {
 
     private void fetchFullDetails(String jobId, String url) {
         new Thread(() -> {
-            Job cachedJob = jobDao.getJobByUrl(url);
+            currentJob = jobDao.getJobByUrl(url);
             runOnUiThread(() -> {
-                if (cachedJob !=null && cachedJob.getShortDescription().length()>250) {
+                if (currentJob !=null && currentJob.getFullDescription()!=null) {
                     // Job found in database; display it directly
-                    displayJobDetails(cachedJob);
+                    displayJobDetails(currentJob);
                 } else {
                     fetchFromApi(jobId,url);
                 }
@@ -97,153 +103,13 @@ public class JobDetailActivity extends AppCompatActivity {
         }).start();
     }
 
-//    private void fetchFromApi(Job url) {
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("http://10.162.1.53:5000")
-//                .client(new OkHttpClient.Builder()
-//                        .connectTimeout(60, TimeUnit.SECONDS)
-//                        .readTimeout(60, TimeUnit.SECONDS)
-//                        .writeTimeout(60, TimeUnit.SECONDS)
-//                        .build())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//        System.out.println("JobDetailActivity: url: "+url);
-//        ApiService apiService = retrofit.create(ApiService.class);
-//        Call<Job> call = apiService.getJobDescription(url);
-//        Log.d("API Call", "URL: " + url);
-//
-//        call.enqueue(new Callback<Job>() {
-//            @Override
-//            public void onResponse(Call<Job> call, Response<Job> response) {
-//                if (response.isSuccessful()) {
-//                    Job job = response.body();
-//                    if (job != null){
-//                            if(!job.getUrl().contains("indeed.com")) {
-//                                System.out.println("JobDetailActivity: shortDescription: "+job.getShortDescription());
-//                                Resources res = getResources();
-//                                Job[] headingsArray = res.getStringArray(R.array.job_heading_terms);
-//                                // Format shortDescription with bullet points
-//                                Job shortDescription = job.getShortDescription().replaceAll("\n+", "\n");
-//                                Job[] contentItems = shortDescription.split("\n");
-//
-//                                SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-//                                for (Job item : contentItems) {
-//                                    item = item.trim(); // Trim each item for cleaner formatting
-//                                    boolean isHeading = false;
-//                                    for (Job heading : headingsArray) {
-//                                        if (item.length() < 25 && item.contains(heading)) {
-//                                            isHeading = true;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (isHeading) {
-//                                        SpannableString boldHeading = new SpannableString(item);
-//                                        boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-//                                        boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
-//                                        spannableContent.append(boldHeading).append("\n");
-//                                        continue;
-//                                    }
-//
-//                                    // Check if the line contains a heading (e.g., "Key Skills:", "Experience:", etc.)
-//                                    if (item.contains(":") && !item.contains("http")) {
-//                                        Job[] parts = item.split(":", 2);
-//                                        Job heading = parts[0] + ":";
-//                                        Job content = parts.length > 1 ? parts[1] : "";
-//
-//                                        // Apply bold and larger text to headings
-//                                        SpannableString headingSpannable = new SpannableString(heading);
-//                                        headingSpannable.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, headingSpannable.length(), 0);
-//                                        headingSpannable.setSpan(new RelativeSizeSpan(1.2f), 0, headingSpannable.length(), 0); // 1.2x size for headings
-//
-//                                        // Append formatted heading and content
-//                                        spannableContent.append(headingSpannable).append(content).append("\n");
-//                                    } else if (item.contains("http")) {
-//                                        // For clickable links
-//                                        SpannableString linkSpannable = new SpannableString(item);
-//                                        linkSpannable.setSpan(new URLSpan(item), 0, linkSpannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                                        spannableContent.append(linkSpannable).append("\n");
-//                                    } else {
-//                                        SpannableString bulletItem = new SpannableString(item);
-//                                        bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                                        spannableContent.append(bulletItem).append("\n");
-//                                    }
-//                                }
-//                               setUpShimmerEffect();
-//
-//                                // Set formatted text to TextView and save it in database
-//                                Job rating = job.getRating();
-//                                if (rating == null || rating.equals("null")) {
-//                                    binding.jobRating.setVisibility(View.GONE);
-//                                    binding.ratingImg.setVisibility(View.GONE);
-//                                } else {
-//                                    binding.jobRating.setVisibility(View.VISIBLE);
-//                                    binding.jobRating.setText(rating);
-//                                }
-//
-//                                //to set reviews
-//                                setJobReviews(job.getReview());
-//
-//                                Job openings = job.getOpenings();
-//                                if (openings == null || job.getOpenings().equals("N/A")) {
-//                                    binding.openings.setVisibility(View.GONE);
-//                                    binding.openingsLogo.setVisibility(View.GONE);
-//                                } else {
-//                                    binding.openings.setVisibility(View.VISIBLE);
-//                                    binding.openingsLogo.setVisibility(View.VISIBLE);
-//                                    binding.openings.setText("Openings: " + job.getOpenings().trim());
-//                                }
-//                                Job applicants = job.getApplicants();
-//                                if (applicants == null || job.getApplicants().equals("N/A")) {
-//                                    binding.applicants.setVisibility(View.GONE);
-//                                    binding.applicantsLogo.setVisibility(View.GONE);
-//                                } else {
-//                                    binding.applicants.setVisibility(View.VISIBLE);
-//                                    binding.applicantsLogo.setVisibility(View.VISIBLE);
-//                                    binding.applicants.setText("Applicants: " + job.getApplicants().trim());
-//                                }
-//                                binding.postDate.setText("Posted: " + job.getPostDate().trim());
-//                                binding.jobTitle.setText(job.getTitle());
-//                                binding.companyName.setText(job.getCompany());
-//                                binding.location.setText(job.getLocation());
-//                                binding.salary.setText(job.getSalary());
-//                                binding.descriptionContent.setText(spannableContent);
-////                        System.out.println("shortDescription: "+ spannableContent);
-//                                binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance()); // Enable clickable links
-//
-//                                // Save the job in the database with the formatted shortDescription
-//                                job.setShortDescription(shortDescription);
-////                        System.out.println("after update, shortDescription: "+job.getShortDescription());
-//                                new Thread(() -> jobDao.updateJobDescription(url, shortDescription)).start();
-//                            }else {
-//                                displayFormattedDescription(job);
-//                                new Thread(() -> jobDao.updateJobDescription(url, job.getShortDescription())).start();
-//                            }
-//                    } else {
-//                        Log.d("API Response", "No job details found");
-//                    }
-//                } else {
-//                    Log.d("API Response", "Response not successful: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Job> call, Throwable throwable) {
-//                Log.e("API Error", "Failed to connect to Flask server", throwable);
-//                setUpShimmerEffect();
-//                Toast.makeText(JobDetailActivity.this, "Error: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
     private void fetchFromApi(String jobId, String url) {
         Log.d("JobDetailActivity", "Received URL: calling fetchFromApi");
         Log.d("JobDetailActivity", "jobId to fetch: "+jobId);
         Log.d("JobDetailActivity", "url to fetch: "+url);
-        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
+//        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://10.162.1.53:5000/")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -253,8 +119,9 @@ public class JobDetailActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<Job> call = apiService.getJobDescription(jobId,url);
 
+        Call<Job> call = apiService.getJobDescriptionFromFlask(url);
+        System.out.println("JobDetailActivity: url hitting: "+retrofit.baseUrl());
         call.enqueue(new Callback<Job>() {
             @Override
             public void onResponse(@NonNull Call<Job> call, @NonNull Response<Job> response) {
@@ -289,30 +156,41 @@ public class JobDetailActivity extends AppCompatActivity {
         if (!job.getUrl().contains("indeed.com")) {
             setUpShimmerEffect(true); // Start shimmer effect
 
-            GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
-                @Override
-                public void onSuccess(String formattedText) {
-                    runOnUiThread(() -> {
-                        // Convert **bold** style to proper HTML formatting
-                        String formattedHtml = formatTextWithHtml(formattedText);
+            if(job.getShortDescription().length() > 25) {
+                GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
+                    @Override
+                    public void onSuccess(String formattedText) {
+                        runOnUiThread(() -> {
+                            String formattedHtml = formatTextWithHtml(formattedText);
+                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
 
-                        // Set formatted text with HTML rendering
-                        binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
+                            //save job in database
+                            job.setFullDescription(formattedText);
+                            currentJob.setFullDescription(formattedText);
+                            new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), formattedHtml)).start();
 
-                        setUpShimmerEffect(false); // Stop shimmer effect
-                    });
-                }
+                            setUpShimmerEffect(false); // Stop shimmer effect
+                            displayJobDetails(currentJob);
+                            // Start animations after data is loaded
+//                            animateSequentially(
+//                                    binding.jobDetailsCardview,
+//                                    binding.descriptionHeading,
+//                                    binding.descriptionCardview
+//                            );
+                        });
+                    }
 
-                @Override
-                public void onFailure(String error) {
-                    runOnUiThread(() -> {
-                        binding.descriptionContent.setText("Error: " + error);
-                        setUpShimmerEffect(false);
-                    });
-                }
-            });
-        } else {
-            displayFormattedDescription(job);
+                    @Override
+                    public void onFailure(String error) {
+                        runOnUiThread(() -> {
+                            binding.descriptionContent.setText("Error: " + error);
+                            setUpShimmerEffect(false);
+                        });
+                    }
+                });
+            } else {
+                displayFormattedDescription(job);
+            }
         }
     }
 
@@ -327,6 +205,31 @@ public class JobDetailActivity extends AppCompatActivity {
         return text;
     }
 
+    private void animateJobDetails(View view) {
+        view.setVisibility(View.VISIBLE); // Ensure it's visible before animating
+
+        // Move from left to right (Translation X)
+        ObjectAnimator slideIn = ObjectAnimator.ofFloat(view, "translationX", -500f, 0f);
+        slideIn.setDuration(500); // Duration 500ms
+
+        // Fade-in Effect
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+        fadeIn.setDuration(500);
+
+        // Play both animations together
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(slideIn, fadeIn);
+        animatorSet.start();
+    }
+
+    private void animateSequentially(View... views) {
+        long delay = 200; // Initial delay
+        for (View view : views) {
+            view.setVisibility(View.INVISIBLE); // Hide initially
+            new Handler(Looper.getMainLooper()).postDelayed(() -> animateJobDetails(view), delay);
+            delay += 200; // Increment delay for next item
+        }
+    }
 
 
 //    private void setDescriptionInViews(Job job) {
@@ -581,64 +484,76 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.applicants.setText("| Applicants: "+ job.getApplicants().trim());
         }
 
+        String description="No job details found";
+        if(job.getFullDescription()!=null)
+            description= job.getFullDescription();
+        else
+            Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
+        binding.descriptionContent.setText(Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY));
+        // Start animations after data is loaded
+        animateSequentially(
+                binding.jobDetailsCardview,
+                binding.descriptionHeading,
+                binding.descriptionCardview
+        );
         // Retrieve the plain text shortDescription from the database
-        String description = job.getShortDescription();
-
-        // Split the shortDescription into lines to format with bullets
-        String[] contentItems = description.split("\n");
-
-        // Use SpannableStringBuilder to format each line with bullets
-        SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-        for (String item : contentItems) {
-            int start = spannableContent.length();
-            boolean isHeading = false;
-            for (String heading : headingsArray) {
-                if (item.length() < 25 && item.contains(heading)) {
-                    isHeading = true;
-                    break;
-                }
-            }
-
-            if (isHeading) {
-                SpannableString boldHeading = new SpannableString(item);
-                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
-                spannableContent.append(boldHeading).append("\n");
-                continue;
-            }
-            //to bold the headings like "Key Skills", "Qualifications","Experience"
-            if(item.contains(":") && !item.contains("http")){
-                String[] parts = item.split(":", 2);
-                String heading = parts[0]+":";
-                String content = parts[1];
-                SpannableString boldHeading = new SpannableString(heading);
-                //
-                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0); // 1.2x size for headings
-//                item=item.replace(heading,"");
-                spannableContent.append(boldHeading).append(content).append("\n");
-                continue;
-            }else if(item.contains("https")){
-                // to make the link clickable
-                SpannableString clickableLink = new SpannableString(item);
-                clickableLink.setSpan(new URLSpan(item), 0, clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                //parsing job to url
-
-                Linkify.addLinks(binding.descriptionContent, Linkify.WEB_URLS);
-                spannableContent.append(clickableLink).append("\n");
-                continue;
-            }else{
-                SpannableString bulletItem = new SpannableString(item);
-                //to check whether items already starts with bullet points ,if yes then don't add bullets
-                if(!bulletItem.toString().startsWith("•"))
-                    bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spannableContent.append(bulletItem).append("\n");
-            }
+//        String description = job.getShortDescription();
+//
+//        // Split the shortDescription into lines to format with bullets
+//        String[] contentItems = description.split("\n");
+//
+//        // Use SpannableStringBuilder to format each line with bullets
+//        SpannableStringBuilder spannableContent = new SpannableStringBuilder();
+//        for (String item : contentItems) {
+//            int start = spannableContent.length();
+//            boolean isHeading = false;
+//            for (String heading : headingsArray) {
+//                if (item.length() < 25 && item.contains(heading)) {
+//                    isHeading = true;
+//                    break;
+//                }
+//            }
+//
+//            if (isHeading) {
+//                SpannableString boldHeading = new SpannableString(item);
+//                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
+//                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
+//                spannableContent.append(boldHeading).append("\n");
+//                continue;
+//            }
+//            //to bold the headings like "Key Skills", "Qualifications","Experience"
+//            if(item.contains(":") && !item.contains("http")){
+//                String[] parts = item.split(":", 2);
+//                String heading = parts[0]+":";
+//                String content = parts[1];
+//                SpannableString boldHeading = new SpannableString(heading);
+//                //
+//                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
+//                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0); // 1.2x size for headings
+////                item=item.replace(heading,"");
+//                spannableContent.append(boldHeading).append(content).append("\n");
+//                continue;
+//            }else if(item.contains("https")){
+//                // to make the link clickable
+//                SpannableString clickableLink = new SpannableString(item);
+//                clickableLink.setSpan(new URLSpan(item), 0, clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                //parsing job to url
+//
+//                Linkify.addLinks(binding.descriptionContent, Linkify.WEB_URLS);
+//                spannableContent.append(clickableLink).append("\n");
+//                continue;
+//            }else{
+//                SpannableString bulletItem = new SpannableString(item);
+//                //to check whether items already starts with bullet points ,if yes then don't add bullets
+//                if(!bulletItem.toString().startsWith("•"))
+//                    bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                spannableContent.append(bulletItem).append("\n");
+//            }
         }
 
         // Set the formatted text to TextView
-        binding.descriptionContent.setText(spannableContent);
-//        binding.descriptionContent.setMovementMethod(new ScrollingMovementMethod());
-        binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance());
-    }
+//        binding.descriptionContent.setText(spannableContent);
+////        binding.descriptionContent.setMovementMethod(new ScrollingMovementMethod());
+//        binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance());
+//    }
 }

@@ -391,12 +391,12 @@ public class MainActivity extends AppCompatActivity {
                         ;
                         endTime = System.currentTimeMillis();
                         Log.d("API Response", "Time taken: " + TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) + " seconds");
-                        for(Job job:jobs){
-                            //printing all the details of jobs
-                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
-                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
-                            +"\n min salary: "+job.getMinSalary()+"\n max salary: "+job.getMaxSalary()+"\n");
-                        }
+//                        for(Job job:jobs){
+//                            //printing all the details of jobs
+//                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
+//                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
+//                            +"\n min salary: "+job.getMinSalary()+"\n max salary: "+job.getMaxSalary()+"\n");
+//                        }
                         populateTableWithJobs(jobs, query);
                     } else
                         Log.d("API Response", "No jobs found");
