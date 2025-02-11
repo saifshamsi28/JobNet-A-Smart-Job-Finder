@@ -47,7 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         android:textColor="@color/black"
                         android:paddingTop="8dp"
                         android:text="Role: Web Developer" />
@@ -66,7 +66,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:text="Google" />
 
                         <ImageView
@@ -106,7 +106,7 @@
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:text="California, Long Address for Testing Purpose" />
 
                     </LinearLayout>
@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:text="6 Lacs PA" />
                     </LinearLayout>
 
@@ -153,7 +153,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:text="Few hours ago" />
 
                         <ImageView
@@ -166,7 +166,7 @@
                             android:id="@+id/openings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
                             android:text="Openings: 57" />
                     </LinearLayout>
@@ -184,7 +184,7 @@
                             android:id="@+id/applicants"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_weight="1"
                             android:text="Applicants: 206" />
@@ -196,7 +196,7 @@
                             android:text="546 reviews"
                             android:layout_weight="1"
                             android:gravity="end"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 
