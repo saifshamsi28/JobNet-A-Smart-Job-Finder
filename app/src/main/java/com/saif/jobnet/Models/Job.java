@@ -125,6 +125,25 @@ public class Job implements Parcelable {
         }
     };
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "Job{" +
+                "jobId='" + jobId + '\'' +
+                ", title='" + title + '\'' +
+                ", company='" + company + '\'' +
+                ", location='" + location + '\'' +
+                ", salary='" + salary + '\'' +
+                ", url='" + url + '\'' +
+                ", rating='" + rating + '\'' +
+                ", review='" + review + '\'' +
+                ", postDate='" + postDate + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", fullDescription='" + fullDescription + '\'' +
+                '}';
+
+    }
+
 
     public void setJobId(String stringId) {
         this.jobId = stringId;
