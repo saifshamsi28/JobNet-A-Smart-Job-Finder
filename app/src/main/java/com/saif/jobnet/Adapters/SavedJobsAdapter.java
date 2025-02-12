@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +62,15 @@ public class SavedJobsAdapter extends RecyclerView.Adapter<SavedJobsAdapter.JobV
                 context.startActivity(intent);
             }
         });
+
+        // Set animation when a job item appears
+        setAnimation(holder.itemView, position);
+    }
+
+    private void setAnimation(View view, int position) {
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.item_slide_in);
+        //add delay to animation
+        view.startAnimation(animation);
     }
 
     @Override

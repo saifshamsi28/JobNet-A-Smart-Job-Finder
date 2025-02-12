@@ -9,8 +9,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,9 +26,10 @@
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmer_view_container"
                 android:layout_width="wrap_content"
-                android:visibility="gone"
-                android:layout_height="wrap_content">
-                <include layout="@layout/shimmer_job_card"/>
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <include layout="@layout/shimmer_job_card" />
             </com.facebook.shimmer.ShimmerFrameLayout>
 
             <!-- CardView for Job Information -->
@@ -32,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="8dp">
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -46,28 +52,28 @@
                         android:id="@+id/job_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"
                         android:paddingTop="8dp"
-                        android:text="Role: Web Developer" />
+                        android:text="Role: Web Developer"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <!-- Company Name and Rating -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/company_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textStyle="bold"
+                            android:text="Google"
                             android:textSize="14sp"
-                            android:text="Google" />
+                            android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/rating_img"
@@ -89,13 +95,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
+                            android:layout_gravity="center"
                             android:src="@drawable/location_img" />
 
                         <TextView
@@ -105,9 +112,9 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:textStyle="bold"
+                            android:text="California, Long Address for Testing Purpose"
                             android:textSize="14sp"
-                            android:text="California, Long Address for Testing Purpose" />
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -115,13 +122,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="16sp"
+                            android:layout_height="16sp"
+                            android:layout_gravity="center"
                             android:src="@drawable/rupees_img" />
 
                         <TextView
@@ -129,22 +137,23 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textStyle="bold"
+                            android:text="6 Lacs PA"
                             android:textSize="14sp"
-                            android:text="6 Lacs PA" />
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
 
                         <ImageView
                             android:id="@+id/post_date_logo"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="16sp"
+                            android:layout_height="16sp"
+                            android:layout_gravity="center"
                             android:src="@drawable/posted_ago_icon" />
 
                         <TextView
@@ -152,9 +161,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textStyle="bold"
+                            android:text="Few hours ago"
                             android:textSize="14sp"
-                            android:text="Few hours ago" />
+                            android:textStyle="bold" />
 
                         <ImageView
                             android:id="@+id/openings_logo"
@@ -166,36 +175,38 @@
                             android:id="@+id/openings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="Openings: 57"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:text="Openings: 57" />
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <ImageView
                             android:id="@+id/applicants_logo"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="16sp"
+                            android:layout_height="16sp"
+                            android:layout_gravity="center"
                             android:src="@drawable/applicants" />
 
                         <TextView
                             android:id="@+id/applicants"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
                             android:layout_weight="1"
-                            android:text="Applicants: 206" />
+                            android:text="Applicants: 206"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/reviews"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="546 reviews"
                             android:layout_weight="1"
                             android:gravity="end"
+                            android:text="546 reviews"
                             android:textSize="14sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -203,66 +214,93 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/description_heading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:text="Full Job Description : -"
-                android:textSize="20sp"
-                android:layout_gravity="top"
-                android:visibility="gone"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="4"
-                android:textStyle="bold" />
-            <View
-                android:id="@+id/divider_view"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/black" />
             <!-- Description Content -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/description_cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                app:cardElevation="4dp"
-                android:visibility="gone"
                 app:cardCornerRadius="8dp"
-                >
+                app:cardElevation="4dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="8dp"
-                    >
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="end"
-                        android:orientation="horizontal">
+                    android:padding="8dp">
 
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/description_heading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_gravity="top"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="4"
+                        android:text="Full Job Description : -"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/divider_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/black_fade" />
+
                     <TextView
                         android:id="@+id/description_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:textColor="@color/black"
                         android:lineSpacingExtra="4dp"
-                        android:text="• Experience with Java and Kotlin\n• Strong understanding of Android development" />
-
-                    <Button
-                        android:id="@+id/apply_now"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:background="@drawable/searchview_background"
-                        android:backgroundTint="@color/colorActionBarBackground"
-                        android:text="APPLY NOW" />
+                        android:paddingTop="4dp"
+                        android:text="• Experience with Java and Kotlin\n• Strong understanding of Android development"
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
+    <!-- Floating Action Buttons -->
+    <LinearLayout
+        android:id="@+id/bottom_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Apply Now Button -->
+        <Button
+            android:id="@+id/apply_now"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorActionBarBackground"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:text="Apply now"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <!-- Share Job Button -->
+        <Button
+            android:id="@+id/share_button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorActionBarBackground"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:text="Share job"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

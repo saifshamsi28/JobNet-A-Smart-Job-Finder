@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="black_fade">#7A000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#FF0000FF</color>
     <color name="pink">#E41A5E</color>
     <color name="purple">#8692f7</color>
     <color name="golden">#AF8507</color>
     <color name="green">#669900</color>
+    <color name="light_green">#A3669900</color>
     <color name="grey">#6A6969</color>
     <color name="teal">#03A9F4</color>
     <color name="teal_low">#C103A9F4</color>

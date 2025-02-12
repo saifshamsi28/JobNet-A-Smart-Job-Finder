@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -86,6 +87,30 @@ public class JobDetailActivity extends AppCompatActivity {
             Intent intent1 = new Intent(Intent.ACTION_VIEW);
             intent1.setData(android.net.Uri.parse(url));
             startActivity(intent1);
+        });
+
+        //share the job url by whatsapp or any messaging app when click on share button
+        binding.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1=new Intent(Intent.ACTION_SEND);
+                intent1.setType("text/plain");
+                intent1.putExtra(Intent.EXTRA_TEXT,url);
+                startActivity(intent1);
+            }
+        });
+
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                animateSequentially(
+                        true,
+                        binding.descriptionContent,
+                        binding.descriptionHeading,
+                        binding.dividerView
+                );
+                finish();
+            }
         });
     }
 
@@ -155,10 +180,10 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void setDescriptionInViews(Job job) {
-        if (!job.getUrl().contains("indeed.com")) {
+        if (!currentJob.getUrl().contains("indeed.com")) {
             setUpShimmerEffect(true); // Start shimmer effect
 
-            if(job.getShortDescription().length() > 25) {
+//            if(job.getShortDescription().length() > 25) {
                 GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
                     @Override
                     public void onSuccess(String formattedText) {
@@ -172,6 +197,8 @@ public class JobDetailActivity extends AppCompatActivity {
                             new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), formattedHtml)).start();
                             updateJobDescriptionOnServer(currentJob);
                             setUpShimmerEffect(false); // Stop shimmer effect
+                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
+                            Log.d("JobDetailActivity", "Job description updated");
                             displayJobDetails(currentJob);
                         });
                     }
@@ -184,9 +211,11 @@ public class JobDetailActivity extends AppCompatActivity {
                         });
                     }
                 });
-            } else {
-                displayFormattedDescription(job);
-            }
+//            } else {
+//                displayFormattedDescription(job);
+//            }
+        }else {
+            displayFormattedDescription(job);
         }
     }
 
@@ -201,28 +230,35 @@ public class JobDetailActivity extends AppCompatActivity {
         return text;
     }
 
-    private void animateJobDetails(View view) {
+    private void animateJobDetails(View view, boolean backPressed) {
         view.setVisibility(View.VISIBLE); // Ensure it's visible before animating
 
-        // Move from left to right (Translation X)
-        ObjectAnimator slideIn = ObjectAnimator.ofFloat(view, "translationX", -500f, 0f);
-        slideIn.setDuration(500); // Duration 500ms
+        if(!backPressed){
+            // Move from left to right (Translation X)
+            ObjectAnimator slideIn = ObjectAnimator.ofFloat(view, "translationX", -500f, 0f);
+            slideIn.setDuration(500); // Duration 500ms
 
-        // Fade-in Effect
-        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
-        fadeIn.setDuration(500);
+            // Fade-in Effect
+            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+            fadeIn.setDuration(500);
 
-        // Play both animations together
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(slideIn, fadeIn);
-        animatorSet.start();
+            // Play both animations together
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.playTogether(slideIn, fadeIn);
+            animatorSet.start();
+        }else {
+            // Move from right to left (Translation X)
+            ObjectAnimator slideOut = ObjectAnimator.ofFloat(view, "translationX", 0f, 500f);
+            slideOut.setDuration(1000); // Duration 500ms
+            slideOut.start();
+        }
     }
 
-    private void animateSequentially(View... views) {
-        long delay = 200; // Initial delay
+    private void animateSequentially(boolean backPressed, View... views) {
+        long delay = 300; // Initial delay
         for (View view : views) {
             view.setVisibility(View.INVISIBLE); // Hide initially
-            new Handler(Looper.getMainLooper()).postDelayed(() -> animateJobDetails(view), delay);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> animateJobDetails(view,backPressed), delay);
             delay += 200; // Increment delay for next item
         }
     }
@@ -244,7 +280,7 @@ public class JobDetailActivity extends AppCompatActivity {
         Call<Void> call = jobApiService.updateJobDescription(job.getJobId(),jobUpdateDTO);
         call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("JobUpdate", "Job description updated successfully");
                 } else {
@@ -253,7 +289,7 @@ public class JobDetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
                 Log.e("JobUpdate", "Error: " + t.getMessage());
             }
         });
@@ -519,10 +555,10 @@ public class JobDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
         binding.descriptionContent.setText(Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY));
         // Start animations after data is loaded
-        animateSequentially(
+        animateSequentially(false,
                 binding.jobDetailsCardview,
-                binding.descriptionHeading,
-                binding.descriptionCardview
+                binding.descriptionCardview,
+                binding.descriptionContent
         );
         // Retrieve the plain text shortDescription from the database
 //        String description = job.getShortDescription();
