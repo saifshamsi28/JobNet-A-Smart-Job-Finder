@@ -134,9 +134,9 @@ public class JobDetailActivity extends AppCompatActivity {
         Log.d("JobDetailActivity", "Received URL: calling fetchFromApi");
         Log.d("JobDetailActivity", "jobId to fetch: "+jobId);
         Log.d("JobDetailActivity", "url to fetch: "+url);
-//        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
+        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:5000/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -147,7 +147,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Job> call = apiService.getJobDescriptionFromFlask(url);
+        Call<Job> call = apiService.getJobDescription(currentJob.getJobId(),url);
         System.out.println("JobDetailActivity: url hitting: "+retrofit.baseUrl());
         call.enqueue(new Callback<Job>() {
             @Override

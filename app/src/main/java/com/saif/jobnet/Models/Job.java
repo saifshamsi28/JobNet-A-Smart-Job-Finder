@@ -145,7 +145,7 @@ public class Job implements Parcelable {
     }
 
 
-    public void setJobId(String stringId) {
+    public void setJobId(@NonNull String stringId) {
         this.jobId = stringId;
     }
 
