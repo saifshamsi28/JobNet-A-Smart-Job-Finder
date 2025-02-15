@@ -29,7 +29,7 @@
                 android:textColor="@color/black"
                 android:paddingTop="8dp"
                 android:layout_weight="1"
-                android:text="Role: Web Developer" />
+                android:text="Web Developer" />
             <ImageView
                 android:id="@+id/save_jobs"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                 android:src="@drawable/job_not_saved_icon"
                 android:layout_marginEnd="8sp"
                 android:padding="3sp"
-
+                app:tint="@color/colorActionBarBackground"
                 />
             <ProgressBar
                 android:id="@+id/saved_jobs_progressbar"
@@ -99,7 +99,8 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/location_img" />
+                android:src="@drawable/location_img"
+                />
 
             <TextView
                 android:id="@+id/location"
@@ -125,7 +126,8 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/rupees_img" />
+                android:src="@drawable/rupees_img"
+                />
 
             <TextView
                 android:id="@+id/salary"
@@ -160,7 +162,7 @@
                 android:id="@+id/post_date_logo"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/posted_ago_icon" />
+                android:src="@drawable/posted_ago_icon"/>
 
             <TextView
                 android:id="@+id/post_date"

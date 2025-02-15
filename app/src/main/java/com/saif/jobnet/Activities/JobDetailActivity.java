@@ -13,12 +13,9 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.text.style.BulletSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -51,7 +48,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class JobDetailActivity extends AppCompatActivity {
 
     ActivityJobDetailBinding binding;
-    private AppDatabase appDatabase;
     private JobDao jobDao;
     private User currentUser;
     private Job currentJob;
@@ -61,7 +57,7 @@ public class JobDetailActivity extends AppCompatActivity {
         binding = ActivityJobDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
+        AppDatabase appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
         SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
@@ -197,7 +193,7 @@ public class JobDetailActivity extends AppCompatActivity {
                             new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), formattedHtml)).start();
                             updateJobDescriptionOnServer(currentJob);
                             setUpShimmerEffect(false); // Stop shimmer effect
-                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
                             Log.d("JobDetailActivity", "Job description updated");
                             displayJobDetails(currentJob);
                         });
@@ -264,8 +260,9 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void updateJobDescriptionOnServer(Job job) {
+        String BASE_URL=Config.BASE_URL;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:8080/")
+                .baseUrl(BASE_URL)
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -406,6 +403,8 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.descriptionCardview.setVisibility(View.VISIBLE);
             binding.descriptionHeading.setVisibility(View.VISIBLE);
             binding.dividerView.setVisibility(View.VISIBLE);
+            binding.shareButton.setVisibility(View.VISIBLE);
+            binding.applyNow.setVisibility(View.VISIBLE);
         }else{
             binding.shimmerViewContainer.setVisibility(View.VISIBLE);
             binding.shimmerViewContainer.startShimmer();
@@ -413,6 +412,8 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.descriptionCardview.setVisibility(View.GONE);
             binding.descriptionHeading.setVisibility(View.GONE);
             binding.dividerView.setVisibility(View.GONE);
+            binding.shareButton.setVisibility(View.GONE);
+            binding.applyNow.setVisibility(View.GONE);
         }
     }
     private void setJobReviews(String review) {

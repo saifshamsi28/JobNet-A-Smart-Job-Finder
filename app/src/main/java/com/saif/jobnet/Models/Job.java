@@ -2,7 +2,6 @@ package com.saif.jobnet.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -208,6 +207,7 @@ public class Job implements Parcelable {
         this.applicants = applicants;
     }
 
+    @NonNull
     public String getJobId() {
         return jobId;
     }
