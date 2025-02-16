@@ -36,6 +36,8 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityJobDetailBinding;
 
+import java.io.InputStream;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -130,9 +132,9 @@ public class JobDetailActivity extends AppCompatActivity {
         Log.d("JobDetailActivity", "Received URL: calling fetchFromApi");
         Log.d("JobDetailActivity", "jobId to fetch: "+jobId);
         Log.d("JobDetailActivity", "url to fetch: "+url);
-        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
+//        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl("http://10.162.1.53:5000/")
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -143,7 +145,8 @@ public class JobDetailActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-        Call<Job> call = apiService.getJobDescription(currentJob.getJobId(),url);
+//        Call<Job> call = apiService.getJobDescription(currentJob.getJobId(),url);// for spring boot
+        Call<Job> call = apiService.getJobDescriptionFromFlask(url);// for flask
         System.out.println("JobDetailActivity: url hitting: "+retrofit.baseUrl());
         call.enqueue(new Callback<Job>() {
             @Override
@@ -152,7 +155,16 @@ public class JobDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
-                        System.out.println("received shortDescription: \n" + job.getShortDescription());
+                        System.out.println("received shortDescription: \n" + job.getFullDescription());
+                        if(job.getFullDescription()==null || job.getFullDescription().equals("null")
+                                || job.getFullDescription().equals("N/A") || job.getFullDescription().isEmpty()
+                        || job.getFullDescription().length()<50){
+                            InputStream inputStream = getResources().openRawResource(R.raw.description);
+                            String html = new Scanner(inputStream).useDelimiter("\\A").next();
+                            binding.descriptionContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+//                            binding.descriptionContent.setText(Html.fromHtml(String.valueOf(R.string.description), Html.FROM_HTML_MODE_LEGACY));
+                            return;
+                        }
                         setDescriptionInViews(job);
                     } else {
                         Log.d("API Response", "No job details found");

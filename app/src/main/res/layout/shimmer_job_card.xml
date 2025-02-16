@@ -4,11 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     app:shimmer_auto_start="true"
     app:shimmer_duration="2500">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -17,11 +16,15 @@
             android:id="@+id/shimmer_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8sp"
             app:cardBackgroundColor="#A9AEB1"
             app:cardCornerRadius="16dp"
-            android:layout_margin="16dp"
-            android:layout_alignParentTop="true">
+            app:cardElevation="30dp"
+            app:layout_constraintEnd_toStartOf="@+id/shimmer_recyclerview"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/shimmer_recyclerview"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,22 +36,22 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:background="@drawable/shimmer_placeholder"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/shimmer_placeholder" />
 
                 <!-- Placeholder for Company Name and Rating -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_weight="1"
                         android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
                         android:background="@drawable/shimmer_placeholder" />
 
                     <View
@@ -61,9 +64,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="16dp"
@@ -74,8 +77,8 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_weight="1"
                         android:layout_marginStart="8dp"
+                        android:layout_weight="1"
                         android:background="@drawable/shimmer_placeholder" />
                 </LinearLayout>
 
@@ -83,9 +86,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="20dp"
@@ -96,8 +99,8 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="20dp"
-                        android:layout_weight="1"
                         android:layout_marginStart="8dp"
+                        android:layout_weight="1"
                         android:background="@drawable/shimmer_placeholder" />
                 </LinearLayout>
 
@@ -107,46 +110,52 @@
                     android:layout_height="20dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/shimmer_placeholder" />
+                <!-- Placeholder for Post Date and Reviews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
 
-                    <!-- Placeholder for Post Date and Reviews -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/shimmer_placeholder"
-                            />
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/shimmer_placeholder"
-                            />
-
-                    </LinearLayout>
-
-
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <View
+            android:id="@+id/shimmer_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@id/shimmer_buttons"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_card" />
         <!-- Bottom Buttons -->
         <LinearLayout
             android:id="@+id/shimmer_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_recyclerview"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_alignBottom="@id/shimmer_card"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
 
             <View
                 android:layout_width="0dp"
@@ -161,7 +170,5 @@
                 android:layout_weight="1"
                 android:background="@drawable/shimmer_placeholder" />
         </LinearLayout>
-
-
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>
