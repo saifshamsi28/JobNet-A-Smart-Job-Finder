@@ -1,5 +1,7 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.GONE;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -141,9 +143,10 @@ public class JobDetailActivity extends AppCompatActivity {
         Log.d("JobDetailActivity", "Received URL: calling fetchFromApi");
         Log.d("JobDetailActivity", "jobId to fetch: "+jobId);
         Log.d("JobDetailActivity", "url to fetch: "+url);
-//        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
+        String BASE_URL = Config.BASE_URL; // // Spring Boot backend URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.162.1.53:5000/")
+//                .baseUrl("http://10.162.1.53:5000/") //for flask
+                .baseUrl(BASE_URL) //for spring boot
                 .client(new OkHttpClient.Builder()
                         .connectTimeout(60, TimeUnit.SECONDS)
                         .readTimeout(60, TimeUnit.SECONDS)
@@ -154,8 +157,8 @@ public class JobDetailActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
-//        Call<Job> call = apiService.getJobDescription(currentJob.getJobId(),url);// for spring boot
-        Call<Job> call = apiService.getJobDescriptionFromFlask(url);// for flask
+        Call<Job> call = apiService.getJobDescription(currentJob.getJobId(),url);// for spring boot
+//        Call<Job> call = apiService.getJobDescriptionFromFlask(url);// for flask
         System.out.println("JobDetailActivity: url hitting: "+retrofit.baseUrl());
         call.enqueue(new Callback<Job>() {
             @Override
@@ -419,7 +422,7 @@ public class JobDetailActivity extends AppCompatActivity {
     //set up shimmer effect
     private void setUpShimmerEffect(boolean toStart) {
         if(!toStart){
-            binding.shimmerViewContainer.setVisibility(View.GONE);
+            binding.shimmerViewContainer.setVisibility(GONE);
             binding.shimmerViewContainer.stopShimmer();
             binding.jobDetailsCardview.setVisibility(View.VISIBLE);
             binding.descriptionCardview.setVisibility(View.VISIBLE);
@@ -430,12 +433,12 @@ public class JobDetailActivity extends AppCompatActivity {
         }else{
             binding.shimmerViewContainer.setVisibility(View.VISIBLE);
             binding.shimmerViewContainer.startShimmer();
-            binding.jobDetailsCardview.setVisibility(View.GONE);
-            binding.descriptionCardview.setVisibility(View.GONE);
-            binding.descriptionHeading.setVisibility(View.GONE);
-            binding.dividerView.setVisibility(View.GONE);
-            binding.shareButton.setVisibility(View.GONE);
-            binding.applyNow.setVisibility(View.GONE);
+            binding.jobDetailsCardview.setVisibility(GONE);
+            binding.descriptionCardview.setVisibility(GONE);
+            binding.descriptionHeading.setVisibility(GONE);
+            binding.dividerView.setVisibility(GONE);
+            binding.shareButton.setVisibility(GONE);
+            binding.applyNow.setVisibility(GONE);
         }
     }
     private void setJobReviews(String review) {
@@ -450,7 +453,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 binding.reviews.setText(numericReview);
             } else {
                 // Optionally, set an empty string or some placeholder if no numerical value is present
-                binding.reviews.setVisibility(View.GONE);
+                binding.reviews.setVisibility(GONE);
             }
         }
     }
@@ -490,8 +493,8 @@ public class JobDetailActivity extends AppCompatActivity {
         binding.descriptionContent.setText(spannableContent);
         String rating = job.getRating();
         if (rating == null || rating.equals("N/A")) {
-            binding.jobRating.setVisibility(View.GONE);
-            binding.ratingImg.setVisibility(View.GONE);
+            binding.jobRating.setVisibility(GONE);
+            binding.ratingImg.setVisibility(GONE);
         } else {
             binding.jobRating.setVisibility(View.VISIBLE);
             binding.jobRating.setText(rating);
@@ -499,8 +502,8 @@ public class JobDetailActivity extends AppCompatActivity {
         setJobReviews(job.getReview());
         String openings = job.getOpenings();
         if (openings == null || job.getOpenings().equals("N/A")) {
-            binding.openings.setVisibility(View.GONE);
-            binding.openingsLogo.setVisibility(View.GONE);
+            binding.openings.setVisibility(GONE);
+            binding.openingsLogo.setVisibility(GONE);
         } else {
             binding.openings.setVisibility(View.VISIBLE);
             binding.openingsLogo.setVisibility(View.VISIBLE);
@@ -508,8 +511,8 @@ public class JobDetailActivity extends AppCompatActivity {
         }
         String applicants = job.getApplicants();
         if (applicants == null || job.getApplicants().equals("N/A")) {
-            binding.applicants.setVisibility(View.GONE);
-            binding.applicantsLogo.setVisibility(View.GONE);
+            binding.applicants.setVisibility(GONE);
+            binding.applicantsLogo.setVisibility(GONE);
         } else {
             binding.applicants.setVisibility(View.VISIBLE);
             binding.applicantsLogo.setVisibility(View.VISIBLE);
@@ -535,8 +538,8 @@ public class JobDetailActivity extends AppCompatActivity {
         String rating = job.getRating();
         System.out.println("rating : " + rating);
         if (rating == null || rating.equals("N/A")) {
-            binding.jobRating.setVisibility(View.GONE);
-            binding.ratingImg.setVisibility(View.GONE);
+            binding.jobRating.setVisibility(GONE);
+            binding.ratingImg.setVisibility(GONE);
         } else {
             binding.jobRating.setVisibility(View.VISIBLE);
             binding.jobRating.setText(rating);
@@ -554,8 +557,8 @@ public class JobDetailActivity extends AppCompatActivity {
 
         String openings = job.getOpenings();
         if (openings == null || job.getOpenings().equals("N/A")) {
-            binding.openings.setVisibility(View.GONE);
-            binding.openingsLogo.setVisibility(View.GONE);
+            binding.openings.setVisibility(GONE);
+            binding.openingsLogo.setVisibility(GONE);
         } else {
             binding.openings.setVisibility(View.VISIBLE);
             binding.openingsLogo.setVisibility(View.VISIBLE);
@@ -563,8 +566,8 @@ public class JobDetailActivity extends AppCompatActivity {
         }
         String applicants = job.getApplicants();
         if (applicants == null || job.getApplicants().equals("N/A")) {
-            binding.applicants.setVisibility(View.GONE);
-            binding.applicantsLogo.setVisibility(View.GONE);
+            binding.applicants.setVisibility(GONE);
+            binding.applicantsLogo.setVisibility(GONE);
         } else {
             binding.applicants.setVisibility(View.VISIBLE);
             binding.applicantsLogo.setVisibility(View.VISIBLE);
@@ -636,6 +639,7 @@ public class JobDetailActivity extends AppCompatActivity {
             }
         } else {
             System.out.println("Key Skills section not found in the HTML.");
+            binding.keySkillsHeading.setVisibility(GONE);
         }
     }
 
@@ -670,5 +674,4 @@ public class JobDetailActivity extends AppCompatActivity {
         // Return the modified HTML as a string
         return document.body().html();
     }
-
 }
