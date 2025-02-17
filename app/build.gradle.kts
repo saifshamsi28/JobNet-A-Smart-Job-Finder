@@ -59,6 +59,8 @@ dependencies {
     implementation (libs.poi.ooxml)
     implementation (libs.itextpdf)
     implementation(libs.android.image.cropper)
+    implementation(libs.jsoup)
+    implementation(libs.flexbox)
 
 
 }

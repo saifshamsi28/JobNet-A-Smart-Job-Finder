@@ -1,6 +1,8 @@
 [versions]
 agp = "8.5.0"
+flexbox = "3.0.0"
 itextpdf = "5.5.13.3"
+jsoup = "1.18.3"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -22,7 +24,9 @@ recyclerview = "1.3.0"
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 android-image-cropper = { module = "com.vanniktech:android-image-cropper", version.ref = "androidImageCropper" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 itextpdf = { module = "com.itextpdf:itextpdf", version.ref = "itextpdf" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
