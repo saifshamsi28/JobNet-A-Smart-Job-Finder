@@ -255,8 +255,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4dp"
+                        android:autoLink="all"
                         android:paddingTop="4dp"
                         android:textColor="@color/black" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Key Skills:- "
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        />
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/skillsContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:justifyContent="flex_start"
+                        app:alignItems="center"
+                        android:padding="8dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>

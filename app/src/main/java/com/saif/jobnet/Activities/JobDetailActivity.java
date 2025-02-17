@@ -13,17 +13,23 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.BulletSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.saif.jobnet.GeminiAPI;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;
@@ -36,7 +42,13 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityJobDetailBinding;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +70,7 @@ public class JobDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityJobDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
 
         AppDatabase appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
@@ -156,15 +169,16 @@ public class JobDetailActivity extends AppCompatActivity {
                     Job job = response.body();
                     if (job != null) {
                         System.out.println("received shortDescription: \n" + job.getFullDescription());
-                        if(job.getFullDescription()==null || job.getFullDescription().equals("null")
-                                || job.getFullDescription().equals("N/A") || job.getFullDescription().isEmpty()
-                        || job.getFullDescription().length()<50){
-                            InputStream inputStream = getResources().openRawResource(R.raw.description);
-                            String html = new Scanner(inputStream).useDelimiter("\\A").next();
-                            binding.descriptionContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
-//                            binding.descriptionContent.setText(Html.fromHtml(String.valueOf(R.string.description), Html.FROM_HTML_MODE_LEGACY));
-                            return;
-                        }
+//                        if(job.getFullDescription()==null || job.getFullDescription().equals("null")
+//                                || job.getFullDescription().equals("N/A") || job.getFullDescription().isEmpty()
+//                        || job.getFullDescription().length()<50){
+//                            InputStream inputStream = getResources().openRawResource(R.raw.description);
+//                            String html = new Scanner(inputStream).useDelimiter("\\A").next();
+//                            binding.descriptionContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+////                            binding.descriptionContent.setText(Html.fromHtml(String.valueOf(R.string.description), Html.FROM_HTML_MODE_LEGACY));
+//                            return;
+//                        }
+                        binding.descriptionContent.setText(Html.fromHtml(job.getFullDescription(), Html.FROM_HTML_MODE_LEGACY));
                         setDescriptionInViews(job);
                     } else {
                         Log.d("API Response", "No job details found");
@@ -189,36 +203,36 @@ public class JobDetailActivity extends AppCompatActivity {
 
     private void setDescriptionInViews(Job job) {
         if (!currentJob.getUrl().contains("indeed.com")) {
-            setUpShimmerEffect(true); // Start shimmer effect
+//            setUpShimmerEffect(true); // Start shimmer effect
 
 //            if(job.getShortDescription().length() > 25) {
-                GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
-                    @Override
-                    public void onSuccess(String formattedText) {
-                        runOnUiThread(() -> {
-                            String formattedHtml = formatTextWithHtml(formattedText);
-//                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
-
-                            //save job in database
-                            job.setFullDescription(formattedHtml);
-                            currentJob.setFullDescription(formattedHtml);
-                            new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), formattedHtml)).start();
+//                GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
+//                    @Override
+//                    public void onSuccess(String formattedText) {
+//                        runOnUiThread(() -> {
+//                            String formattedHtml = formatTextWithHtml(formattedText);
+////                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
+//
+//                            //save job in database
+                            job.setFullDescription(job.getFullDescription());
+                            currentJob.setFullDescription(job.getFullDescription());
+                            new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), job.getFullDescription())).start();
                             updateJobDescriptionOnServer(currentJob);
-                            setUpShimmerEffect(false); // Stop shimmer effect
-//                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
-                            Log.d("JobDetailActivity", "Job description updated");
+//                            setUpShimmerEffect(false); // Stop shimmer effect
+////                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
+//                            Log.d("JobDetailActivity", "Job description updated");
                             displayJobDetails(currentJob);
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(String error) {
-                        runOnUiThread(() -> {
-                            binding.descriptionContent.setText("Error: " + error);
-                            setUpShimmerEffect(false);
-                        });
-                    }
-                });
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String error) {
+//                        runOnUiThread(() -> {
+//                            binding.descriptionContent.setText("Error: " + error);
+//                            setUpShimmerEffect(false);
+//                        });
+//                    }
+//                });
 //            } else {
 //                displayFormattedDescription(job);
 //            }
@@ -510,20 +524,20 @@ public class JobDetailActivity extends AppCompatActivity {
 
     // Helper method to display job details from the database
     private void displayJobDetails(Job job) {
-        System.out.println("job details in JobDetailActivity: "+job);
-        if(job ==null){
+        System.out.println("job details in JobDetailActivity: " + job);
+        if (job == null) {
             Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(job.getUrl().contains("indeed.com")){
+        if (job.getUrl().contains("indeed.com")) {
             displayFormattedDescription(job);
             return;
         }
         Resources res = getResources();
         String[] headingsArray = res.getStringArray(R.array.job_heading_terms);
         setUpShimmerEffect(false);
-        String rating= job.getRating();
-        System.out.println("rating : "+rating);
+        String rating = job.getRating();
+        System.out.println("rating : " + rating);
         if (rating == null || rating.equals("N/A")) {
             binding.jobRating.setVisibility(View.GONE);
             binding.ratingImg.setVisibility(View.GONE);
@@ -540,97 +554,125 @@ public class JobDetailActivity extends AppCompatActivity {
         SpannableString spannableString = new SpannableString(job.getPostDate());
         spannableString.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, spannableString.length(), 0);
         spannableString.setSpan(Color.BLACK, 0, spannableString.length(), 0);
-        binding.postDate.setText("Posted: "+spannableString);
+        binding.postDate.setText("Posted: " + spannableString);
 
-        String openings= job.getOpenings();
-        if(openings==null || job.getOpenings().equals("N/A")){
+        String openings = job.getOpenings();
+        if (openings == null || job.getOpenings().equals("N/A")) {
             binding.openings.setVisibility(View.GONE);
             binding.openingsLogo.setVisibility(View.GONE);
-        }else {
+        } else {
             binding.openings.setVisibility(View.VISIBLE);
             binding.openingsLogo.setVisibility(View.VISIBLE);
-            binding.openings.setText("| Openings: "+ job.getOpenings().trim());
+            binding.openings.setText("| Openings: " + job.getOpenings().trim());
         }
-        String applicants= job.getApplicants();
-        if(applicants==null || job.getApplicants().equals("N/A")){
+        String applicants = job.getApplicants();
+        if (applicants == null || job.getApplicants().equals("N/A")) {
             binding.applicants.setVisibility(View.GONE);
             binding.applicantsLogo.setVisibility(View.GONE);
-        }else {
+        } else {
             binding.applicants.setVisibility(View.VISIBLE);
             binding.applicantsLogo.setVisibility(View.VISIBLE);
-            binding.applicants.setText("| Applicants: "+ job.getApplicants().trim());
+            binding.applicants.setText("| Applicants: " + job.getApplicants().trim());
         }
 
-        String description="No job details found";
-        if(job.getFullDescription()!=null)
-            description= job.getFullDescription();
+        String description = "No job details found";
+        if (job.getFullDescription() != null)
+            description = job.getFullDescription();
         else
             Toast.makeText(this, "No job details found", Toast.LENGTH_SHORT).show();
-        binding.descriptionContent.setText(Html.fromHtml(description, Html.FROM_HTML_MODE_LEGACY));
+        String descriptionWithoutKeySkills = removeKeySkillsSection(description);
+        binding.descriptionContent.setText(Html.fromHtml(descriptionWithoutKeySkills, Html.FROM_HTML_MODE_LEGACY));
+        binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance());
+        extractKeySkills(description);
+
         // Start animations after data is loaded
         animateSequentially(false,
                 binding.jobDetailsCardview,
                 binding.descriptionCardview,
                 binding.descriptionContent
         );
-        // Retrieve the plain text shortDescription from the database
-//        String description = job.getShortDescription();
-//
-//        // Split the shortDescription into lines to format with bullets
-//        String[] contentItems = description.split("\n");
-//
-//        // Use SpannableStringBuilder to format each line with bullets
-//        SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-//        for (String item : contentItems) {
-//            int start = spannableContent.length();
-//            boolean isHeading = false;
-//            for (String heading : headingsArray) {
-//                if (item.length() < 25 && item.contains(heading)) {
-//                    isHeading = true;
-//                    break;
-//                }
-//            }
-//
-//            if (isHeading) {
-//                SpannableString boldHeading = new SpannableString(item);
-//                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-//                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0);
-//                spannableContent.append(boldHeading).append("\n");
-//                continue;
-//            }
-//            //to bold the headings like "Key Skills", "Qualifications","Experience"
-//            if(item.contains(":") && !item.contains("http")){
-//                String[] parts = item.split(":", 2);
-//                String heading = parts[0]+":";
-//                String content = parts[1];
-//                SpannableString boldHeading = new SpannableString(heading);
-//                //
-//                boldHeading.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, boldHeading.length(), 0);
-//                boldHeading.setSpan(new RelativeSizeSpan(1.2f), 0, boldHeading.length(), 0); // 1.2x size for headings
-////                item=item.replace(heading,"");
-//                spannableContent.append(boldHeading).append(content).append("\n");
-//                continue;
-//            }else if(item.contains("https")){
-//                // to make the link clickable
-//                SpannableString clickableLink = new SpannableString(item);
-//                clickableLink.setSpan(new URLSpan(item), 0, clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                //parsing job to url
-//
-//                Linkify.addLinks(binding.descriptionContent, Linkify.WEB_URLS);
-//                spannableContent.append(clickableLink).append("\n");
-//                continue;
-//            }else{
-//                SpannableString bulletItem = new SpannableString(item);
-//                //to check whether items already starts with bullet points ,if yes then don't add bullets
-//                if(!bulletItem.toString().startsWith("•"))
-//                    bulletItem.setSpan(new BulletSpan(20), 0, bulletItem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                spannableContent.append(bulletItem).append("\n");
-//            }
+    }
+
+    public void extractKeySkills(String htmlDescription) {
+        // Parse the HTML using Jsoup
+        Document document = Jsoup.parse(htmlDescription);
+
+        // Find the "Key Skills" section
+        Element keySkillsContainer = document.selectFirst(".styles_key-skill__GIPn_");
+
+        if (keySkillsContainer != null) {
+            Elements skillElements = keySkillsContainer.select("a");
+            ArrayList<String> keySkills = new ArrayList<>();
+
+            for (Element skillElement : skillElements) {
+                String skill = skillElement.text();
+                keySkills.add(skill);
+            }
+
+            // Get reference to the FlexboxLayout
+            FlexboxLayout skillsContainer = findViewById(R.id.skillsContainer);
+
+            // Clear any previously added views to avoid duplicates
+            skillsContainer.removeAllViews();
+
+            // Dynamically add TextViews for each skill
+            for (String skill : keySkills) {
+                TextView skillView = new TextView(this);
+                skillView.setText(skill);
+                skillView.setTextSize(14);
+                skillView.setSingleLine(true);
+                skillView.setPadding(20, 12, 20, 12);
+                skillView.setBackgroundResource(R.drawable.skill_chip_background); // Custom background
+                skillView.setTextColor(Color.BLACK);
+
+                // Set layout parameters with margin
+                FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                );
+                layoutParams.setMargins(8, 8, 8, 8); // Add margin between skill chips
+                skillView.setLayoutParams(layoutParams);
+
+                // Add the TextView to the FlexboxLayout
+                skillsContainer.addView(skillView);
+                // Animate the skill view when added
+                animateSkillView(skillView);
+            }
+        } else {
+            System.out.println("Key Skills section not found in the HTML.");
+        }
+    }
+
+    private void animateSkillView(View skillView) {
+        // Apply an animation to make the skill element fade in and scale up
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(skillView, "alpha", 0f, 1f);
+        fadeIn.setDuration(500); // Fade-in duration (500ms)
+
+        ObjectAnimator scaleUpX = ObjectAnimator.ofFloat(skillView, "scaleX", 0.5f, 1f);
+        ObjectAnimator scaleUpY = ObjectAnimator.ofFloat(skillView, "scaleY", 0.5f, 1f);
+        scaleUpX.setDuration(500); // Scale-up duration (500ms)
+        scaleUpY.setDuration(500); // Scale-up duration (500ms)
+
+        // Combine animations
+        fadeIn.start();
+        scaleUpX.start();
+        scaleUpY.start();
+    }
+
+    public String removeKeySkillsSection(String htmlDescription) {
+        // Parse the HTML using Jsoup
+        Document document = Jsoup.parse(htmlDescription);
+
+        // Find the div that contains "Key Skills"
+        Element keySkillsContainer = document.selectFirst(".styles_key-skill__GIPn_");
+
+        // Remove the key skills section if it exists
+        if (keySkillsContainer != null) {
+            keySkillsContainer.remove();
         }
 
-        // Set the formatted text to TextView
-//        binding.descriptionContent.setText(spannableContent);
-////        binding.descriptionContent.setMovementMethod(new ScrollingMovementMethod());
-//        binding.descriptionContent.setMovementMethod(LinkMovementMethod.getInstance());
-//    }
+        // Return the modified HTML as a string
+        return document.body().html();
+    }
+
 }
