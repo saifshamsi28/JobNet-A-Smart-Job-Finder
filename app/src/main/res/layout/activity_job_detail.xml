@@ -56,6 +56,7 @@
                         android:text="Role: Web Developer"
                         android:textColor="@color/black"
                         android:textSize="16sp"
+                        android:fontFamily="serif"
                         android:textStyle="bold" />
 
                     <!-- Company Name and Rating -->
@@ -73,6 +74,7 @@
                             android:layout_weight="1"
                             android:text="Google"
                             android:textSize="14sp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -87,6 +89,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2.3"
+                            android:fontFamily="serif"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -111,7 +114,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:ellipsize="end"
+                            android:layout_marginStart="5dp"
                             android:maxLines="1"
+                            android:fontFamily="sans-serif-condensed"
                             android:text="California, Long Address for Testing Purpose"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -139,8 +144,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="6 Lacs PA"
+                            android:layout_marginStart="5dp"
                             android:textColor="@color/golden"
                             android:textSize="14sp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -165,6 +172,8 @@
                             android:layout_weight="1"
                             android:text="Few hours ago"
                             android:textSize="14sp"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -179,6 +188,8 @@
                             android:layout_height="wrap_content"
                             android:text="Openings: 57"
                             android:textSize="14sp"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -200,6 +211,8 @@
                             android:layout_weight="1"
                             android:text="Applicants: 206"
                             android:textSize="14sp"
+                            android:fontFamily="serif"
+                            android:layout_marginStart="5dp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -210,6 +223,7 @@
                             android:gravity="end"
                             android:text="546 reviews"
                             android:textSize="14sp"
+                            android:fontFamily="serif"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -263,6 +277,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Key Skills:- "
+                        android:fontFamily="serif"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         />

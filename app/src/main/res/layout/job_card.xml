@@ -60,9 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="5dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/company_name"
@@ -118,7 +116,7 @@
                 android:layout_marginStart="3dp"
                 android:layout_marginEnd="16sp"
                 android:textSize="14sp"
-                android:fontFamily="serif"
+                android:fontFamily="sans-serif-condensed"
                 android:text="California, Long Address for Testing Purpose" />
 
         </LinearLayout>
@@ -175,7 +173,8 @@
                 android:id="@+id/post_date_logo"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/posted_ago_icon"/>
+                android:src="@drawable/posted_ago_icon"
+                app:tint="@color/colorActionBarBackground" />
 
             <TextView
                 android:id="@+id/post_date"
