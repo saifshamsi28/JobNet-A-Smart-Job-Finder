@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="5dp"
-    app:cardElevation="8dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="5dp"
+    app:cardElevation="8sp"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
@@ -26,6 +28,8 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:textSize="16sp"
+                android:maxLines="1"
+                android:fontFamily="serif"
                 android:textColor="@color/black"
                 android:paddingTop="8dp"
                 android:layout_weight="1"
@@ -37,8 +41,6 @@
                 android:tag="0"
                 android:contentDescription="image for saving job"
                 android:src="@drawable/job_not_saved_icon"
-                android:layout_marginEnd="8sp"
-                android:padding="3sp"
                 app:tint="@color/colorActionBarBackground"
                 />
             <ProgressBar
@@ -58,9 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="5dp">
 
             <TextView
                 android:id="@+id/company_name"
@@ -68,6 +70,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
+                android:fontFamily="serif"
+                android:maxLines="1"
                 android:textSize="14sp"
                 android:text="Google" />
 
@@ -83,7 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2.3"
-                android:textSize="18sp"
+                android:fontFamily="serif"
+                android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -92,13 +97,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/location_img"
                 />
 
@@ -110,7 +115,10 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textStyle="bold"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="16sp"
                 android:textSize="14sp"
+                android:fontFamily="serif"
                 android:text="California, Long Address for Testing Purpose" />
 
         </LinearLayout>
@@ -120,14 +128,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/rupees_img"
-                />
+                app:tint="@color/golden" />
 
             <TextView
                 android:id="@+id/salary"
@@ -135,7 +142,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
+                android:textColor="@color/golden"
                 android:textSize="14sp"
+                android:maxLines="1"
+                android:layout_marginStart="2dp"
+                android:fontFamily="serif"
                 android:text="6 Lacs PA" />
         </LinearLayout>
 
@@ -145,10 +156,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:paddingTop="8dp"
             android:textStyle="bold"
-            android:maxLines="3"
+            android:maxLines="1"
             android:ellipsize="end"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="16sp"
+            android:fontFamily="serif"
             android:text="Required Skills:"
             />
         <LinearLayout
@@ -170,7 +183,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textStyle="bold"
+                android:fontFamily="serif"
                 android:textSize="14sp"
+                android:layout_marginStart="3dp"
                 android:text="Few hours ago" />
 
             <TextView
@@ -178,6 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="546 reviews"
+                android:fontFamily="serif"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>

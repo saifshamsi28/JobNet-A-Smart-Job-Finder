@@ -102,10 +102,10 @@ public class JobDetailActivity extends AppCompatActivity {
         binding.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1=new Intent(Intent.ACTION_SEND);
-                intent1.setType("text/plain");
-                intent1.putExtra(Intent.EXTRA_TEXT,url);
-                startActivity(intent1);
+                Intent shareUrlIntent=new Intent(Intent.ACTION_SEND);
+                shareUrlIntent.setType("text/plain");
+                shareUrlIntent.putExtra(Intent.EXTRA_TEXT,url);
+                startActivity(shareUrlIntent);
             }
         });
 

@@ -83,6 +83,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         if(numericReview.isEmpty()){
             holder.binding.jobRating.setVisibility(View.GONE);
             holder.binding.ratingImg.setVisibility(View.GONE);
+            holder.binding.companyName.setMaxWidth(holder.binding.shortDescription.getWidth());
         }else {
             holder.binding.jobRating.setVisibility(View.VISIBLE);
             holder.binding.jobRating.setText(job.getRating());
