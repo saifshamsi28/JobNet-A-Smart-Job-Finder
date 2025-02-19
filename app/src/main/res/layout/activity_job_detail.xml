@@ -63,7 +63,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
@@ -98,7 +97,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
@@ -127,8 +125,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="3dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -154,8 +151,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="5dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -176,19 +173,14 @@
                             android:fontFamily="serif"
                             android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/openings_logo"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/job_openings" />
-
                         <TextView
-                            android:id="@+id/openings"
+                            android:id="@+id/reviews"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Openings: 57"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:text="546 reviews"
                             android:textSize="14sp"
-                            android:layout_marginStart="5dp"
                             android:fontFamily="serif"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -215,16 +207,22 @@
                             android:layout_marginStart="5dp"
                             android:textStyle="bold" />
 
+                        <ImageView
+                            android:id="@+id/openings_logo"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/job_openings" />
+
                         <TextView
-                            android:id="@+id/reviews"
+                            android:id="@+id/openings"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="546 reviews"
+                            android:text="Openings: 57"
                             android:textSize="14sp"
+                            android:layout_marginStart="5dp"
                             android:fontFamily="serif"
                             android:textStyle="bold" />
+
                     </LinearLayout>
 
                 </LinearLayout>
