@@ -144,7 +144,6 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 .build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
         String userId= currentUser.getId();
         String tag = (String) saveJobs.getTag();
         SaveJobsModel saveJobsModel;
