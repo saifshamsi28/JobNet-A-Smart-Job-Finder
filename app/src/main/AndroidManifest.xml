@@ -32,7 +32,7 @@
             android:name=".Activities.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".Activities.MainActivity"
-            android:theme="@style/Theme.JobNet" />
+            />
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="false" />
