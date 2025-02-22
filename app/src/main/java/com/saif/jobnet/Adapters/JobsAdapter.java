@@ -128,7 +128,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     }
 
     private void setAnimation(View view, int position) {
-        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.item_slide_in);
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_top_to_bottom);
         view.startAnimation(animation);
     }
     private void saveJobToBackend(Job job, ImageView saveJobs) {

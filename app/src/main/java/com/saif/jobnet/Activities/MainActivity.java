@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
         TextView jobTitlesTextView = findViewById(R.id.job_title);
         searchView = findViewById(R.id.search_view);
 
-        binding.recyclerViewJobs.setVisibility(View.GONE);
-        binding.shimmerViewContainer.setVisibility(View.GONE);
+        binding.recyclerViewSuggestedJobs.setVisibility(View.GONE);
+        binding.recyclerViewRecentJobs.setVisibility(View.GONE);
 
         //to set navigation drawer
         setNavigationDrawer();
@@ -284,10 +284,12 @@ public class MainActivity extends AppCompatActivity {
         if (binding.shimmerViewContainer.isShimmerStarted()) {
             binding.shimmerViewContainer.stopShimmer();
             binding.shimmerViewContainer.setVisibility(View.GONE);
-            binding.recyclerViewJobs.setVisibility(View.VISIBLE);
+            binding.recyclerViewSuggestedJobs.setVisibility(View.VISIBLE);
+            binding.recyclerViewRecentJobs.setVisibility(View.VISIBLE);
         } else {
             binding.shimmerViewContainer.setVisibility(View.VISIBLE);
-            binding.recyclerViewJobs.setVisibility(View.GONE);
+            binding.recyclerViewRecentJobs.setVisibility(View.GONE);
+            binding.recyclerViewSuggestedJobs.setVisibility(View.GONE);
             binding.shimmerViewContainer.startShimmer();
         }
     }
@@ -429,13 +431,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
-        binding.recyclerViewJobs.setAdapter(jobsAdapter);
+        binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
+        binding.recyclerViewSuggestedJobs.setAdapter(jobsAdapter);
 //        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
-        binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewRecentJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
         LayoutAnimationController controller =
                 AnimationUtils.loadLayoutAnimation(this, R.anim.fall_down_anim);
-        binding.recyclerViewJobs.setLayoutAnimation(controller);
-        binding.recyclerViewJobs.scheduleLayoutAnimation();
+        binding.recyclerViewRecentJobs.setLayoutAnimation(controller);
+        binding.recyclerViewSuggestedJobs.setLayoutAnimation(controller);
+        binding.recyclerViewRecentJobs.scheduleLayoutAnimation();
+        binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
 
         new Thread(() -> jobDao.insertAllJobs(jobs)).start();
     }
