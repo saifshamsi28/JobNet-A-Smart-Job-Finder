@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.white));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.colorActionBarBackground));
         //to set the color of items of status bar black
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         TextView jobTitlesTextView = findViewById(R.id.job_title);

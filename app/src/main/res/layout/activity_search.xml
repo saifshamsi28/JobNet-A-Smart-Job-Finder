@@ -40,7 +40,7 @@
             android:layout_weight="1"
             android:background="@drawable/custom_update_bg"
             android:padding="8dp"
-            android:queryHint="Search jobs..."
+            app:queryHint="Search jobs..."
             app:iconifiedByDefault="false" />
 
         <!-- Filter Icon -->
@@ -63,12 +63,12 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:padding="16dp"
-        android:visibility="gone"
         app:cardCornerRadius="12dp"
         app:cardElevation="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/searchBarLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchBarLayout">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,60 +79,56 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:hint="Location"
+                android:layout_marginBottom="8dp"
                 app:endIconMode="dropdown_menu">
-
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Minimum Salary -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:hint="Minimum Salary"
+                android:layout_marginBottom="8dp"
                 app:endIconMode="dropdown_menu">
-
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteSalary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Company -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:hint="Company"
+                android:layout_marginBottom="8dp"
                 app:endIconMode="dropdown_menu">
-
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteCompany"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Job Type -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:hint="Job Type"
+                android:layout_marginBottom="12dp"
                 app:endIconMode="dropdown_menu">
-
                 <AutoCompleteTextView
                     android:id="@+id/autoCompleteJobType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Apply Filters Button -->
@@ -140,11 +136,11 @@
                 android:id="@+id/btnApplyFilters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/colorActionBarBackground"
                 android:text="Apply Filters"
+                android:backgroundTint="@color/colorActionBarBackground"
+                app:cornerRadius="50dp"
                 android:textColor="@color/white"
-                app:cornerRadius="50dp" />
+                android:layout_marginTop="12dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

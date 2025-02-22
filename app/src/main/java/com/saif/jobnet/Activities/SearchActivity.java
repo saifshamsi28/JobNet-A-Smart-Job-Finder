@@ -142,9 +142,7 @@ public class SearchActivity extends AppCompatActivity {
                     }else {
                         finish();
                     }
-
                 }
-
             }
         });
 
@@ -218,7 +216,6 @@ public class SearchActivity extends AppCompatActivity {
                                 JobsAdapter jobsAdapter=new JobsAdapter(SearchActivity.this,jobs);
                                 binding.recyclerViewJobs.setAdapter(jobsAdapter);
                                 binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
-                                showPreferences(false);
 
                                 for(Job job:jobs){
                                     System.out.println(job.getTitle());
@@ -243,9 +240,8 @@ public class SearchActivity extends AppCompatActivity {
                             if(response.code()==404){
                                 binding.recyclerViewJobs.setVisibility(GONE);
                                 binding.noJobsFound.setVisibility(VISIBLE);
-                                showPreferences(false);
+                                binding.noJobsFound.setText("No Jobs found for given preferences\ntry removing the preference");
 //                                binding.noJobsFound.setText("No jobs found for given preferences\nTry removing/modifying the preferences");
-                                //set all the fiel
                                 System.out.println("No jobs found");
                             }
                             Log.e("SearchActivity","Error in fetching jobs by title response code: "+response.code()+"response message: "+response.message());
