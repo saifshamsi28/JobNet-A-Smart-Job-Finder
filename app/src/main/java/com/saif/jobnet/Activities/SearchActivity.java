@@ -1,5 +1,8 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,17 +12,13 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-import android.window.OnBackInvokedDispatcher;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.saif.jobnet.Adapters.JobsAdapter;
@@ -66,15 +65,14 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-
-        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    showPreferences(true);
-                }
-            }
-        });
+//        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    showPreferences(true);
+//                }
+//            }
+//        });
 
         binding.autoCompleteLocation.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
@@ -100,15 +98,16 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         });
 
-        binding.btnFilter.setOnClickListener(new View.OnClickListener() {
+        binding.btnApplyFilters.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String title = binding.searchView.getQuery().toString().trim();
-                if (!title.isEmpty()) {
+//                if (!title.isEmpty()) {
+                    showPreferences(false);
                     finJobsByTitleAndPreferences(title);
-                } else {
-                    Toast.makeText(SearchActivity.this, "Please enter a job title", Toast.LENGTH_SHORT).show();
-                }
+//                } else {
+//                    Toast.makeText(SearchActivity.this, "Please enter a job title", Toast.LENGTH_SHORT).show();
+//                }
             }
         });
 
@@ -120,6 +119,13 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         });
 
+        binding.filters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show or hide the preference card view
+                showPreferences(binding.preferencesCardView.getVisibility() != VISIBLE);
+            }
+        });
 
 //        //implement onbackpress
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -127,7 +133,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 //set the visibility of the auto complete views to visible
-                if(binding.preferencesCardView.getVisibility()==View.VISIBLE){
+                if(binding.preferencesCardView.getVisibility()== VISIBLE){
                     //default behaviour of backpressed is to finish the activity
                     showPreferences(false);
                 }else {
@@ -156,19 +162,22 @@ public class SearchActivity extends AppCompatActivity {
 
     private void showPreferences(boolean b) {
         if(b){
-            binding.preferencesCardView.setVisibility(View.VISIBLE);
-            binding.searchedQuery.setVisibility(View.GONE);
+            //set top to down slide animation
+            binding.preferencesCardView.setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_top_to_bottom));
+            binding.preferencesCardView.setVisibility(VISIBLE);
+//            binding.searchedQuery.setVisibility(View.GONE);
 //            Toast.makeText(this, "Show preferences fields", Toast.LENGTH_SHORT).show();
         }else{
-            binding.preferencesCardView.setVisibility(View.GONE);
-            binding.searchedQuery.setVisibility(View.VISIBLE);
+            binding.preferencesCardView.setAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_bottom_to_top));
+            binding.preferencesCardView.setVisibility(GONE);
+//            binding.searchedQuery.setVisibility(View.VISIBLE);
 //            Toast.makeText(this, "Hide preferences fields", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void finJobsByTitleAndPreferences(String title) {
-        progressDialog.setMessage("Searching for jobs...");
-        progressDialog.show();
+        setUpShimmer(true);
+        binding.noJobsFound.setVisibility(GONE);
         binding.searchView.clearFocus();
         String location = binding.autoCompleteLocation.getText().toString().trim();
         String company=binding.autoCompleteCompany.getText().toString().trim();
@@ -200,12 +209,12 @@ public class SearchActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<Job>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
-                        progressDialog.dismiss();
+                        setUpShimmer(false);
                         if(response.isSuccessful()){
                             List<Job> jobs=response.body();
                             if (jobs != null) {
-                                binding.recyclerViewJobs.setVisibility(View.VISIBLE);
-                                binding.noJobsFound.setVisibility(View.GONE);
+                                binding.recyclerViewJobs.setVisibility(VISIBLE);
+//                                binding.noJobsFound.setVisibility(View.GONE);
                                 JobsAdapter jobsAdapter=new JobsAdapter(SearchActivity.this,jobs);
                                 binding.recyclerViewJobs.setAdapter(jobsAdapter);
                                 binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
@@ -232,10 +241,10 @@ public class SearchActivity extends AppCompatActivity {
                         }else {
                             //if response code is not found
                             if(response.code()==404){
-                                binding.recyclerViewJobs.setVisibility(View.GONE);
-                                binding.noJobsFound.setVisibility(View.VISIBLE);
+                                binding.recyclerViewJobs.setVisibility(GONE);
+                                binding.noJobsFound.setVisibility(VISIBLE);
                                 showPreferences(false);
-                                binding.noJobsFound.setText("No jobs found for given preferences\nTry removing/modifying the preferences");
+//                                binding.noJobsFound.setText("No jobs found for given preferences\nTry removing/modifying the preferences");
                                 //set all the fiel
                                 System.out.println("No jobs found");
                             }
@@ -245,10 +254,22 @@ public class SearchActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable throwable) {
                         System.out.println("Error in fetching jobs by title: "+throwable.getMessage());
-                        progressDialog.dismiss();
+                        setUpShimmer(false);
                         throwable.printStackTrace();
                     }
                 });
+    }
+
+    private void setUpShimmer(boolean b) {
+        if(b){
+            binding.shimmerLayout.setVisibility(VISIBLE);
+            binding.recyclerViewJobs.setVisibility(GONE);
+            binding.shimmerLayout.startShimmer();
+        }else {
+            binding.shimmerLayout.setVisibility(GONE);
+            binding.recyclerViewJobs.setVisibility(VISIBLE);
+            binding.shimmerLayout.stopShimmer();
+        }
     }
 
     private void formatSearchedQuery(String title, String location, String company, String jobType, String salary) {
@@ -274,7 +295,7 @@ public class SearchActivity extends AppCompatActivity {
         appendStyledText(builder, "Job Type: ", Color.BLUE, true);
         appendStyledText(builder, jobType, Color.DKGRAY, false);
 
-        binding.searchedQuery.setText(builder);
+//        binding.searchedQuery.setText(builder);
     }
 
     // Helper function to apply color and bold style

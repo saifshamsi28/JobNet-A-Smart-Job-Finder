@@ -5,187 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="16dp"
     tools:context=".Activities.SearchActivity">
-
-    <!-- Search Bar -->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:elevation="2dp"
-        app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:queryHint="Search jobs..." />
-
-    <TextView
-        android:id="@+id/searched_query"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="showing result for"
-        android:visibility="gone"
-        android:textColor="@color/colorActionBarBackground"
-        app:layout_constraintStart_toStartOf="@id/searchView"
-        app:layout_constraintTop_toBottomOf="@id/searchView" />
-
-    <!-- CardView for Search & Filters -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/preferences_cardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="12dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searched_query">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!-- Location AutoCompleteTextView -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/location_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:autofillHints="postalAddress"
-                android:hint="Location"
-                android:padding="16sp"
-                app:endIconMode="dropdown_menu"
-                app:hintEnabled="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:completionThreshold="1"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:padding="16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Salary (Min Salary) -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/salary_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="Minimum Salary"
-                android:padding="16sp"
-                app:endIconMode="dropdown_menu"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/location_container">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteSalary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:padding="16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Company Name -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/company_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="Company"
-                android:padding="16sp"
-                app:endIconMode="dropdown_menu"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/salary_container">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteCompany"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:padding="16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Job Type -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/job_type_container"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="Job Type"
-                android:padding="16sp"
-                app:endIconMode="dropdown_menu"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_container">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteJobType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:padding="16sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Filter Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnFilter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorActionBarBackground"
-                android:gravity="center"
-                android:text="Apply Filters"
-                app:cornerRadius="100dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/job_type_container" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
-
-    <!-- RecyclerView for Job Listings -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewJobs"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preferences_cardView" />
-
-    <!-- Shimmer Loading Effect -->
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preferences_cardView"
-        app:shimmer_auto_start="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <TextView
         android:id="@+id/no_jobs_found"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="No Jobs Found"
         android:textColor="@color/red"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -194,4 +19,279 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
+
+    <!-- Search Bar & Filters -->
+    <LinearLayout
+        android:id="@+id/searchBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/search_activity_bg"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Search Bar -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_update_bg"
+            android:padding="8dp"
+            android:queryHint="Search jobs..."
+            app:iconifiedByDefault="false" />
+
+        <!-- Filter Icon -->
+        <ImageView
+            android:id="@+id/filters"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/custom_update_bg"
+            android:padding="10dp"
+            android:src="@drawable/filter_icon"
+            app:tint="@color/colorActionBarBackground" />
+    </LinearLayout>
+
+    <!-- Filters CardView -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/preferencesCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Location -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Location"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Minimum Salary -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Minimum Salary"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteSalary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Company -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="Company"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Job Type -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Job Type"
+                app:endIconMode="dropdown_menu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteJobType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Apply Filters Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApplyFilters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/colorActionBarBackground"
+                android:text="Apply Filters"
+                android:textColor="@color/white"
+                app:cornerRadius="50dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Shimmer Effect (Instead of Progress Dialog) -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/preferencesCardView"
+        app:shimmer_auto_start="true">
+
+        <!-- Job Details Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/shimmer_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8sp"
+            app:cardBackgroundColor="#A9AEB1"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="30dp"
+            app:layout_constraintEnd_toStartOf="@+id/shimmer_recyclerview"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/shimmer_recyclerview"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Placeholder for Job Title -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/shimmer_placeholder" />
+
+                <!-- Placeholder for Company Name and Rating -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/shimmer_placeholder" />
+                </LinearLayout>
+
+                <!-- Placeholder for Location and Reviews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/shimmer_placeholder" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+                </LinearLayout>
+
+                <!-- Placeholder for Salary and Post Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/shimmer_placeholder" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+                </LinearLayout>
+
+                <!-- Placeholder for Description -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/shimmer_placeholder" />
+                <!-- Placeholder for Post Date and Reviews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shimmer_placeholder" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <!-- RecyclerView (Hidden Initially) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewJobs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/preferencesCardView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
