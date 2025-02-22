@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:id="@+id/navigation_view"
         android:layout_gravity="start"
+        android:visibility="gone"
         android:theme="@style/navigation_theme"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
@@ -26,104 +27,192 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/header"
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/header"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--&lt;!&ndash;            <ImageView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/menu_button"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="48dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="48dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_centerVertical="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="8dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:src="@drawable/menu_icon"&ndash;&gt;-->
+<!--&lt;!&ndash;                app:tint="@color/colorActionBarBackground" />&ndash;&gt;-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/view_history"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:layout_marginEnd="12dp"-->
+<!--                android:src="@drawable/history_img" />-->
+<!--        </RelativeLayout>-->
+
+        <!--        <androidx.appcompat.widget.SearchView-->
+        <!--            android:id="@+id/search_view"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="48dp"-->
+        <!--            android:layout_margin="16dp"-->
+        <!--            android:background="@drawable/searchview_background"-->
+        <!--            app:iconifiedByDefault="false"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/job_titles"-->
+        <!--            app:queryHint="Search your desired job" />-->
+
+        <LinearLayout
+            android:id="@+id/header_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/search_activity_bg"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/menu_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/menu_icon" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/menu_and_history_icon_layout"
+                android:layout_width="match_parent"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/view_history"
+                <ImageView
+                    android:id="@+id/menu_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/menu_icon_colourful"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.5"/>
+
+                    <ImageView
+                        android:id="@+id/view_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/history_img"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/white" />
+
+<!--                <androidx.constraintlayout.widget.Group-->
+<!--                    android:id="@+id/group"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:constraint_referenced_ids="location_spinner" />-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/job_titles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/history_img" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/job_titles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:text="Search"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header" />
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/searchview_background"
-            app:iconifiedByDefault="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/job_titles"
-            app:queryHint="Search your desired job" />
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_view">
+                android:layout_gravity="center"
+                android:layout_margin="8sp"
+                android:text="Search"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/menu_and_history_icon_layout"/>
 
             <LinearLayout
+                android:id="@+id/searchBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/search_activity_bg"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!-- Search Bar -->
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_update_bg"
+                    android:padding="8dp"
+                    app:queryHint="Search jobs..."
+                    app:iconifiedByDefault="false" />
+
+                <!-- Filter Icon -->
+                <ImageView
+                    android:id="@+id/filters"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/custom_update_bg"
+                    android:padding="10dp"
+                    android:src="@drawable/filter_icon"
+                    app:tint="@color/colorActionBarBackground" />
+            </LinearLayout>
+        </LinearLayout>
+        <!--        <ScrollView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            app:layout_constraintBottom_toTopOf="@id/bottom_navigation"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@+id/search_view">-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header_layout">
+
+            <TextView
+                android:id="@+id/error_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/error_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp">
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/shimmer_view_container"
+                <include
+                    layout="@layout/shimmer_job_card"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="8dp">
+                    android:layout_height="wrap_content" />
 
-                    <include
-                        layout="@layout/shimmer_job_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <include
-                        layout="@layout/shimmer_job_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.facebook.shimmer.ShimmerFrameLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_jobs"
+                <include
+                    layout="@layout/shimmer_job_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    tools:listitem="@layout/job_card" />
+                    android:layout_height="wrap_content" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                tools:listitem="@layout/job_card" />
 
-            </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
+        <!--        </ScrollView>-->
         <!-- Bottom Navigation View -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
