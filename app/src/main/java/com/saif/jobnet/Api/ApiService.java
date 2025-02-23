@@ -1,4 +1,4 @@
-package com.saif.jobnet.Network;
+package com.saif.jobnet.Api;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;

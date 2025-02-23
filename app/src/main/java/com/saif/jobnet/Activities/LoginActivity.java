@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.room.Room;
 
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
@@ -22,7 +21,7 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityLoginBinding;
 

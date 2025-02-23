@@ -1,4 +1,4 @@
-package com.saif.jobnet.Network;
+package com.saif.jobnet.Api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

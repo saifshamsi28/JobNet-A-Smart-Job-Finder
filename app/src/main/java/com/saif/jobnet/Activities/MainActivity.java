@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -33,7 +32,7 @@ import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Adapters.JobsAdapter;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityMainBinding;
 
@@ -80,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         //to set navigation drawer
         setNavigationDrawer();
 
+        //show shimmer effect until jobs load
+        setShimmerEffect();
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
         int randomIndex = random.nextInt(stringTitles.size());
         Log.d("MainActivity", "Title selected: " + stringTitles.get(randomIndex));
-        setShimmerEffect();
         System.out.println("fetching this job for home: "+ stringTitles.get(randomIndex));
         fetchJobs(stringTitles.get(randomIndex), "home");
         // Initialize the database
@@ -281,16 +282,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void setShimmerEffect() {
         //check if shimmer is running or not
-        if (binding.shimmerViewContainer.isShimmerStarted()) {
-            binding.shimmerViewContainer.stopShimmer();
-            binding.shimmerViewContainer.setVisibility(View.GONE);
+        if (binding.shimmerViewContainerSuggested.isShimmerStarted()) {
+            binding.shimmerViewContainerSuggested.stopShimmer();
+            binding.shimmerViewContainerRecent.stopShimmer();
+            binding.shimmerViewContainerSuggested.setVisibility(View.GONE);
+            binding.shimmerViewContainerRecent.setVisibility(View.GONE);
             binding.recyclerViewSuggestedJobs.setVisibility(View.VISIBLE);
             binding.recyclerViewRecentJobs.setVisibility(View.VISIBLE);
         } else {
-            binding.shimmerViewContainer.setVisibility(View.VISIBLE);
+            binding.shimmerViewContainerSuggested.setVisibility(View.VISIBLE);
+            binding.shimmerViewContainerRecent.setVisibility(View.VISIBLE);
             binding.recyclerViewRecentJobs.setVisibility(View.GONE);
             binding.recyclerViewSuggestedJobs.setVisibility(View.GONE);
-            binding.shimmerViewContainer.startShimmer();
+            binding.shimmerViewContainerSuggested.startShimmer();
+            binding.shimmerViewContainerRecent.startShimmer();
         }
     }
 

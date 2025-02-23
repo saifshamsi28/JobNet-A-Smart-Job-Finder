@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivitySignUpBinding;

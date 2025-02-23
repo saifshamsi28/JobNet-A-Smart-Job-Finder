@@ -35,7 +35,7 @@ import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Config;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;

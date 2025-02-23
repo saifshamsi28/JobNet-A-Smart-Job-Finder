@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.saif.jobnet.Adapters.JobsAdapter;
 import com.saif.jobnet.Models.Job;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.ActivitySearchBinding;

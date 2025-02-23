@@ -21,7 +21,7 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
-import com.saif.jobnet.Network.ApiService;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.JobCardBinding;
