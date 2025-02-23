@@ -27,6 +27,7 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
+        <!-- Top header menu -->
         <LinearLayout
             android:id="@+id/header_layout"
             android:layout_width="match_parent"
@@ -38,6 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!-- Menu and View History icons -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/menu_and_history_icon_layout"
                 android:layout_width="match_parent"
@@ -67,6 +69,7 @@
                     app:tint="@color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Dynamic JOb titles -->
             <TextView
                 android:id="@+id/job_titles"
                 android:layout_width="wrap_content"
@@ -80,6 +83,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/menu_and_history_icon_layout" />
 
+            <!-- SearchView -->
             <LinearLayout
                 android:id="@+id/searchBarLayout"
                 android:layout_width="match_parent"
@@ -116,6 +120,7 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Suggested jobs section -->
         <LinearLayout
             android:id="@+id/suggested_jobs_header"
             android:layout_width="match_parent"
@@ -144,23 +149,61 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_suggested_jobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:elevation="8sp"
+        <!-- Suggested jobs shimmer and recyclerview-->
+        <LinearLayout
+            android:id="@+id/shimmer_layout_suggested"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/suggested_jobs_header"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/suggested_jobs_header">
+
+            <!-- Suggested jobs recyclerview -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_suggested_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:elevation="8sp" />
+
+            <TextView
+                android:id="@+id/error_textview_suggested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container_suggested"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp">
+
+                <include
+                    layout="@layout/shimmer_job_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    layout="@layout/shimmer_job_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </LinearLayout>
+
+        <!-- Recent jobs section -->
         <LinearLayout
             android:id="@+id/Recent_jobs_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8sp"
-            app:layout_constraintTop_toBottomOf="@id/recycler_view_suggested_jobs">
+            android:layout_marginStart="8sp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8sp"
+            app:layout_constraintEnd_toStartOf="@+id/shimmer_layout_suggested"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/shimmer_layout_suggested"
+            app:layout_constraintTop_toBottomOf="@id/shimmer_layout_suggested">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -183,19 +226,9 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_recent_jobs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:elevation="8sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Recent_jobs_header"
-            />
-
+        <!-- Recent jobs shimmer -->
         <LinearLayout
+            android:id="@+id/shimmer_layout_recent"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:orientation="vertical"
@@ -203,32 +236,40 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/suggested_jobs_header">
+            app:layout_constraintTop_toBottomOf="@+id/Recent_jobs_header">
 
             <TextView
-                android:id="@+id/error_textview"
+                android:id="@+id/error_textview_recent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container_recent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp">
 
-                        <com.facebook.shimmer.ShimmerFrameLayout
-                            android:id="@+id/shimmer_view_container"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="8dp">
+                <include
+                    layout="@layout/shimmer_job_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-                            <include
-                                layout="@layout/shimmer_job_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/shimmer_job_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
-                            <include
-                                layout="@layout/shimmer_job_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </com.facebook.shimmer.ShimmerFrameLayout>
+            <!-- Recent jobs recyclerview -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_recent_jobs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:elevation="8sp" />
 
         </LinearLayout>
+
         <!-- Bottom Navigation View -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
