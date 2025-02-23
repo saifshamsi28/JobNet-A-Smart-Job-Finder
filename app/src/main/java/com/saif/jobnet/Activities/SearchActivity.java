@@ -6,13 +6,22 @@ import static android.view.View.VISIBLE;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -28,6 +37,8 @@ import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.ActivitySearchBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -41,21 +52,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivity extends AppCompatActivity {
 
     private ActivitySearchBinding binding;
-    private ProgressDialog progressDialog;
+    private List<String> stringTitles;
+    private int currentIndex = 0;
+    private TextView searchHintText;
+    private Handler handler = new Handler();
+    private Runnable titleUpdater;
+//    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        progressDialog=new ProgressDialog(this);
+//        progressDialog=new ProgressDialog(this);
 
-//        EdgeToEdge.enable();
+        //to animate the hint of search view
+        searchHintText = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        if (searchHintText != null) {
+            searchHintText.setHint("Search \"Android Developer\""); // Initial hint
+        }
+
+        // Job titles list
+        stringTitles = new ArrayList<>(Arrays.asList(
+                "Web Developer", "Android Developer", "Java Developer",
+                "Python Developer", "Flutter Developer", "iOS Developer",
+                "Data Scientist", "Data Analyst", "Data Engineer",
+                "Front-end Developer", "Back-end Developer"
+        ));
+            // Start the animation loop
+            startTitleAnimation();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search based on the title, location, and preferences
 
+                showPreferences(false);
                 finJobsByTitleAndPreferences(query);
                 return true;
             }
@@ -147,6 +178,56 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+
+    private void startTitleAnimation() {
+        titleUpdater = new Runnable() {
+            @Override
+            public void run() {
+                if (searchHintText == null) return;
+
+                // Extract current hint (e.g., "Search "Android Developer"")
+                String baseText = "Search ";
+
+                // Create a translate animation (bottom to top)
+                TranslateAnimation slideUp = new TranslateAnimation(0, 0, 100, -20);
+                slideUp.setDuration(300);
+
+                // Create fade-in animation
+                AlphaAnimation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setDuration(300);
+
+                // Combine animations
+                AnimationSet animationSet = new AnimationSet(true);
+                animationSet.addAnimation(slideUp);
+                animationSet.addAnimation(fadeIn);
+
+                // Change the job title
+                searchHintText.postDelayed(() -> {
+                    searchHintText.setHint(baseText + "\"" + stringTitles.get(currentIndex) + "\"");
+
+                    // Apply animation to the hint text
+                    searchHintText.startAnimation(animationSet);
+                    searchHintText.setTextSize(16);
+                    // Move to the next title in a loop
+                    currentIndex = (currentIndex + 1) % stringTitles.size();
+
+                    // Repeat after 3 seconds
+                    handler.postDelayed(titleUpdater, 2500);
+                }, 300); // Update text midway for smooth effect
+            }
+        };
+
+        // Start the animation loop
+        handler.post(titleUpdater);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(titleUpdater); // Stop handler when activity is destroyed
+    }
+
 
     private void performSearch() {
         String title = binding.searchView.getQuery().toString().trim();
