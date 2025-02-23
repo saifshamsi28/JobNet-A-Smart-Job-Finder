@@ -20,255 +20,277 @@
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
 
-    <!-- Main Content -->
+        <!-- Main Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/home_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <!-- Top header menu -->
-        <LinearLayout
-            android:id="@+id/header_layout"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/search_activity_bg"
-            android:orientation="vertical"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Menu and View History icons -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/menu_and_history_icon_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp">
-
-                <ImageView
-                    android:id="@+id/menu_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/menu_icon_colourful"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.5" />
-
-                <ImageView
-                    android:id="@+id/view_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/history_img"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/white" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Dynamic JOb titles -->
-            <TextView
-                android:id="@+id/job_titles"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8sp"
-                android:text="Search"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/menu_and_history_icon_layout" />
-
-            <!-- SearchView -->
             <LinearLayout
-                android:id="@+id/searchBarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/search_activity_bg"
-                android:orientation="horizontal"
-                android:padding="12dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
+                <!-- Top header menu -->
+                <LinearLayout
+                    android:id="@+id/header_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_activity_bg"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <!-- Search Bar -->
-                <androidx.appcompat.widget.SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_update_bg"
-                    android:padding="8dp"
-                    app:iconifiedByDefault="false"
-                    app:queryHint="Search jobs..." />
+                    <!-- Menu and View History icons -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/menu_and_history_icon_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
 
-                <!-- Filter Icon -->
-                <ImageView
-                    android:id="@+id/filters"
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/custom_update_bg"
-                    android:padding="10dp"
-                    android:src="@drawable/filter_icon"
-                    app:tint="@color/colorActionBarBackground" />
+                        <ImageView
+                            android:id="@+id/menu_button"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/menu_icon_colourful"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.5" />
+
+                        <ImageView
+                            android:id="@+id/view_history"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/history_img"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/white" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Dynamic JOb titles -->
+                    <TextView
+                        android:id="@+id/job_titles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="8sp"
+                        android:text="Search"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/menu_and_history_icon_layout" />
+
+                    <!-- SearchView -->
+                    <LinearLayout
+                        android:id="@+id/searchBarLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/search_activity_bg"
+                        android:orientation="horizontal"
+                        android:padding="12dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <!-- Search Bar -->
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/searchView"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/custom_update_bg"
+                            android:padding="8dp"
+                            app:iconifiedByDefault="false"
+                            app:queryHint="Search jobs..." />
+
+                        <!-- Filter Icon -->
+                        <ImageView
+                            android:id="@+id/filters"
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:background="@drawable/custom_update_bg"
+                            android:padding="10dp"
+                            android:src="@drawable/filter_icon"
+                            app:tint="@color/colorActionBarBackground" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!-- Suggested jobs section -->
+                <LinearLayout
+                    android:id="@+id/suggested_jobs_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header_layout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Suggested Jobs"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/view_all_suggested_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="View all"
+                        android:textColor="@color/colorActionBarBackground"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Suggested jobs shimmer and recyclerview-->
+                <LinearLayout
+                    android:id="@+id/shimmer_layout_suggested"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/suggested_jobs_header">
+
+                    <!-- Suggested jobs recyclerview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_suggested_jobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="8sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/error_textview_suggested"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmer_view_container_suggested"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp">
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                </LinearLayout>
+
+                <!-- Recent jobs section -->
+                <LinearLayout
+                    android:id="@+id/Recent_jobs_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    app:layout_constraintEnd_toStartOf="@+id/shimmer_layout_suggested"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/shimmer_layout_suggested"
+                    app:layout_constraintTop_toBottomOf="@id/shimmer_layout_suggested">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Recent Jobs"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/view_all_recent_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="View all"
+                        android:textColor="@color/colorActionBarBackground"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Recent jobs shimmer -->
+                <LinearLayout
+                    android:id="@+id/shimmer_layout_recent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/Recent_jobs_header">
+
+                    <TextView
+                        android:id="@+id/error_textview_recent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmer_view_container_recent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp">
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    <!-- Recent jobs recyclerview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_recent_jobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="8sp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-
-        <!-- Suggested jobs section -->
-        <LinearLayout
-            android:id="@+id/suggested_jobs_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8sp"
-            app:layout_constraintTop_toBottomOf="@id/header_layout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Suggested Jobs"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/view_all_suggested_jobs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="View all"
-                android:textColor="@color/colorActionBarBackground"
-                android:textSize="12dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Suggested jobs shimmer and recyclerview-->
-        <LinearLayout
-            android:id="@+id/shimmer_layout_suggested"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/suggested_jobs_header">
-
-            <!-- Suggested jobs recyclerview -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_suggested_jobs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:elevation="8sp" />
-
-            <TextView
-                android:id="@+id/error_textview_suggested"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_view_container_suggested"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp">
-
-                <include
-                    layout="@layout/shimmer_job_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    layout="@layout/shimmer_job_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-        </LinearLayout>
-
-        <!-- Recent jobs section -->
-        <LinearLayout
-            android:id="@+id/Recent_jobs_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8sp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="8sp"
-            app:layout_constraintEnd_toStartOf="@+id/shimmer_layout_suggested"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/shimmer_layout_suggested"
-            app:layout_constraintTop_toBottomOf="@id/shimmer_layout_suggested">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Recent Jobs"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/view_all_recent_jobs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="View all"
-                android:textColor="@color/colorActionBarBackground"
-                android:textSize="12dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Recent jobs shimmer -->
-        <LinearLayout
-            android:id="@+id/shimmer_layout_recent"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Recent_jobs_header">
-
-            <TextView
-                android:id="@+id/error_textview_recent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/shimmer_view_container_recent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp">
-
-                <include
-                    layout="@layout/shimmer_job_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    layout="@layout/shimmer_job_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-            <!-- Recent jobs recyclerview -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_recent_jobs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:elevation="8sp" />
-
-        </LinearLayout>
+        </ScrollView>
 
         <!-- Bottom Navigation View -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -285,12 +307,11 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/bottom_nav_menu" />
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/bottom_navigation" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/bottom_navigation" />
-
-
 </androidx.drawerlayout.widget.DrawerLayout>
