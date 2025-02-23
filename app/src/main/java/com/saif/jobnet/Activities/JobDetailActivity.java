@@ -114,9 +114,9 @@ public class JobDetailActivity extends AppCompatActivity {
             public void handleOnBackPressed() {
                 animateSequentially(
                         true,
-                        binding.descriptionContent,
-                        binding.descriptionHeading,
-                        binding.dividerView
+                        binding.descriptionContent
+//                        binding.descriptionHeading,
+//                        binding.dividerView
                 );
                 finish();
             }
@@ -168,15 +168,6 @@ public class JobDetailActivity extends AppCompatActivity {
                     Job job = response.body();
                     if (job != null) {
                         System.out.println("received shortDescription: \n" + job.getFullDescription());
-//                        if(job.getFullDescription()==null || job.getFullDescription().equals("null")
-//                                || job.getFullDescription().equals("N/A") || job.getFullDescription().isEmpty()
-//                        || job.getFullDescription().length()<50){
-//                            InputStream inputStream = getResources().openRawResource(R.raw.description);
-//                            String html = new Scanner(inputStream).useDelimiter("\\A").next();
-//                            binding.descriptionContent.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
-////                            binding.descriptionContent.setText(Html.fromHtml(String.valueOf(R.string.description), Html.FROM_HTML_MODE_LEGACY));
-//                            return;
-//                        }
                         binding.descriptionContent.setText(Html.fromHtml(job.getFullDescription(), Html.FROM_HTML_MODE_LEGACY));
                         setDescriptionInViews(job);
                     } else {
@@ -202,16 +193,6 @@ public class JobDetailActivity extends AppCompatActivity {
 
     private void setDescriptionInViews(Job job) {
         if (!currentJob.getUrl().contains("indeed.com")) {
-//            setUpShimmerEffect(true); // Start shimmer effect
-
-//            if(job.getShortDescription().length() > 25) {
-//                GeminiAPI.formatJobDescription(job.getShortDescription(), new GeminiAPI.GeminiCallback() {
-//                    @Override
-//                    public void onSuccess(String formattedText) {
-//                        runOnUiThread(() -> {
-//                            String formattedHtml = formatTextWithHtml(formattedText);
-////                            binding.descriptionContent.setText(Html.fromHtml(formattedHtml, Html.FROM_HTML_MODE_LEGACY));
-//
 //                            //save job in database
                             job.setFullDescription(job.getFullDescription());
                             currentJob.setFullDescription(job.getFullDescription());
@@ -221,20 +202,6 @@ public class JobDetailActivity extends AppCompatActivity {
 ////                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
 //                            Log.d("JobDetailActivity", "Job description updated");
                             displayJobDetails(currentJob);
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String error) {
-//                        runOnUiThread(() -> {
-//                            binding.descriptionContent.setText("Error: " + error);
-//                            setUpShimmerEffect(false);
-//                        });
-//                    }
-//                });
-//            } else {
-//                displayFormattedDescription(job);
-//            }
         }else {
             displayFormattedDescription(job);
         }
@@ -426,8 +393,8 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.shimmerViewContainer.stopShimmer();
             binding.jobDetailsCardview.setVisibility(View.VISIBLE);
             binding.descriptionCardview.setVisibility(View.VISIBLE);
-            binding.descriptionHeading.setVisibility(View.VISIBLE);
-            binding.dividerView.setVisibility(View.VISIBLE);
+//            binding.descriptionHeading.setVisibility(View.VISIBLE);
+//            binding.dividerView.setVisibility(View.VISIBLE);
             binding.shareButton.setVisibility(View.VISIBLE);
             binding.applyNow.setVisibility(View.VISIBLE);
         }else{
@@ -435,8 +402,8 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.shimmerViewContainer.startShimmer();
             binding.jobDetailsCardview.setVisibility(GONE);
             binding.descriptionCardview.setVisibility(GONE);
-            binding.descriptionHeading.setVisibility(GONE);
-            binding.dividerView.setVisibility(GONE);
+//            binding.descriptionHeading.setVisibility(GONE);
+//            binding.dividerView.setVisibility(GONE);
             binding.shareButton.setVisibility(GONE);
             binding.applyNow.setVisibility(GONE);
         }
