@@ -158,7 +158,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-//        //implement onbackpress
+//        //implement on back press
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
 
             @Override
