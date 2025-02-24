@@ -185,10 +185,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:hint="Enter your phone number"
             android:padding="8dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:hint="Enter your phone number"
             app:layout_constraintStart_toStartOf="@+id/tv_duration_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_duration_label" />
 
@@ -217,133 +217,48 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/contact_number" />
 
-        <HorizontalScrollView
-            android:id="@+id/saved_jobs_container"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:padding="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/update_button">
 
-            <ScrollView
+            <TextView
+                android:id="@+id/tvResumeTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:text="Resume"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"/>
 
-                <!-- Table Layout for header and job details -->
-                <TableLayout
-                    android:id="@+id/job_table"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="1,2,3,4"> <!-- Stretch Job Title, Company, Location, and Salary columns -->
+            <Button
+                android:id="@+id/btnUploadResume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload Resume"/>
 
-                    <!-- Table Row for Headers -->
-                    <TableRow>
+            <TextView
+                android:id="@+id/tvResumeFileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Resume Uploaded"
+                android:textSize="14sp"
+                android:paddingTop="8dp"
+                android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            android:text="S.No"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
+            <Button
+                android:id="@+id/btnViewResume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="View Resume"
+                android:visibility="gone"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Job Title"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
+        </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Company"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Location"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Salary"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="5dp"
-                            android:text="Rating"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="5dp"
-                            android:text="Reviews"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="5dp"
-                            android:text="Post Date"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="URL"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Description"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="start"
-                            android:padding="8dp"
-                            android:text="Job Id"
-                            android:textColor="@color/black"
-                            android:textStyle="bold" />
-                    </TableRow>
-                </TableLayout>
-            </ScrollView>
-        </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>

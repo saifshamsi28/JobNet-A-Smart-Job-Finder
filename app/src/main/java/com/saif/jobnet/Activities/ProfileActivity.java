@@ -1,16 +1,22 @@
 package com.saif.jobnet.Activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -31,11 +37,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.saif.jobnet.Api.SupabaseClient;
+import com.saif.jobnet.Api.SupabaseStorageApi;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
@@ -45,10 +55,21 @@ import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityProfileBinding;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import io.github.jan.supabase.network.SupabaseApi;
+import io.github.jan.supabase.storage.Storage;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Dialog passwordUpdateDialog;
     private boolean isPasswordVisible = false;
     private JobDao jobDao;
+    private static final int PICK_PDF_REQUEST = 1;
 
 
     @Override
@@ -71,6 +93,12 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+//        SupabaseClient supabase = new SupabaseClient(
+//                "https://your-supabase-url.supabase.co", // Replace with your Supabase URL
+//                "your-anon-key" // Replace with your Supabase API Key
+//        );
+
 
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
@@ -92,7 +120,144 @@ public class ProfileActivity extends AppCompatActivity {
                 updateUserNameOrEmail();
             }
         });
+
+        binding.btnUploadResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                    } else {
+                        openFilePicker();
+                    }
+                } else {
+                    openFilePicker();
+                }
+            }
+        });
+
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openFilePicker();
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_PDF_REQUEST && resultCode == RESULT_OK && data != null) {
+            Uri fileUri = data.getData();
+            if (fileUri != null) {
+                Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
+                uploadResume(fileUri);
+            }
+        }
+    }
+
+
+//    private void uploadResumeToSupabase(String filePath, Uri fileUri) {
+//        File file = new File(filePath);
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+//
+//        SupabaseService service = SupabaseService.create();
+//        Call<Void> call = service.uploadResume(file.getName(), body, "Bearer YOUR_SUPABASE_API_KEY");
+//
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//                if (response.isSuccessful()) {
+//                    Log.d("Upload", "Resume uploaded successfully!");
+//                } else {
+//                    Log.e("Upload", "Upload failed: " + response.message());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                Log.e("Upload", "Error: " + t.getMessage());
+//            }
+//        });
+//    }
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/pdf");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, "Select Resume"), PICK_PDF_REQUEST);
+    }
+
+    private void uploadResume(Uri fileUri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+            byte[] fileBytes = getBytes(inputStream);
+
+//            io.github.jan.supabase.SupabaseClient supabaseClient= io.github.jan.supabase.SupabaseClient.
+
+//            Storage storage=new Storage.createBucket();
+            // Generate a unique filename
+            String fileName = UUID.randomUUID().toString() + ".pdf";
+            String filePath = "resumes/" + fileName;
+
+            // Prepare request body
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), fileBytes);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", fileName, requestBody);
+
+            // Upload to Supabase Storage
+            SupabaseStorageApi storageApi = SupabaseClient.getStorageApi();
+            Call<ResponseBody> call = storageApi.uploadResume(
+                    filePath, body, "Bearer " + SupabaseClient.API_KEY
+            );
+
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        String resumeUrl = "https://ynsrmwwmlwmagvanssnx.supabase.co/storage/v1/object/public/resumes/" + fileName;
+                        Log.d("Upload", "Success! Resume URL: " + resumeUrl);
+                    } else {
+                        Log.e("Upload", "Failed to upload on Supabase: " + response);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("Upload", "Error: " + t.getMessage());
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Upload", "File read error: " + e.getMessage());
+        }
+    }
+
+
+
+
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+
 
     private void showConfirmationDialogue() {
         Dialog dialog=new Dialog(ProfileActivity.this);
@@ -360,49 +525,49 @@ public class ProfileActivity extends AppCompatActivity {
         }
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String BASE_URL = Config.BASE_URL;
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .client(new OkHttpClient().newBuilder()
-                                .connectTimeout(15,TimeUnit.SECONDS)
-                                .callTimeout(15,TimeUnit.SECONDS)
-                                .readTimeout(15,TimeUnit.SECONDS)
-                                .writeTimeout(15,TimeUnit.SECONDS)
-                                .build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-                ApiService apiService=retrofit.create(ApiService.class);
-                Call<User> response=apiService.getUserById(userId);
-                response.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                        if(response.isSuccessful()){
-                            User user1=response.body();
-                            if(user1!=null){
-                                if(user1.getSavedJobs()!=null && !user1.getSavedJobs().isEmpty()){
-                                    binding.savedJobsContainer.setVisibility(View.VISIBLE);
-                                    user.setSavedJobs(user1.getSavedJobs());
-                                    populateTableWithJobs(user.getSavedJobs());
-                                }
-                            }else {
-                                binding.savedJobsContainer.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<User> call, Throwable throwable) {
-                        System.out.println("Error getting user");
-                        System.out.println(throwable);
-                        throwable.printStackTrace();
-                        binding.savedJobsContainer.setVisibility(View.GONE);
-                    }
-                });
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String BASE_URL = Config.BASE_URL;
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl(BASE_URL)
+//                        .client(new OkHttpClient().newBuilder()
+//                                .connectTimeout(15,TimeUnit.SECONDS)
+//                                .callTimeout(15,TimeUnit.SECONDS)
+//                                .readTimeout(15,TimeUnit.SECONDS)
+//                                .writeTimeout(15,TimeUnit.SECONDS)
+//                                .build())
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .build();
+//                ApiService apiService=retrofit.create(ApiService.class);
+//                Call<User> response=apiService.getUserById(userId);
+//                response.enqueue(new Callback<User>() {
+//                    @Override
+//                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+//                        if(response.isSuccessful()){
+//                            User user1=response.body();
+//                            if(user1!=null){
+//                                if(user1.getSavedJobs()!=null && !user1.getSavedJobs().isEmpty()){
+////                                    binding.savedJobsContainer.setVisibility(View.VISIBLE);
+//                                    user.setSavedJobs(user1.getSavedJobs());
+//                                    populateTableWithJobs(user.getSavedJobs());
+//                                }
+//                            }else {
+////                                binding.savedJobsContainer.setVisibility(View.GONE);
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<User> call, Throwable throwable) {
+//                        System.out.println("Error getting user");
+//                        System.out.println(throwable);
+//                        throwable.printStackTrace();
+////                        binding.savedJobsContainer.setVisibility(View.GONE);
+//                    }
+//                });
+//            }
+//        }).start();
     }
 
     private void userFieldsAccessibility(boolean b) {
@@ -678,7 +843,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         int index = 1; // Starting serial number for jobs
 
-        binding.jobTable.setVisibility(View.VISIBLE);
+//        binding.jobTable.setVisibility(View.VISIBLE);
         for (Job job : jobs) {
             // Create a new row
             TableRow row = new TableRow(this);
