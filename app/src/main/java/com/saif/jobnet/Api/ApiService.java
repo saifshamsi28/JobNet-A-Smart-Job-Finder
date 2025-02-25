@@ -6,13 +6,16 @@ import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import java.util.List;
@@ -58,5 +61,11 @@ public interface ApiService {
 
     @PATCH("home/job/{id}/update-description")
     Call<Void> updateJobDescription(@Path("id") String id, @Body JobUpdateDTO jobUpdateDTO);
+
+    @Multipart
+    @POST("/user/resume/upload")
+    Call<ResponseBody> uploadResume(@Query("id") String id,
+                                    @Query("filename") String filename,
+                                    @Part MultipartBody.Part file);
 
 }
