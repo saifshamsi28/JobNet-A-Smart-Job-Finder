@@ -249,7 +249,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Update"
-                    android:textSize="14sp"
+                    android:layout_marginEnd="8sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/blue"/>
             </LinearLayout>
@@ -263,6 +264,7 @@
                 app:cardElevation="3dp">
 
                 <LinearLayout
+                    android:id="@+id/resume_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -275,7 +277,8 @@
                         android:id="@+id/resume_icon"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/job_saved_icon"
+                        android:background="@drawable/circular_background"
+                        android:src="@drawable/document_icon"
                         android:layout_marginEnd="12dp"/>
 
                     <!-- Resume Details -->
@@ -283,6 +286,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginEnd="8sp"
                         android:orientation="vertical">
 
                         <TextView
@@ -291,7 +295,7 @@
                             android:layout_height="wrap_content"
                             android:text="saif_resume-1.pdf"
                             android:textSize="16sp"
-                            android:maxLines="2"
+                            android:maxLines="1"
                             android:textStyle="bold"
                             android:textColor="@color/black"/>
 

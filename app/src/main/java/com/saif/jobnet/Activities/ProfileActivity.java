@@ -158,6 +158,26 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+        binding.resumeLayout.setOnClickListener(v -> {
+            String resumeUrl = sharedPreferences.getString("resumeUrl", "");
+
+            if (resumeUrl != null && !resumeUrl.isEmpty()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(resumeUrl), "application/pdf");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                // Check if any app can handle the intent
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ProfileActivity.this, "No app found to open PDF", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(ProfileActivity.this, "No resume found!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -375,6 +395,7 @@ public class ProfileActivity extends AppCompatActivity {
                         binding.resumeName.setVisibility(VISIBLE);
                         binding.resumeName.setTextColor(Color.RED);
                         binding.resumeName.setText("Failed to upload resume");
+                        Log.e("Upload", "Upload failed: "+response);
                         Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -408,8 +429,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         return fileName;
     }
-
-
 
     private String getFileSize(Uri fileUri) {
         Cursor cursor = getContentResolver().query(fileUri, null, null, null, null);
