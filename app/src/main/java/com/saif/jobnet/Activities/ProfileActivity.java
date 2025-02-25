@@ -1,6 +1,11 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.VISIBLE;
+
+import static com.saif.jobnet.Utils.Config.BASE_URL;
+
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -17,6 +22,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -57,9 +64,14 @@ import com.saif.jobnet.databinding.ActivityProfileBinding;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -85,7 +97,11 @@ public class ProfileActivity extends AppCompatActivity {
     private Dialog passwordUpdateDialog;
     private boolean isPasswordVisible = false;
     private JobDao jobDao;
-    private static final int PICK_PDF_REQUEST = 1;
+    private static final int PICK_PDF_REQUEST = 100;
+    private String resumeName="";
+    private String resumeUrl="";
+    private String resumeDate="";
+    private String resumeSize="";
 
 
     @Override
@@ -103,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
+        progressDialog=new ProgressDialog(this);
 
         System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
@@ -121,21 +138,26 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnUploadResume.setOnClickListener(new View.OnClickListener() {
+        binding.resumeUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-                    } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
                         openFilePicker();
+                    } else {
+                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES}, 100);
+                    }
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // Android 6 to Android 12
+                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        openFilePicker();
+                    } else {
+                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                     }
                 } else {
-                    openFilePicker();
+                    openFilePicker(); // Below Android 6, permissions are granted at install time
                 }
             }
         });
-
     }
 
     @Override
@@ -145,9 +167,36 @@ public class ProfileActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES}, 100);
+                    }
+                // Check if we should request again or direct user to settings
+                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    // User denied but didn't check "Don't ask again"
+                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                } else {
+                    // User checked "Don't ask again" or denied multiple times
+                    showSettingsDialog();
+                }
             }
         }
+    }
+
+    // Show a dialog directing the user to app settings
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Permission Required")
+                .setMessage("Storage permission is needed to upload your resume. Enable it in settings.")
+                .setPositiveButton("Go to Settings", (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", getPackageName(), null));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
 
@@ -155,11 +204,13 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_PDF_REQUEST && resultCode == RESULT_OK && data != null) {
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri fileUri = data.getData();
             if (fileUri != null) {
                 Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
                 uploadResume(fileUri);
+            }else {
+                Log.d("Resume Upload", "file uri is null");
             }
         }
     }
@@ -197,53 +248,236 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
+//    private void uploadResume(Uri fileUri) {
+//        try {
+//            InputStream inputStream = getContentResolver().openInputStream(fileUri);
+//            byte[] fileBytes = getBytes(inputStream);
+//
+////            io.github.jan.supabase.SupabaseClient supabaseClient= io.github.jan.supabase.SupabaseClient.
+//
+////            Storage storage=new Storage.createBucket();
+//            // Generate a unique filename
+//            String fileName = UUID.randomUUID().toString() + ".pdf";
+//            String filePath = "resumes/" + fileName;
+//
+//            System.out.println("File name: "+fileName);
+//            System.out.println("File path: "+filePath);
+////            System.out.println("file bytes: "+ Arrays.toString(fileBytes));
+//
+//            // Prepare request body
+//            RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), fileBytes);
+//            MultipartBody.Part body = MultipartBody.Part.createFormData("file", fileName, requestBody);
+//
+//            System.out.println("request body: "+requestBody);
+//            System.out.println("multi part body: "+body);
+//            // Upload to Supabase Storage
+////            SupabaseStorageApi storageApi = SupabaseClient.getStorageApi();
+////            Call<ResponseBody> call = storageApi.uploadResume(
+////                    filePath, body
+////            );
+//
+////            call.enqueue(new Callback<ResponseBody>() {
+////                @Override
+////                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+////                    if (response.isSuccessful()) {
+////                        String resumeUrl = "https://ynsrmwwmlwmagvanssnx.supabase.co/storage/v1/object/public/resumes/" + fileName;
+////                        Log.d("Upload", "Success! Resume URL: " + resumeUrl);
+////                        Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+////                    } else {
+////                        Log.e("Upload", "Failed to upload on Supabase: " + response);
+////                        binding.resumeName.setVisibility(VISIBLE);
+////                        binding.resumeName.setText("Failed to upload resume");
+////                        binding.resumeName.setTextColor(Color.RED);
+////                    }
+////                }
+////
+////                @Override
+////                public void onFailure(Call<ResponseBody> call, Throwable t) {
+////                    Log.e("Upload", "Error: " + t.getMessage());
+////                }
+////            });
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Log.e("Upload", "File read error: " + e.getMessage());
+//        }
+//    }
+
     private void uploadResume(Uri fileUri) {
+        progressDialog.setMessage("Uploading resume...");
+        progressDialog.show();
         try {
-            InputStream inputStream = getContentResolver().openInputStream(fileUri);
-            byte[] fileBytes = getBytes(inputStream);
+            System.out.println("upload resume in profile activity: fileUri="+fileUri);
+            System.out.println("resume name before: "+resumeName);
+            File file = convertUriToFile(this, fileUri); // Convert URI to file
 
-//            io.github.jan.supabase.SupabaseClient supabaseClient= io.github.jan.supabase.SupabaseClient.
+            resumeName=sanitizeFileName(resumeName);
+            System.out.println("resume name after sanitize: "+resumeName);
 
-//            Storage storage=new Storage.createBucket();
-            // Generate a unique filename
-            String fileName = UUID.randomUUID().toString() + ".pdf";
-            String filePath = "resumes/" + fileName;
+            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
 
-            // Prepare request body
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), fileBytes);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", fileName, requestBody);
-
-            // Upload to Supabase Storage
-            SupabaseStorageApi storageApi = SupabaseClient.getStorageApi();
-            Call<ResponseBody> call = storageApi.uploadResume(
-                    filePath, body, "Bearer " + SupabaseClient.API_KEY
-            );
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .client(new OkHttpClient.Builder()
+                            .connectTimeout(60, TimeUnit.SECONDS)
+                            .readTimeout(60, TimeUnit.SECONDS)
+                            .writeTimeout(60, TimeUnit.SECONDS)
+                            .build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            ApiService apiService=retrofit.create(ApiService.class);
+            System.out.println("resume name: "+file.getName());
+            Call<ResponseBody> call = apiService.uploadResume(user.getId(), file.getName(), body);
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    progressDialog.dismiss();
                     if (response.isSuccessful()) {
-                        String resumeUrl = "https://ynsrmwwmlwmagvanssnx.supabase.co/storage/v1/object/public/resumes/" + fileName;
-                        Log.d("Upload", "Success! Resume URL: " + resumeUrl);
+                        try {
+                            System.out.println("complete response: "+response);
+                            String responseBody = response.body().string();
+                            Log.d("Upload", "Resume uploaded successfully! Response: " + responseBody);
+                            Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                            // Extract resume details
+                            resumeUrl = responseBody;
+                            resumeDate = getCurrentDate();
+                            resumeSize = getFileSize(fileUri);
+
+                            System.out.println(
+                                    "resume details:- \n" +
+                                            "resume name: "+resumeName+
+                                            " resume url: "+resumeUrl+
+                                            " resume date: "+resumeDate+
+                                            " resume size: "+resumeSize
+                            );
+                            // Store in SharedPreferences
+                            sharedPreferences.edit()
+                                    .putString("resumeName", resumeName)
+                                    .putString("resumeUrl", resumeUrl)
+                                    .putString("resumeDate", resumeDate)
+                                    .putString("resumeSize", resumeSize)
+                                    .apply();
+                            binding.resumeName.setText(resumeName);
+                            binding.resumeName.setVisibility(VISIBLE);
+                            binding.resumeUploadDate.setText(resumeDate);
+                            binding.resumeUploadDate.setVisibility(VISIBLE);
+                            binding.resumeSize.setText(resumeSize);
+                            binding.resumeSize.setVisibility(VISIBLE);
+//                            binding.btnUploadResume.setText("Update Resume");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        Log.e("Upload", "Failed to upload on Supabase: " + response);
+                        Log.e("Upload", "Upload failed: " + response);
+                        binding.resumeName.setVisibility(VISIBLE);
+                        binding.resumeName.setTextColor(Color.RED);
+                        binding.resumeName.setText("Failed to upload resume");
+                        Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    progressDialog.dismiss();
                     Log.e("Upload", "Error: " + t.getMessage());
+                    Toast.makeText(ProfileActivity.this, "Upload error!", Toast.LENGTH_SHORT).show();
                 }
             });
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Upload", "File read error: " + e.getMessage());
+            Log.e("Upload", "File processing error: " + e.getMessage());
         }
+    }
+
+    private String sanitizeFileName(String fileName) {
+        // Remove (number) pattern like (1), (2), etc.
+        fileName = fileName.replaceAll("\\s*\\(\\d+\\)", "");
+
+        // Remove [number] pattern like [1], [2], etc.
+        fileName = fileName.replaceAll("\\[\\d+\\]", "");
+
+        // Replace spaces and special characters with underscores
+        fileName = fileName.replaceAll("[\\s]+", "_");
+
+        // Remove any remaining invalid characters except letters, numbers, underscores, hyphens, and periods
+        fileName = fileName.replaceAll("[^a-zA-Z0-9._-]", "");
+
+        return fileName;
     }
 
 
 
+    private String getFileSize(Uri fileUri) {
+        Cursor cursor = getContentResolver().query(fileUri, null, null, null, null);
+        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+        cursor.moveToFirst();
+        long sizeInBytes = cursor.getLong(sizeIndex);
+        cursor.close();
+
+        if (sizeInBytes < 1024) {
+            return sizeInBytes + " B";
+        } else if (sizeInBytes < 1024 * 1024) {
+            return (sizeInBytes / 1024) + " KB";
+        } else {
+            return (sizeInBytes / (1024 * 1024)) + " MB";
+        }
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        return sdf.format(new Date());
+    }
+
+    private String extractResumeUrl(String responseBody) {
+        if (responseBody.contains("publicUrl")) {
+            int startIndex = responseBody.indexOf("http");
+            int endIndex = responseBody.lastIndexOf("\"", startIndex);
+            return responseBody.substring(startIndex, endIndex);
+        }
+        return "Unknown URL";
+    }
+
+
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    result = cursor.getString(nameIndex);
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    public File convertUriToFile(Context context, Uri uri) throws IOException {
+        InputStream inputStream = context.getContentResolver().openInputStream(uri);
+        File file = new File(context.getCacheDir(), resumeName);
+        FileOutputStream outputStream = new FileOutputStream(file);
+
+        resumeName=getFileName(uri);
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+        }
+
+        outputStream.close();
+        inputStream.close();
+        return file;
+    }
 
     private byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
@@ -512,17 +746,38 @@ public class ProfileActivity extends AppCompatActivity {
         String email = sharedPreferences.getString("userEmail", null);
         String phoneNumber = sharedPreferences.getString("phoneNumber", null);
         String password = sharedPreferences.getString("password", null);
+        resumeName = sharedPreferences.getString("resumeName", null);
+        resumeUrl = sharedPreferences.getString("resumeUrl", null);
+        resumeDate = sharedPreferences.getString("resumeDate", null);
+        resumeSize = sharedPreferences.getString("resumeSize", null);
+
         user = new User(name, userName, email, password,phoneNumber);
         user.setId(userId);
         binding.profileName.setText(name);
         binding.username.setText(userName);
         binding.userEmail.setText(email);
         if(phoneNumber!=null && !phoneNumber.isEmpty()){
-            binding.contactNumber.setVisibility(View.VISIBLE);
+            binding.contactNumber.setVisibility(VISIBLE);
             binding.contactNumber.setText(phoneNumber);
         }else{
             binding.contactNumber.setVisibility(View.GONE);
         }
+            if (resumeName != null && !resumeName.isEmpty()) {
+                binding.resumeName.setText(resumeName);
+                binding.resumeName.setVisibility(VISIBLE);
+                binding.resumeUploadDate.setVisibility(VISIBLE);
+                binding.resumeSize.setVisibility(VISIBLE);
+                binding.resumeUploadDate.setText(resumeDate);
+                binding.resumeSize.setText(resumeSize);
+//                binding.btnUploadResume.setText("Update Resume");
+            }else {
+                System.out.println("resume name is null or empty in shared preferences");
+                binding.resumeName.setVisibility(View.GONE);
+                binding.resumeUploadDate.setVisibility(View.GONE);
+                binding.resumeSize.setVisibility(View.GONE);
+//                binding.btnUploadResume.setText("Upload Resume");
+            }
+
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
 //        new Thread(new Runnable() {
@@ -576,7 +831,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.username.setEnabled(false); //username can't be changed
             binding.userEmail.setEnabled(true);
             binding.contactNumber.setEnabled(true);
-            binding.updateButton.setVisibility(View.VISIBLE);
+            binding.updateButton.setVisibility(VISIBLE);
 
             binding.profileName.requestFocus();
             binding.profileName.setSelection(binding.profileName.getText().length());
@@ -679,11 +934,11 @@ public class ProfileActivity extends AppCompatActivity {
                 oldPasswordEdittext.setVisibility(View.GONE);
                 passwordVerifyButton.setVisibility(View.GONE);
 
-                passwordUpdateDialog.findViewById(R.id.new_password_header).setVisibility(View.VISIBLE);
-                passwordUpdateDialog.findViewById(R.id.new_password).setVisibility(View.VISIBLE);
-                passwordUpdateDialog.findViewById(R.id.confirm_password_header).setVisibility(View.VISIBLE);
-                passwordUpdateDialog.findViewById(R.id.confirm_password).setVisibility(View.VISIBLE);
-                passwordUpdateDialog.findViewById(R.id.cancel_confirm_buttons_layout).setVisibility(View.VISIBLE);
+                passwordUpdateDialog.findViewById(R.id.new_password_header).setVisibility(VISIBLE);
+                passwordUpdateDialog.findViewById(R.id.new_password).setVisibility(VISIBLE);
+                passwordUpdateDialog.findViewById(R.id.confirm_password_header).setVisibility(VISIBLE);
+                passwordUpdateDialog.findViewById(R.id.confirm_password).setVisibility(VISIBLE);
+                passwordUpdateDialog.findViewById(R.id.cancel_confirm_buttons_layout).setVisibility(VISIBLE);
                 passwordUpdateDialog.findViewById(R.id.new_password).setOnTouchListener((v1, event) -> handlePasswordVisibility(event, "new_password"));
                 passwordUpdateDialog.findViewById(R.id.confirm_password).setOnTouchListener((v1, event) -> handlePasswordVisibility(event, "confirm_password"));
 

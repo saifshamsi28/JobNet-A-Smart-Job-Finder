@@ -14,6 +14,7 @@ public class SupabaseClient {
     private static final String BASE_URL = "https://ynsrmwwmlwmagvanssnx.supabase.co/";
     public static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inluc3Jtd3dtbHdtYWd2YW5zc254Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA0MTg1MzQsImV4cCI6MjA1NTk5NDUzNH0.S7456cwW1ecWD83uTKdECbldeGy0rv49FhkdMpdTTNc";  // Replace with your actual API Key
 
+
     private static Retrofit retrofit;
 
     public static SupabaseStorageApi getStorageApi() {
@@ -23,7 +24,6 @@ public class SupabaseClient {
                         @Override
                         public Response intercept(Chain chain) throws IOException {
                             Request newRequest = chain.request().newBuilder()
-
                                     .addHeader("apikey", API_KEY)
                                     .addHeader("Authorization", "Bearer " + API_KEY)  // ✅ FIXED AUTH HEADER
                                     .addHeader("Content-Type", "application/octet-stream")  // ✅ Required for file uploads

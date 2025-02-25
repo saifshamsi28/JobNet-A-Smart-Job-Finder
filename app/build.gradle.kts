@@ -64,8 +64,8 @@ dependencies {
     implementation(platform("io.github.jan-tennert.supabase:bom:3.1.1"))
 //    implementation("io.github.jan-tennert.supabase:supabase-kt-android:3.1.1")
     implementation("io.github.jan-tennert.supabase:storage-kt-android:3.1.1")
-    implementation("io.github.jan-tennert.supabase:supabase-kt-android:3.1.1")
-    implementation ("io.supabase:supabase-java:0.6.0")
+//    implementation("io.github.jan-tennert.supabase:supabase-kt-android:3.1.1")
+//    implementation ("io.supabase:supabase-java:0.6.0")
 
 //    implementation("io.supabase:supabase-android:1.0.0")
 //    implementation("io.github.jan-tennert.supabase:postgrest-kt")
