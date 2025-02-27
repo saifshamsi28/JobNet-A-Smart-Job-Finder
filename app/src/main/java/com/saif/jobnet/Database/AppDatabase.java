@@ -8,7 +8,7 @@ import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Converters;
 
-@Database(entities = {User.class, Job.class}, version = 2)
+@Database(entities = {User.class, Job.class}, version = 3)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract JobDao jobDao();

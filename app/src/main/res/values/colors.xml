@@ -10,6 +10,7 @@
     <color name="green">#669900</color>
     <color name="light_green">#A3669900</color>
     <color name="grey">#6A6969</color>
+    <color name="profile_activity_bg">#226A6969</color>
     <color name="teal">#03A9F4</color>
     <color name="teal_low">#C103A9F4</color>
     <color name="red">#B61409</color>
@@ -20,7 +21,7 @@
     <color name="disable_btn">#6A6969</color>
     <color name="colorJobTitle">#A31FBA</color>
     <color name="colorActionBarBackground">#00BCD4</color>
-    <color name="resume_bg">#2500BCD4</color>
+    <color name="resume_bg">#1600BCD4</color>
     <color name="nav_selected_item_background">#9500BCD4</color>
     <color name="colorActionBarTitleText">#000000</color>
     <color name="searchbar">#F0ECEC</color>

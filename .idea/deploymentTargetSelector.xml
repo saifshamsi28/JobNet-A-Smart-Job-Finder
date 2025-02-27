@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-02-25T10:50:20.973017400Z">
+        <DropdownSelection timestamp="2025-02-27T17:32:39.057977600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=HMMZ8PP7DEZHC6G6" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\saifs\.android\avd\saif_phone_2_API_34.avd" />
             </handle>
           </Target>
         </DropdownSelection>

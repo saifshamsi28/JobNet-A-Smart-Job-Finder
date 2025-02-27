@@ -4,6 +4,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -116,12 +118,9 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                        openFilePicker();
-                    } else {
-                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES}, 100);
-                    }
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // Android 6 to Android 12
+                    Log.d("Resume Upload", "Android 13+ detected, no permission required.");
+                    openFilePicker(); // Directly open file picker, no need for permissions
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // Android 6 to 12
                     if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         openFilePicker();
                     } else {
@@ -132,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
         binding.updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,10 +179,9 @@ public class ProfileActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFilePicker();
             } else {
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
                         requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES}, 100);
-                    }
+                }
                 // Check if we should request again or direct user to settings
                 else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                         shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -305,10 +304,12 @@ public class ProfileActivity extends AppCompatActivity {
                                     .putString("resumeSize", resumeSize)
                                     .apply();
                             binding.resumeName.setText(resumeName);
+                            binding.resumeName.setTextColor(Color.BLACK);
                             binding.resumeUploadDate.setText(resumeDate);
                             binding.resumeSize.setText(resumeSize);
 
                             binding.uploadResumeButton.setVisibility(GONE);
+                            binding.resumeUpdateButton.setVisibility(VISIBLE);
                             binding.resumeLayout.setVisibility(VISIBLE);
 
 //                            binding.btnUploadResume.setText("Update Resume");

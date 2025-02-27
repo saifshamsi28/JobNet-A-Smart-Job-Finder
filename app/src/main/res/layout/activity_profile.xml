@@ -237,6 +237,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8sp"
                         android:text="Update"
+                        android:visibility="gone"
                         android:textColor="@color/blue"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -257,6 +258,7 @@
                         android:background="@color/resume_bg"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:visibility="gone"
                         android:padding="12dp">
 
                         <!-- Resume Icon -->
@@ -305,6 +307,17 @@
                             android:textSize="14sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/upload_resume_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:textAllCaps="false"
+                    android:text="Upload Resume"
+                    android:textColor="@color/white"
+                    android:background="@color/colorActionBarBackground"
+                    />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
