@@ -4,23 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/profile_activity_bg"
     tools:context=".Activities.ProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16sp"
-            android:contentDescription="cancel button"
-            android:src="@drawable/cancel_icon"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
         <ImageView
@@ -32,300 +22,290 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cancel_button"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/black" />
 
         <!-- Song Title -->
 
-        <TextView
-            android:id="@+id/tv_title_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16sp"
-            android:text="Name "
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_img" />
-
-        <EditText
-            android:id="@+id/profile_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16sp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:hint="Enter your name "
-            android:maxLines="2"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_title_label" />
-
-        <View
-            android:id="@+id/border_below_title"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="8sp"
-            android:layout_marginEnd="8sp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
-            app:layout_constraintBottom_toTopOf="@id/tv_artist_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_name" />
-        <!-- Artist -->
-        <TextView
-            android:id="@+id/tv_artist_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16sp"
-            android:text="Username"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/tv_title_label"
-            app:layout_constraintTop_toBottomOf="@+id/profile_name" />
-
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16sp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:hint="username"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_artist_label" />
-
-        <View
-            android:id="@+id/border_below_artist"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="8sp"
-            android:layout_marginEnd="8sp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
-            app:layout_constraintBottom_toTopOf="@id/tv_album_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username" />
-
-        <TextView
-            android:id="@+id/tv_album_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16sp"
-            android:text="Email"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/tv_artist_label"
-            app:layout_constraintTop_toBottomOf="@+id/username" />
-
-        <EditText
-            android:id="@+id/user_email"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16sp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:hint="Enter your email here"
-            android:onClick="sendEmail"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_album_label" />
-
-        <View
-            android:id="@+id/border_below_album"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="8sp"
-            android:layout_marginEnd="8sp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
-            app:layout_constraintBottom_toTopOf="@id/tv_duration_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_email" />
-        <!-- Other Metadata -->
-        <TextView
-            android:id="@+id/tv_duration_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16sp"
-            android:text="Contact"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/tv_album_label"
-            app:layout_constraintTop_toBottomOf="@+id/user_email" />
-
-        <EditText
-            android:id="@+id/contact_number"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/basic_details_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:hint="Enter your phone number"
-            android:padding="8dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/tv_duration_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_duration_label" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="8sp"
-            android:layout_marginEnd="8sp"
-            android:background="@color/fields_divider"
-            android:backgroundTint="@color/fields_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contact_number" />
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="12sp"
+            android:elevation="12sp"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_img"
+            >
+            <LinearLayout
+                android:id="@+id/basic_details_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8sp"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_title_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16sp"
+                    android:text="Name "
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Enter your name "
+                    android:maxLines="2"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <View
+                    android:id="@+id/border_below_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:background="@color/fields_divider"
+                    android:backgroundTint="@color/fields_divider" />
+                <!-- Artist -->
+                <TextView
+                    android:id="@+id/tv_artist_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:text="Username"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:hint="username"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <View
+                    android:id="@+id/border_below_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:background="@color/fields_divider"
+                    android:backgroundTint="@color/fields_divider"/>
+
+                <TextView
+                    android:id="@+id/tv_album_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:text="Email"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/user_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Enter your email here"
+                    android:onClick="sendEmail"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <View
+                    android:id="@+id/border_below_album"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:background="@color/fields_divider"
+                    android:backgroundTint="@color/fields_divider" />
+                <!-- Other Metadata -->
+                <TextView
+                    android:id="@+id/tv_duration_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:text="Contact"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/contact_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="Enter your phone number"
+                    android:padding="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/cancel_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_update_bg"
+                        android:backgroundTint="@color/colorActionBarBackground"
+                        android:layout_gravity="center"
+                        android:textAllCaps="false"
+                        android:layout_marginEnd="8sp"
+                        android:text="Cencel"/>
+                    <Button
+                        android:id="@+id/update_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_update_bg"
+                        android:backgroundTint="@color/colorActionBarBackground"
+                        android:layout_gravity="center"
+                        android:textAllCaps="false"
+                        android:text="Update"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/custom_update_bg"
-            android:text="Update"
-            android:visibility="gone"
+            app:cardCornerRadius="12sp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/contact_number" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/basic_details_cardview">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/update_button">
-
-            <!-- Resume Header and Update Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingBottom="8dp">
+                android:orientation="vertical"
+                android:padding="8sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/update_button">
 
-                <TextView
-                    android:id="@+id/resume_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Resume"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/resume_update_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Update"
-                    android:layout_marginEnd="8sp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/blue"/>
-            </LinearLayout>
-
-            <!-- Resume Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="3dp">
-
+                <!-- Resume Header and Update Button -->
                 <LinearLayout
-                    android:id="@+id/resume_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:background="@color/resume_bg"
-                    android:gravity="center_vertical">
+                    android:paddingBottom="8dp">
 
-                    <!-- Resume Icon -->
-                    <ImageView
-                        android:id="@+id/resume_icon"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:background="@drawable/circular_background"
-                        android:src="@drawable/document_icon"
-                        android:layout_marginEnd="12dp"/>
-
-                    <!-- Resume Details -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8sp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/resume_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="saif_resume-1.pdf"
-                            android:textSize="16sp"
-                            android:maxLines="1"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"/>
-
-                        <TextView
-                            android:id="@+id/resume_upload_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Feb 23, 2025"
-                            android:textSize="14sp"
-                            android:textColor="@color/grey"/>
-                    </LinearLayout>
-
-                    <!-- Resume Size -->
                     <TextView
-                        android:id="@+id/resume_size"
+                        android:id="@+id/resume_header"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="00KB"
-                        android:textSize="14sp"
-                        android:textColor="@color/grey" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
+                        android:layout_weight="1"
+                        android:text="Resume"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-<!--            <Button-->
-<!--                android:id="@+id/btnViewResume"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="View Resume"-->
-<!--                android:visibility="gone"/>-->
-<!--        </LinearLayout>-->
+                    <TextView
+                        android:id="@+id/resume_update_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8sp"
+                        android:text="Update"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Resume Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="3dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:id="@+id/resume_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/resume_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <!-- Resume Icon -->
+                        <ImageView
+                            android:id="@+id/resume_icon"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/circular_background"
+                            android:src="@drawable/document_icon" />
+
+                        <!-- Resume Details -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8sp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/resume_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:text="saif_resume-1.pdf"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/resume_upload_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Feb 23, 2025"
+                                android:textColor="@color/grey"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <!-- Resume Size -->
+                        <TextView
+                            android:id="@+id/resume_size"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00KB"
+                            android:textColor="@color/grey"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
