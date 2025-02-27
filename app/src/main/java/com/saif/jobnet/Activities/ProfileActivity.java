@@ -3,8 +3,6 @@ package com.saif.jobnet.Activities;
 import static android.view.View.VISIBLE;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
-
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -20,8 +18,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.InputType;
@@ -47,12 +43,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.saif.jobnet.Api.SupabaseClient;
-import com.saif.jobnet.Api.SupabaseStorageApi;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
@@ -61,22 +54,15 @@ import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityProfileBinding;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import io.github.jan.supabase.network.SupabaseApi;
-import io.github.jan.supabase.storage.Storage;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -138,6 +124,13 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        binding.cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userFieldsAccessibility(false);
+            }
+        });
+
         binding.resumeUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,9 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "No resume found!", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -235,93 +226,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
-//    private void uploadResumeToSupabase(String filePath, Uri fileUri) {
-//        File file = new File(filePath);
-//        RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
-//
-//        SupabaseService service = SupabaseService.create();
-//        Call<Void> call = service.uploadResume(file.getName(), body, "Bearer YOUR_SUPABASE_API_KEY");
-//
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    Log.d("Upload", "Resume uploaded successfully!");
-//                } else {
-//                    Log.e("Upload", "Upload failed: " + response.message());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                Log.e("Upload", "Error: " + t.getMessage());
-//            }
-//        });
-//    }
-
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/pdf");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(Intent.createChooser(intent, "Select Resume"), PICK_PDF_REQUEST);
     }
-
-//    private void uploadResume(Uri fileUri) {
-//        try {
-//            InputStream inputStream = getContentResolver().openInputStream(fileUri);
-//            byte[] fileBytes = getBytes(inputStream);
-//
-////            io.github.jan.supabase.SupabaseClient supabaseClient= io.github.jan.supabase.SupabaseClient.
-//
-////            Storage storage=new Storage.createBucket();
-//            // Generate a unique filename
-//            String fileName = UUID.randomUUID().toString() + ".pdf";
-//            String filePath = "resumes/" + fileName;
-//
-//            System.out.println("File name: "+fileName);
-//            System.out.println("File path: "+filePath);
-////            System.out.println("file bytes: "+ Arrays.toString(fileBytes));
-//
-//            // Prepare request body
-//            RequestBody requestBody = RequestBody.create(MediaType.parse("application/pdf"), fileBytes);
-//            MultipartBody.Part body = MultipartBody.Part.createFormData("file", fileName, requestBody);
-//
-//            System.out.println("request body: "+requestBody);
-//            System.out.println("multi part body: "+body);
-//            // Upload to Supabase Storage
-////            SupabaseStorageApi storageApi = SupabaseClient.getStorageApi();
-////            Call<ResponseBody> call = storageApi.uploadResume(
-////                    filePath, body
-////            );
-//
-////            call.enqueue(new Callback<ResponseBody>() {
-////                @Override
-////                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-////                    if (response.isSuccessful()) {
-////                        String resumeUrl = "https://ynsrmwwmlwmagvanssnx.supabase.co/storage/v1/object/public/resumes/" + fileName;
-////                        Log.d("Upload", "Success! Resume URL: " + resumeUrl);
-////                        Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
-////                    } else {
-////                        Log.e("Upload", "Failed to upload on Supabase: " + response);
-////                        binding.resumeName.setVisibility(VISIBLE);
-////                        binding.resumeName.setText("Failed to upload resume");
-////                        binding.resumeName.setTextColor(Color.RED);
-////                    }
-////                }
-////
-////                @Override
-////                public void onFailure(Call<ResponseBody> call, Throwable t) {
-////                    Log.e("Upload", "Error: " + t.getMessage());
-////                }
-////            });
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            Log.e("Upload", "File read error: " + e.getMessage());
-//        }
-//    }
 
     private void uploadResume(Uri fileUri) {
         progressDialog.setMessage("Uploading resume...");
@@ -373,6 +283,17 @@ public class ProfileActivity extends AppCompatActivity {
                                             " resume date: "+resumeDate+
                                             " resume size: "+resumeSize
                             );
+
+                            user.setResumeUploaded(true);
+                            user.setResumeUrl(resumeUrl);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    jobDao.insertOrUpdateUser(user);
+//                                    upd
+                                }
+                            }).start();
+
                             // Store in SharedPreferences
                             sharedPreferences.edit()
                                     .putString("resumeName", resumeName)
@@ -497,20 +418,6 @@ public class ProfileActivity extends AppCompatActivity {
         inputStream.close();
         return file;
     }
-
-    private byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
-    }
-
-
 
     private void showConfirmationDialogue() {
         Dialog dialog=new Dialog(ProfileActivity.this);
@@ -851,6 +758,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.userEmail.setEnabled(true);
             binding.contactNumber.setEnabled(true);
             binding.updateButton.setVisibility(VISIBLE);
+            binding.cancelButton.setVisibility(VISIBLE);
 
             binding.profileName.requestFocus();
             binding.profileName.setSelection(binding.profileName.getText().length());
@@ -870,6 +778,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.userEmail.setEnabled(false);
             binding.contactNumber.setEnabled(false);
             binding.updateButton.setVisibility(View.GONE);
+            binding.cancelButton.setVisibility(View.GONE);
         }
     }
 
