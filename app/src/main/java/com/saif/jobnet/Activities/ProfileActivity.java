@@ -1,5 +1,6 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
@@ -96,18 +97,12 @@ public class ProfileActivity extends AppCompatActivity {
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-//        SupabaseClient supabase = new SupabaseClient(
-//                "https://your-supabase-url.supabase.co", // Replace with your Supabase URL
-//                "your-anon-key" // Replace with your Supabase API Key
-//        );
-
-
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
 
-        System.out.println("saved password: "+sharedPreferences.getString("password",null));
+//        System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {
@@ -117,21 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
-        binding.updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUserNameOrEmail();
-            }
-        });
-
-        binding.cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userFieldsAccessibility(false);
-            }
-        });
-
-        binding.resumeUpdateButton.setOnClickListener(new View.OnClickListener() {
+        binding.uploadResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
@@ -151,11 +132,31 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+        binding.updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateUserNameOrEmail();
+            }
+        });
+
+        binding.cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userFieldsAccessibility(false);
+            }
+        });
+
+        binding.resumeUpdateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFilePicker();
+            }
+        });
 
         binding.resumeLayout.setOnClickListener(v -> {
             String resumeUrl = sharedPreferences.getString("resumeUrl", "");
 
-            if (resumeUrl != null && !resumeUrl.isEmpty()) {
+            if (!resumeUrl.isEmpty()) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.parse(resumeUrl), "application/pdf");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -258,11 +259,11 @@ public class ProfileActivity extends AppCompatActivity {
                     .build();
             ApiService apiService=retrofit.create(ApiService.class);
             System.out.println("resume name: "+file.getName());
-            Call<ResponseBody> call = apiService.uploadResume(user.getId(), file.getName(), body);
+            Call<ResponseBody> call = apiService.uploadResume(user.getId(), resumeName, body);
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     progressDialog.dismiss();
                     if (response.isSuccessful()) {
                         try {
@@ -286,6 +287,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                             user.setResumeUploaded(true);
                             user.setResumeUrl(resumeUrl);
+                            user.setResumeUploadDate(resumeDate);
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -296,17 +298,19 @@ public class ProfileActivity extends AppCompatActivity {
 
                             // Store in SharedPreferences
                             sharedPreferences.edit()
+                                    .putBoolean("isResumeUploaded", true)
                                     .putString("resumeName", resumeName)
                                     .putString("resumeUrl", resumeUrl)
                                     .putString("resumeDate", resumeDate)
                                     .putString("resumeSize", resumeSize)
                                     .apply();
                             binding.resumeName.setText(resumeName);
-                            binding.resumeName.setVisibility(VISIBLE);
                             binding.resumeUploadDate.setText(resumeDate);
-                            binding.resumeUploadDate.setVisibility(VISIBLE);
                             binding.resumeSize.setText(resumeSize);
-                            binding.resumeSize.setVisibility(VISIBLE);
+
+                            binding.uploadResumeButton.setVisibility(GONE);
+                            binding.resumeLayout.setVisibility(VISIBLE);
+
 //                            binding.btnUploadResume.setText("Update Resume");
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -404,7 +408,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public File convertUriToFile(Context context, Uri uri) throws IOException {
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
-        File file = new File(context.getCacheDir(), resumeName);
+        File file = new File(context.getCacheDir(), "resume.pdf");
         FileOutputStream outputStream = new FileOutputStream(file);
 
         resumeName=getFileName(uri);
@@ -672,10 +676,16 @@ public class ProfileActivity extends AppCompatActivity {
         String email = sharedPreferences.getString("userEmail", null);
         String phoneNumber = sharedPreferences.getString("phoneNumber", null);
         String password = sharedPreferences.getString("password", null);
-        resumeName = sharedPreferences.getString("resumeName", null);
-        resumeUrl = sharedPreferences.getString("resumeUrl", null);
-        resumeDate = sharedPreferences.getString("resumeDate", null);
-        resumeSize = sharedPreferences.getString("resumeSize", null);
+        boolean isResumeUploaded = sharedPreferences.getBoolean("isResumeUploaded", false);
+        resumeName = sharedPreferences.getString("resumeName", "");
+        resumeUrl = sharedPreferences.getString("resumeUrl", "");
+        resumeDate = sharedPreferences.getString("resumeDate", "");
+        resumeSize = sharedPreferences.getString("resumeSize", "");
+        System.out.println("is resume uploaded sharedpref: "+isResumeUploaded);
+        System.out.println("resume name from sharedpref: "+resumeName);
+        System.out.println("resume url sharedpref: "+resumeUrl);
+        System.out.println("resume date sharedpref: "+resumeDate);
+        System.out.println("resume size sharedpref: "+resumeSize);
 
         user = new User(name, userName, email, password,phoneNumber);
         user.setId(userId);
@@ -686,69 +696,26 @@ public class ProfileActivity extends AppCompatActivity {
             binding.contactNumber.setVisibility(VISIBLE);
             binding.contactNumber.setText(phoneNumber);
         }else{
-            binding.contactNumber.setVisibility(View.GONE);
+            binding.contactNumber.setVisibility(GONE);
         }
-            if (resumeName != null && !resumeName.isEmpty()) {
-                binding.resumeName.setText(resumeName);
-                binding.resumeName.setVisibility(VISIBLE);
-                binding.resumeUploadDate.setVisibility(VISIBLE);
-                binding.resumeSize.setVisibility(VISIBLE);
-                binding.resumeUploadDate.setText(resumeDate);
-                binding.resumeSize.setText(resumeSize);
-//                binding.btnUploadResume.setText("Update Resume");
-            }else {
-                System.out.println("resume name is null or empty in shared preferences");
-                binding.resumeName.setVisibility(View.GONE);
-                binding.resumeUploadDate.setVisibility(View.GONE);
-                binding.resumeSize.setVisibility(View.GONE);
+        if (isResumeUploaded) {
+            binding.uploadResumeButton.setVisibility(GONE);
+            binding.resumeLayout.setVisibility(VISIBLE);
+            binding.resumeUpdateButton.setVisibility(VISIBLE);
+
+            binding.resumeName.setText(resumeName);
+            binding.resumeSize.setText(resumeSize);
+            binding.resumeUploadDate.setText(resumeDate);
+        }else {
+            System.out.println("resume name is null or empty in shared preferences");
+            binding.uploadResumeButton.setVisibility(VISIBLE);
+            binding.resumeUpdateButton.setVisibility(GONE);
+            binding.resumeLayout.setVisibility(GONE);
 //                binding.btnUploadResume.setText("Upload Resume");
-            }
+        }
 
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String BASE_URL = Config.BASE_URL;
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .baseUrl(BASE_URL)
-//                        .client(new OkHttpClient().newBuilder()
-//                                .connectTimeout(15,TimeUnit.SECONDS)
-//                                .callTimeout(15,TimeUnit.SECONDS)
-//                                .readTimeout(15,TimeUnit.SECONDS)
-//                                .writeTimeout(15,TimeUnit.SECONDS)
-//                                .build())
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                        .build();
-//                ApiService apiService=retrofit.create(ApiService.class);
-//                Call<User> response=apiService.getUserById(userId);
-//                response.enqueue(new Callback<User>() {
-//                    @Override
-//                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-//                        if(response.isSuccessful()){
-//                            User user1=response.body();
-//                            if(user1!=null){
-//                                if(user1.getSavedJobs()!=null && !user1.getSavedJobs().isEmpty()){
-////                                    binding.savedJobsContainer.setVisibility(View.VISIBLE);
-//                                    user.setSavedJobs(user1.getSavedJobs());
-//                                    populateTableWithJobs(user.getSavedJobs());
-//                                }
-//                            }else {
-////                                binding.savedJobsContainer.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<User> call, Throwable throwable) {
-//                        System.out.println("Error getting user");
-//                        System.out.println(throwable);
-//                        throwable.printStackTrace();
-////                        binding.savedJobsContainer.setVisibility(View.GONE);
-//                    }
-//                });
-//            }
-//        }).start();
     }
 
     private void userFieldsAccessibility(boolean b) {
@@ -777,8 +744,8 @@ public class ProfileActivity extends AppCompatActivity {
             binding.username.setEnabled(false);
             binding.userEmail.setEnabled(false);
             binding.contactNumber.setEnabled(false);
-            binding.updateButton.setVisibility(View.GONE);
-            binding.cancelButton.setVisibility(View.GONE);
+            binding.updateButton.setVisibility(GONE);
+            binding.cancelButton.setVisibility(GONE);
         }
     }
 
@@ -858,9 +825,9 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Password verified", Toast.LENGTH_SHORT).show();
 
                 // Hide old password fields and show new password fields
-                oldPasswordHeader.setVisibility(View.GONE);
-                oldPasswordEdittext.setVisibility(View.GONE);
-                passwordVerifyButton.setVisibility(View.GONE);
+                oldPasswordHeader.setVisibility(GONE);
+                oldPasswordEdittext.setVisibility(GONE);
+                passwordVerifyButton.setVisibility(GONE);
 
                 passwordUpdateDialog.findViewById(R.id.new_password_header).setVisibility(VISIBLE);
                 passwordUpdateDialog.findViewById(R.id.new_password).setVisibility(VISIBLE);

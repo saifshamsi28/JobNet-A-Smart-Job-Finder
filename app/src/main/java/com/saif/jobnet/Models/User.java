@@ -24,18 +24,26 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
+    private boolean isResumeUploaded;
+    private String resumeUrl;
+    private String resumeUploadDate;
 
     @TypeConverters(Converters.class) // Convert List<Job> to a storable format
     private List<Job> savedJobs = new ArrayList<>();
 
     // Constructor for Room
-    public User(@NonNull String id, String name, String userName, String email, String password, String phoneNumber) {
+    public User(@NonNull String id, String name, String userName, String email,
+                String password, String phoneNumber,
+                boolean isResumeUploaded, String resumeUrl, String resumeUploadDate) {
         this.id = id;
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.isResumeUploaded = isResumeUploaded;
+        this.resumeUrl = resumeUrl;
+        this.resumeUploadDate = resumeUploadDate;
     }
 
     // Constructor for new users (e.g., registration)
@@ -46,6 +54,9 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.isResumeUploaded = false;
+        this.resumeUrl = "";
+        this.resumeUploadDate="";
     }
 
     // Getters and Setters
@@ -104,5 +115,30 @@ public class User {
 
     public void setSavedJobs(List<Job> savedJobs) {
         this.savedJobs = savedJobs;
+    }
+
+    public boolean isResumeUploaded() {
+        return isResumeUploaded;
+    }
+
+    public void setResumeUploaded(boolean resumeUploaded) {
+        isResumeUploaded = resumeUploaded;
+    }
+
+    public String getResumeUrl() {
+        return resumeUrl;
+    }
+
+    public void setResumeUrl(String resumeUrl) {
+        this.resumeUrl = resumeUrl;
+    }
+
+
+    public String getResumeUploadDate() {
+        return resumeUploadDate;
+    }
+
+    public void setResumeUploadDate(String resumeUploadDate) {
+        this.resumeUploadDate = resumeUploadDate;
     }
 }
