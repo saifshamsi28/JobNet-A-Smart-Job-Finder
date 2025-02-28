@@ -154,12 +154,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         binding.resumeLayout.setOnClickListener(v -> {
-            String resumeUrl = sharedPreferences.getString("resumeUrl", "");
+            String localResumeUri = sharedPreferences.getString("localResumeUri", "");
 
-            if (!resumeUrl.isEmpty()) {
+            if (!localResumeUri.isEmpty()) {
+                Uri fileUri = Uri.parse(localResumeUri);
+
+                // Grant temporary permission
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse(resumeUrl), "application/pdf");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.setDataAndType(fileUri, "application/pdf");
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                 // Check if any app can handle the intent
                 if (intent.resolveActivity(getPackageManager()) != null) {
@@ -218,6 +221,8 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri fileUri = data.getData();
             if (fileUri != null) {
+                sharedPreferences.edit().putString("localResumeUri", fileUri.toString()).apply();
+                System.out.println("storing local uri: "+ fileUri);
                 Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
                 uploadResume(fileUri);
             }else {
@@ -317,11 +322,11 @@ public class ProfileActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        Log.e("Upload", "Upload failed: " + response);
+                        Log.e("uploadResume", "Upload failed: " + response);
                         binding.resumeName.setVisibility(VISIBLE);
                         binding.resumeName.setTextColor(Color.RED);
                         binding.resumeName.setText("Failed to upload resume");
-                        Log.e("Upload", "Upload failed: "+response);
+                        Log.e("uploadResume", "Upload failed: "+response);
                         Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -329,14 +334,14 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     progressDialog.dismiss();
-                    Log.e("Upload", "Error: " + t.getMessage());
+                    Log.e("uploadResume", "Error: " + t.getMessage());
                     Toast.makeText(ProfileActivity.this, "Upload error!", Toast.LENGTH_SHORT).show();
                 }
             });
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Upload", "File processing error: " + e.getMessage());
+            Log.e("uploadResume", "File processing error: " + e.getMessage());
         }
     }
 
