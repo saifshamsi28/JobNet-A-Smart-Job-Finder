@@ -2,11 +2,13 @@ package com.saif.jobnet.Api;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;
+import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,9 +18,11 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import java.util.List;
+import java.util.Map;
 
 public interface ApiService {
     @GET("home")
@@ -62,10 +66,22 @@ public interface ApiService {
     @PATCH("home/job/{id}/update-description")
     Call<Void> updateJobDescription(@Path("id") String id, @Body JobUpdateDTO jobUpdateDTO);
 
+//    @Multipart
+//    @POST("/user/resume/upload")
+//    Call<ResponseBody> uploadResume(
+//            @Part("userId") String userId,
+//            @Part("resumeName") String resumeName,
+//            @Part("resumeDate") String resumeDate,
+//            @Part("resumeSize") String resumeSize,
+//            @Part MultipartBody.Part file
+//    );
+
     @Multipart
     @POST("/user/resume/upload")
-    Call<ResponseBody> uploadResume(@Query("id") String id,
-                                    @Query("filename") String filename,
-                                    @Part MultipartBody.Part file);
+    Call<ResponseBody> uploadResume(
+            @PartMap Map<String, RequestBody> data,  // Use @PartMap for text fields
+            @Part MultipartBody.Part file
+    );
+
 
 }

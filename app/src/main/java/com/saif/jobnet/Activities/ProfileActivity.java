@@ -52,6 +52,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Api.ApiService;
@@ -63,8 +64,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -154,17 +157,15 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         binding.resumeLayout.setOnClickListener(v -> {
-            String localResumeUri = sharedPreferences.getString("localResumeUri", "");
+            String resumeUri = sharedPreferences.getString("resumeUrl", "");
 
-            if (!localResumeUri.isEmpty()) {
-                Uri fileUri = Uri.parse(localResumeUri);
+            if (!resumeUri.isEmpty()) {
+                Uri fileUri = Uri.parse(resumeUri);
 
-                // Grant temporary permission
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(fileUri, "application/pdf");
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                // Check if any app can handle the intent
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
                 } else {
@@ -221,7 +222,6 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri fileUri = data.getData();
             if (fileUri != null) {
-                sharedPreferences.edit().putString("localResumeUri", fileUri.toString()).apply();
                 System.out.println("storing local uri: "+ fileUri);
                 Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
                 uploadResume(fileUri);
@@ -232,25 +232,34 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/pdf");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, "Select Resume"), PICK_PDF_REQUEST);
+        Intent resumeSelectIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        resumeSelectIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        resumeSelectIntent.setType("application/pdf");
+        startActivityForResult(Intent.createChooser(resumeSelectIntent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
     private void uploadResume(Uri fileUri) {
         progressDialog.setMessage("Uploading resume...");
         progressDialog.show();
         try {
-            System.out.println("upload resume in profile activity: fileUri="+fileUri);
-            System.out.println("resume name before: "+resumeName);
+            System.out.println("upload resume in profile activity: fileUri=" + fileUri);
+
             File file = convertUriToFile(this, fileUri); // Convert URI to file
 
-            resumeName=sanitizeFileName(resumeName);
-            System.out.println("resume name after sanitize: "+resumeName);
+            resumeName = sanitizeFileName(resumeName);
+            resumeDate = getCurrentDate();
+            resumeSize = getFileSize(fileUri);
 
-            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+            System.out.println("resume name after sanitize: " + resumeName);
+
+//            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+//            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+
+            // Sending resume details as RequestBody parameters
+//            RequestBody userIdPart = RequestBody.create(MediaType.parse("text/plain"), user.getId());
+//            RequestBody resumeNamePart = RequestBody.create(MediaType.parse("text/plain"), resumeName);
+//            RequestBody resumeDatePart = RequestBody.create(MediaType.parse("text/plain"), resumeDate);
+//            RequestBody resumeSizePart = RequestBody.create(MediaType.parse("text/plain"), resumeSize);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -261,9 +270,21 @@ public class ProfileActivity extends AppCompatActivity {
                             .build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-            ApiService apiService=retrofit.create(ApiService.class);
-            System.out.println("resume name: "+file.getName());
-            Call<ResponseBody> call = apiService.uploadResume(user.getId(), resumeName, body);
+
+            ApiService apiService = retrofit.create(ApiService.class);
+
+//            Call<ResponseBody> call = apiService.uploadResume(user.getId(), resumeName, resumeDate, resumeSize, body);
+            Map<String, RequestBody> formData = new HashMap<>();
+            formData.put("userId", RequestBody.create(MediaType.parse("text/plain"), user.getId()));
+            formData.put("resumeName", RequestBody.create(MediaType.parse("text/plain"), resumeName));
+            formData.put("resumeDate", RequestBody.create(MediaType.parse("text/plain"), resumeDate));
+            formData.put("resumeSize", RequestBody.create(MediaType.parse("text/plain"), resumeSize));
+
+//            File file = new File(fileUri.toString());
+            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+
+            Call<ResponseBody> call = apiService.uploadResume(formData, body);
 
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -271,34 +292,18 @@ public class ProfileActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     if (response.isSuccessful()) {
                         try {
-                            System.out.println("complete response: "+response);
                             String responseBody = response.body().string();
                             Log.d("Upload", "Resume uploaded successfully! Response: " + responseBody);
                             Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
 
-                            // Extract resume details
+                            // Store the resume URL from response
                             resumeUrl = responseBody;
-                            resumeDate = getCurrentDate();
-                            resumeSize = getFileSize(fileUri);
-
-                            System.out.println(
-                                    "resume details:- \n" +
-                                            "resume name: "+resumeName+
-                                            " resume url: "+resumeUrl+
-                                            " resume date: "+resumeDate+
-                                            " resume size: "+resumeSize
-                            );
 
                             user.setResumeUploaded(true);
                             user.setResumeUrl(resumeUrl);
                             user.setResumeUploadDate(resumeDate);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    jobDao.insertOrUpdateUser(user);
-//                                    upd
-                                }
-                            }).start();
+
+                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
 
                             // Store in SharedPreferences
                             sharedPreferences.edit()
@@ -308,6 +313,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     .putString("resumeDate", resumeDate)
                                     .putString("resumeSize", resumeSize)
                                     .apply();
+
                             binding.resumeName.setText(resumeName);
                             binding.resumeName.setTextColor(Color.BLACK);
                             binding.resumeUploadDate.setText(resumeDate);
@@ -317,7 +323,6 @@ public class ProfileActivity extends AppCompatActivity {
                             binding.resumeUpdateButton.setVisibility(VISIBLE);
                             binding.resumeLayout.setVisibility(VISIBLE);
 
-//                            binding.btnUploadResume.setText("Update Resume");
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -326,7 +331,6 @@ public class ProfileActivity extends AppCompatActivity {
                         binding.resumeName.setVisibility(VISIBLE);
                         binding.resumeName.setTextColor(Color.RED);
                         binding.resumeName.setText("Failed to upload resume");
-                        Log.e("uploadResume", "Upload failed: "+response);
                         Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -334,6 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     progressDialog.dismiss();
+                    Log.e("uploadResume", "Error: "+call.toString());
                     Log.e("uploadResume", "Error: " + t.getMessage());
                     Toast.makeText(ProfileActivity.this, "Upload error!", Toast.LENGTH_SHORT).show();
                 }
@@ -344,6 +349,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.e("uploadResume", "File processing error: " + e.getMessage());
         }
     }
+
 
     private String sanitizeFileName(String fileName) {
         // Remove (number) pattern like (1), (2), etc.

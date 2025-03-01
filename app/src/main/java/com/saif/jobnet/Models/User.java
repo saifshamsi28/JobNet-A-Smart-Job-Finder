@@ -26,7 +26,9 @@ public class User {
     private String phoneNumber;
     private boolean isResumeUploaded;
     private String resumeUrl;
+    private String resumeName;
     private String resumeUploadDate;
+    private String resumeSize;
 
     @TypeConverters(Converters.class) // Convert List<Job> to a storable format
     private List<Job> savedJobs = new ArrayList<>();
@@ -34,7 +36,8 @@ public class User {
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
                 String password, String phoneNumber,
-                boolean isResumeUploaded, String resumeUrl, String resumeUploadDate) {
+                boolean isResumeUploaded, String resumeUrl, String resumeUploadDate,
+                String resumeName, String resumeSize) {
         this.id = id;
         this.name = name;
         this.userName = userName;
@@ -44,6 +47,8 @@ public class User {
         this.isResumeUploaded = isResumeUploaded;
         this.resumeUrl = resumeUrl;
         this.resumeUploadDate = resumeUploadDate;
+        this.resumeName = resumeName;
+        this.resumeSize = resumeSize;
     }
 
     // Constructor for new users (e.g., registration)
@@ -57,6 +62,8 @@ public class User {
         this.isResumeUploaded = false;
         this.resumeUrl = "";
         this.resumeUploadDate="";
+        this.resumeName="";
+        this.resumeSize="";
     }
 
     // Getters and Setters
@@ -133,12 +140,27 @@ public class User {
         this.resumeUrl = resumeUrl;
     }
 
-
     public String getResumeUploadDate() {
         return resumeUploadDate;
     }
 
     public void setResumeUploadDate(String resumeUploadDate) {
         this.resumeUploadDate = resumeUploadDate;
+    }
+
+    public String getResumeName() {
+        return resumeName;
+    }
+
+    public void setResumeName(String resumeName) {
+        this.resumeName = resumeName;
+    }
+
+    public String getResumeSize() {
+        return resumeSize;
+    }
+
+    public void setResumeSize(String resumeSize) {
+        this.resumeSize = resumeSize;
     }
 }
