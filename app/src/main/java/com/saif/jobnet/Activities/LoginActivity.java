@@ -237,6 +237,9 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("password", user.getPassword()).apply();
         sharedPreferences.edit().putString("userName", user.getUserName()).apply();
         sharedPreferences.edit().putBoolean("isLoggedIn", true).apply();
+        sharedPreferences.edit().putBoolean("isResumeUploaded", user.isResumeUploaded()).apply();
+        sharedPreferences.edit().putString("resumeUrl", user.getResumeUrl()).apply();
+        sharedPreferences.edit().putString("resumeUploadDate", user.getResumeUploadDate()).apply();
         startActivity(intent);
         finish();
     }
