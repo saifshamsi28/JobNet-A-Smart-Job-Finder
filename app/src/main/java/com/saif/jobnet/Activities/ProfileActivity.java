@@ -5,7 +5,6 @@ import static android.view.View.VISIBLE;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -49,26 +48,30 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.Resume;
+import com.saif.jobnet.Models.ResumeResponseEntity;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityProfileBinding;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -224,7 +227,7 @@ public class ProfileActivity extends AppCompatActivity {
             if (fileUri != null) {
                 System.out.println("storing local uri: "+ fileUri);
                 Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
-                uploadResume(fileUri);
+                uploadResumeInChunks(fileUri);
             }else {
                 Log.d("Resume Upload", "file uri is null");
             }
@@ -238,117 +241,453 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(resumeSelectIntent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
-    private void uploadResume(Uri fileUri) {
-        progressDialog.setMessage("Uploading resume...");
-        progressDialog.show();
-        try {
-            System.out.println("upload resume in profile activity: fileUri=" + fileUri);
-
-            File file = convertUriToFile(this, fileUri); // Convert URI to file
-
-            resumeName = sanitizeFileName(resumeName);
-            resumeDate = getCurrentDate();
-            resumeSize = getFileSize(fileUri);
-
-            System.out.println("resume name after sanitize: " + resumeName);
-
+//    private void uploadResume(Uri fileUri) {
+//        progressDialog.setMessage("Uploading resume...");
+//        progressDialog.show();
+//        try {
+//            System.out.println("upload resume in profile activity: fileUri=" + fileUri);
+//
+//            File file = convertUriToFile(this, fileUri); // Convert URI to file
+//
+//            resumeName = sanitizeFileName(resumeName);
+//            resumeDate = getCurrentDate();
+//            resumeSize = getFileSize(fileUri);
+//
+//            System.out.println("resume name after sanitize: " + resumeName);
+//
+////            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
+////            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+//
+//            // Sending resume details as RequestBody parameters
+////            RequestBody userIdPart = RequestBody.create(MediaType.parse("text/plain"), user.getId());
+////            RequestBody resumeNamePart = RequestBody.create(MediaType.parse("text/plain"), resumeName);
+////            RequestBody resumeDatePart = RequestBody.create(MediaType.parse("text/plain"), resumeDate);
+////            RequestBody resumeSizePart = RequestBody.create(MediaType.parse("text/plain"), resumeSize);
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(BASE_URL)
+//                    .client(new OkHttpClient.Builder()
+//                            .connectTimeout(60, TimeUnit.SECONDS)
+//                            .readTimeout(60, TimeUnit.SECONDS)
+//                            .writeTimeout(60, TimeUnit.SECONDS)
+//                            .build())
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+//            ApiService apiService = retrofit.create(ApiService.class);
+//
+////            Call<ResponseBody> call = apiService.uploadResume(user.getId(), resumeName, resumeDate, resumeSize, body);
+//            Map<String, RequestBody> formData = new HashMap<>();
+//            formData.put("userId", RequestBody.create(MediaType.parse("text/plain"), user.getId()));
+//            formData.put("resumeName", RequestBody.create(MediaType.parse("text/plain"), resumeName));
+//            formData.put("resumeDate", RequestBody.create(MediaType.parse("text/plain"), resumeDate));
+//            formData.put("resumeSize", RequestBody.create(MediaType.parse("text/plain"), resumeSize));
+//
+////            File file = new File(fileUri.toString());
 //            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
 //            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+//
+//            Call<ResponseBody> call = apiService.uploadResume(formData, body);
+//
+//            call.enqueue(new Callback<ResponseBody>() {
+//                @Override
+//                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+//                    progressDialog.dismiss();
+//
+//                    if (response.isSuccessful()) {
+//                        try {
+//                            // Parse the Resume object from the response
+//                            Resume resume = new Gson().fromJson(response.body().string(), Resume.class);
+//                            Log.d("Upload", "Resume uploaded successfully! Response: " + resume);
+//                            Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+//
+//                            // Store the resume URL from response
+//                            resumeUrl = resume.getResumeUrl();
+//
+//                            user.setResumeUploaded(true);
+//                            user.setResumeUrl(resumeUrl);
+//                            user.setResumeUploadDate(resume.getResumeUploadDate());
+//
+//                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+//
+//                            // Store in SharedPreferences
+//                            sharedPreferences.edit()
+//                                    .putBoolean("isResumeUploaded", true)
+//                                    .putString("resumeName", resume.getResumeName())
+//                                    .putString("resumeUrl", resume.getResumeUrl())
+//                                    .putString("resumeDate", resume.getResumeUploadDate())
+//                                    .putString("resumeSize", resume.getResumeSize())
+//                                    .apply();
+//
+//                            binding.resumeName.setText(resume.getResumeName());
+//                            binding.resumeName.setTextColor(Color.BLACK);
+//                            binding.resumeUploadDate.setText(resume.getResumeUploadDate());
+//                            binding.resumeSize.setText(resume.getResumeSize());
+//
+//                            binding.uploadResumeButton.setVisibility(GONE);
+//                            binding.resumeUpdateButton.setVisibility(VISIBLE);
+//                            binding.resumeLayout.setVisibility(VISIBLE);
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            Log.e("Upload", "Error parsing response");
+//                            Toast.makeText(ProfileActivity.this, "Upload failed: Response parsing error", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } else {
+//                        try {
+//
+//                            //Parse error response
+//                            String errorResponse = response.errorBody().string();
+//                            ResumeResponseEntity error = new Gson().fromJson(errorResponse, ResumeResponseEntity.class);
+//
+//                            Log.e("uploadResume", "Upload failed: " + error.getMessage());
+//                            binding.resumeName.setVisibility(VISIBLE);
+//                            binding.resumeName.setTextColor(Color.RED);
+//                            binding.resumeName.setText("Failed to upload resume");
+//                            Toast.makeText(ProfileActivity.this, "Upload failed: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }
+//                @Override
+//                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+//                    progressDialog.dismiss();
+//                    Log.e("uploadResume", "Error on response: " + t.getMessage());
+//                    Log.e("uploadResume", "Error on response: " + t.toString());
+//                    Toast.makeText(ProfileActivity.this, "Upload error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.e("uploadResume", "File processing error: " + e.getMessage());
+//        }
+//    }
 
-            // Sending resume details as RequestBody parameters
-//            RequestBody userIdPart = RequestBody.create(MediaType.parse("text/plain"), user.getId());
-//            RequestBody resumeNamePart = RequestBody.create(MediaType.parse("text/plain"), resumeName);
-//            RequestBody resumeDatePart = RequestBody.create(MediaType.parse("text/plain"), resumeDate);
-//            RequestBody resumeSizePart = RequestBody.create(MediaType.parse("text/plain"), resumeSize);
+//    private void uploadResumeInChunks(Uri fileUri) {
+//        progressDialog.setMessage("Uploading resume...");
+//        progressDialog.show();
+//
+//        try {
+//            File file = convertUriToFile(this, fileUri);
+//            resumeName = sanitizeFileName(resumeName);
+//            long fileSize = file.length();
+//            int chunkSize = 512 * 1024; // 512 KB
+//            int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
+//
+//            //check if size is greater than 5 mb by chunks of 512 Kb
+//            if (totalChunks > 10 ) {
+//                Toast.makeText(ProfileActivity.this, "File size is too large", Toast.LENGTH_SHORT).show();
+//                binding.resumeName.setText("Resume too large");
+//                binding.resumeName.setTextColor(Color.RED);
+//                binding.resumeUploadDate.setText("Please upload file less than 5mb");
+//                binding.resumeUploadDate.setTextColor(Color.RED);
+//                progressDialog.dismiss();
+//                return;
+//            }
+//
+//            OkHttpClient client = new OkHttpClient.Builder()
+//                    .connectTimeout(60, TimeUnit.SECONDS)
+//                    .readTimeout(60, TimeUnit.SECONDS)
+//                    .writeTimeout(60, TimeUnit.SECONDS)
+//                    .build();
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(BASE_URL)
+//                    .client(client)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+//            ApiService apiService = retrofit.create(ApiService.class);
+//
+//            // Read file in chunks
+//            FileInputStream fis = new FileInputStream(file);
+//            byte[] buffer = new byte[chunkSize];
+//            int bytesRead;
+//            int chunkIndex = 0;
+//
+//            while ((bytesRead = fis.read(buffer)) > 0) {
+//                RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), buffer, 0, bytesRead);
+//                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+//
+//                Call<ResponseBody> call = apiService.uploadResumeChunk(
+//                        RequestBody.create(MediaType.parse("text/plain"), user.getId()),
+//                        RequestBody.create(MediaType.parse("text/plain"), resumeName),
+//                        RequestBody.create(MediaType.parse("text/plain"), String.valueOf(chunkIndex)),
+//                        RequestBody.create(MediaType.parse("text/plain"), String.valueOf(totalChunks)),
+//                        filePart
+//                );
+//
+//                call.enqueue(new Callback<ResponseBody>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        if (!response.isSuccessful()) {
+//                            Log.e("Upload", "Chunk upload failed: " + response);
+//                            return;
+//                        }
+//                        ResumeResponseEntity resumeResponseEntity = new Gson().fromJson(response.body().charStream(), ResumeResponseEntity.class);
+//                        Log.d("Upload", "Chunk uploaded successfully");
+//                        Log.d("Upload", "Response Body in Chunk: " + resumeResponseEntity.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {progressDialog.dismiss();
+//                        Log.e("Upload", "Chunk upload error: " + t.getMessage());
+//                    }
+//                });
+//
+//                chunkIndex++;
+//            }
+//
+//            fis.close();
+//
+//            // Notify backend that upload is complete
+//            Call<ResponseBody> finalizeCall = apiService.finalizeUpload(user.getId(), resumeName,getCurrentDate(),getFileSize(fileUri),totalChunks);
+//            System.out.println("finalizing file with resume name: "+resumeName+" file name: "+file.getName());
+//            finalizeCall.enqueue(new Callback<ResponseBody>() {
+//                @Override
+//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                    progressDialog.dismiss();
+//                    if (response.code()==200) {
+//                        Log.d("Upload", "Resume uploaded successfully!");
+//                        setUpResumeFile(response);
+//                        Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        System.err.println("Error finalizing file with resume: "+response);
+//                        ResumeResponseEntity resumeResponseEntity = new Gson().fromJson(response.errorBody().charStream(), ResumeResponseEntity.class);
+//                        Log.e("Upload", "Upload failed in finalizing resume response parsed: " + resumeResponseEntity);
+//                        Log.e("Upload", "Upload failed in finalizing: " + response);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                    progressDialog.dismiss();
+//                    Log.e("Upload", "Upload error: " + t.getMessage());
+//                }
+//            });
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            progressDialog.dismiss();
+//            Log.e("Upload", "File processing error: " + e.getMessage());
+//        }
+//    }
+
+    private void uploadResumeInChunks(Uri fileUri) {
+        progressDialog.setMessage("Uploading resume...");
+        progressDialog.show();
+
+        try {
+            File file = convertUriToFile(this, fileUri);
+            resumeName = sanitizeFileName(resumeName);
+            long fileSize = file.length();
+            int chunkSize = 512 * 1024; // 512 KB
+            int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
+
+            // Check if size is greater than 5 MB
+            if (totalChunks > 10) {
+                Toast.makeText(ProfileActivity.this, "File size is too large", Toast.LENGTH_SHORT).show();
+                binding.resumeName.setText("Resume too large");
+                binding.resumeName.setTextColor(Color.RED);
+                binding.resumeUploadDate.setText("Please upload file less than 5mb");
+                binding.resumeUploadDate.setTextColor(Color.RED);
+                progressDialog.dismiss();
+                return;
+            }
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(60, TimeUnit.SECONDS)
+                    .build();
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(new OkHttpClient.Builder()
-                            .connectTimeout(60, TimeUnit.SECONDS)
-                            .readTimeout(60, TimeUnit.SECONDS)
-                            .writeTimeout(60, TimeUnit.SECONDS)
-                            .build())
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             ApiService apiService = retrofit.create(ApiService.class);
 
-//            Call<ResponseBody> call = apiService.uploadResume(user.getId(), resumeName, resumeDate, resumeSize, body);
-            Map<String, RequestBody> formData = new HashMap<>();
-            formData.put("userId", RequestBody.create(MediaType.parse("text/plain"), user.getId()));
-            formData.put("resumeName", RequestBody.create(MediaType.parse("text/plain"), resumeName));
-            formData.put("resumeDate", RequestBody.create(MediaType.parse("text/plain"), resumeDate));
-            formData.put("resumeSize", RequestBody.create(MediaType.parse("text/plain"), resumeSize));
+            FileInputStream fis = new FileInputStream(file);
+            byte[] buffer = new byte[chunkSize];
+            int bytesRead;
+            int chunkIndex = 0;
+            AtomicInteger uploadedChunks = new AtomicInteger(0);  // Track uploaded chunks
 
-//            File file = new File(fileUri.toString());
-            RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", resumeName, requestFile);
+            while ((bytesRead = fis.read(buffer)) > 0) {
+                byte[] chunkData = Arrays.copyOf(buffer, bytesRead); // Ensure correct data length
 
-            Call<ResponseBody> call = apiService.uploadResume(formData, body);
+                RequestBody requestFile = RequestBody.create(MediaType.parse("application/pdf"), chunkData);
+                MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", resumeName, requestFile);
 
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    progressDialog.dismiss();
-                    if (response.isSuccessful()) {
-                        try {
-                            String responseBody = response.body().string();
-                            Log.d("Upload", "Resume uploaded successfully! Response: " + responseBody);
-                            Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+                Call<ResponseBody> call = apiService.uploadResumeChunk(
+                        RequestBody.create(MediaType.parse("text/plain"), user.getId()),
+                        RequestBody.create(MediaType.parse("text/plain"), resumeName),
+                        RequestBody.create(MediaType.parse("text/plain"), String.valueOf(chunkIndex)),
+                        RequestBody.create(MediaType.parse("text/plain"), String.valueOf(totalChunks)),
+                        filePart
+                );
 
-                            // Store the resume URL from response
-                            resumeUrl = responseBody;
+                int finalChunkIndex = chunkIndex; // For lambda
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (!response.isSuccessful()) {
+//                            Log.e("Upload", "Chunk " + finalChunkIndex + " upload failed: " + response);
+                            try {
+                                if (response.errorBody() != null) {
+                                    String errorJson = response.errorBody().string(); // Read JSON string
+                                    Gson gson = new Gson();
+                                    ResumeResponseEntity errorResponse = gson.fromJson(errorJson, ResumeResponseEntity.class);
 
-                            user.setResumeUploaded(true);
-                            user.setResumeUrl(resumeUrl);
-                            user.setResumeUploadDate(resumeDate);
-
-                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
-
-                            // Store in SharedPreferences
-                            sharedPreferences.edit()
-                                    .putBoolean("isResumeUploaded", true)
-                                    .putString("resumeName", resumeName)
-                                    .putString("resumeUrl", resumeUrl)
-                                    .putString("resumeDate", resumeDate)
-                                    .putString("resumeSize", resumeSize)
-                                    .apply();
-
-                            binding.resumeName.setText(resumeName);
-                            binding.resumeName.setTextColor(Color.BLACK);
-                            binding.resumeUploadDate.setText(resumeDate);
-                            binding.resumeSize.setText(resumeSize);
-
-                            binding.uploadResumeButton.setVisibility(GONE);
-                            binding.resumeUpdateButton.setVisibility(VISIBLE);
-                            binding.resumeLayout.setVisibility(VISIBLE);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                                    Log.e("Upload", "Chunk Upload failed : " + errorResponse.getMessage());
+                                    Toast.makeText(ProfileActivity.this, "Error: " + errorResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.e("Upload", "Error parsing response: " + e.getMessage());
+                                Toast.makeText(ProfileActivity.this, "Unknown error occurred", Toast.LENGTH_LONG).show();
+                            }
+                            return;
                         }
-                    } else {
-                        Log.e("uploadResume", "Upload failed: " + response);
-                        binding.resumeName.setVisibility(VISIBLE);
-                        binding.resumeName.setTextColor(Color.RED);
-                        binding.resumeName.setText("Failed to upload resume");
-                        Toast.makeText(ProfileActivity.this, "Upload failed!", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                        Log.d("Upload", "Chunk " + finalChunkIndex + " uploaded successfully");
+                        Log.d("Upload", "Chunk " + finalChunkIndex + " size: " + chunkData.length);
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    progressDialog.dismiss();
-                    Log.e("uploadResume", "Error: "+call.toString());
-                    Log.e("uploadResume", "Error: " + t.getMessage());
-                    Toast.makeText(ProfileActivity.this, "Upload error!", Toast.LENGTH_SHORT).show();
-                }
-            });
+
+                        // ✅ Check if all chunks are uploaded before finalizing
+                        if (uploadedChunks.incrementAndGet() == totalChunks) {
+                            finalizeUpload(apiService, user.getId(), resumeName, fileUri, totalChunks);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Log.e("Upload", "Chunk upload error: " + t.getMessage());
+                    }
+                });
+
+                chunkIndex++;
+            }
+
+            fis.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("uploadResume", "File processing error: " + e.getMessage());
+            progressDialog.dismiss();
+            Log.e("Upload", "File processing error: " + e.getMessage());
         }
     }
+
+    // Finalize Upload Only When All Chunks Are Sent
+    private void finalizeUpload(ApiService apiService, String userId, String resumeName, Uri fileUri, int totalChunks) {
+        Call<ResponseBody> finalizeCall = apiService.finalizeUpload(userId, resumeName, getCurrentDate(), getFileSize(fileUri), totalChunks);
+        finalizeCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful()) {
+                    Log.d("Upload", "Resume uploaded successfully!");
+                    setUpResumeFile(response);
+                    Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            Gson gson = new Gson();
+                            ResumeResponseEntity errorResponse = gson.fromJson(errorJson, ResumeResponseEntity.class);
+
+                            Log.e("Upload", "Chunk finalize failed: " + errorResponse.getMessage());
+                            Toast.makeText(ProfileActivity.this, "Error: " + errorResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("Upload", "Error parsing response: " + e.getMessage());
+                        Toast.makeText(ProfileActivity.this, "Unknown error occurred", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e("Upload", "Upload error: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+    private void setUpResumeFile(Response<ResponseBody> response){
+        try {
+            // Parse the Resume object from the response
+            Resume resume = new Gson().fromJson(response.body().string(), Resume.class);
+            Log.d("Upload", "Resume uploaded successfully! Response: " + resume);
+            Log.d("Upload", "Resume has some Response: " + response);
+            Toast.makeText(ProfileActivity.this, "Resume uploaded successfully", Toast.LENGTH_SHORT).show();
+
+            // Store the resume URL from response
+            resumeUrl = resume.getResumeUrl();
+
+            user.setResumeUploaded(true);
+            user.setResumeUrl(resumeUrl);
+            user.setResumeUploadDate(resume.getResumeUploadDate());
+            user.setResumeSize(resume.getResumeSize());
+
+            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+
+            // Store in SharedPreferences
+            sharedPreferences.edit()
+                    .putBoolean("isResumeUploaded", true)
+                    .putString("resumeName", resume.getResumeName())
+                    .putString("resumeName", resume.getResumeName())
+                    .putString("resumeUrl", resume.getResumeUrl())
+                    .putString("resumeDate", resume.getResumeUploadDate())
+                    .putString("resumeSize", resume.getResumeSize())
+                    .apply();
+
+            binding.resumeName.setText(resume.getResumeName());
+            binding.resumeName.setTextColor(Color.BLACK);
+            binding.resumeUploadDate.setText(resume.getResumeUploadDate());
+            binding.resumeSize.setText(formatResumeSize(resume.getResumeSize()));
+
+            binding.uploadResumeButton.setVisibility(GONE);
+            binding.resumeUpdateButton.setVisibility(VISIBLE);
+            binding.resumeLayout.setVisibility(VISIBLE);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Upload", "Error parsing response");
+            Toast.makeText(ProfileActivity.this, "Upload failed: Response parsing error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String formatResumeSize(String resumeSize) {
+        long size = Long.parseLong(resumeSize);
+        double formattedSize;
+        String unit;
+
+        if (size >= 1024 * 1024 * 1024) {  // Convert to GB
+            formattedSize = size / (1024.0 * 1024 * 1024);
+            unit = "GB";
+        } else if (size >= 1024 * 1024) {  // Convert to MB
+            formattedSize = size / (1024.0 * 1024);
+            unit = "MB";
+        } else if (size >= 1024) {  // Convert to KB
+            formattedSize = size / 1024.0;
+            unit = "KB";
+        } else {  // Size in bytes
+            return size + " Bytes";
+        }
+
+        return String.format("%.2f %s", formattedSize, unit);
+    }
+
 
 
     private String sanitizeFileName(String fileName) {
@@ -372,29 +711,15 @@ public class ProfileActivity extends AppCompatActivity {
         int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
         cursor.moveToFirst();
         long sizeInBytes = cursor.getLong(sizeIndex);
+        System.out.println("file size in bytes: "+sizeInBytes);
         cursor.close();
 
-        if (sizeInBytes < 1024) {
-            return sizeInBytes + " B";
-        } else if (sizeInBytes < 1024 * 1024) {
-            return (sizeInBytes / 1024) + " KB";
-        } else {
-            return (sizeInBytes / (1024 * 1024)) + " MB";
-        }
+        return sizeInBytes+"";
     }
 
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         return sdf.format(new Date());
-    }
-
-    private String extractResumeUrl(String responseBody) {
-        if (responseBody.contains("publicUrl")) {
-            int startIndex = responseBody.indexOf("http");
-            int endIndex = responseBody.lastIndexOf("\"", startIndex);
-            return responseBody.substring(startIndex, endIndex);
-        }
-        return "Unknown URL";
     }
 
 
@@ -424,6 +749,7 @@ public class ProfileActivity extends AppCompatActivity {
         FileOutputStream outputStream = new FileOutputStream(file);
 
         resumeName=getFileName(uri);
+        System.out.println("got file name in convert uri to file: "+resumeName);
         byte[] buffer = new byte[1024];
         int length;
         while ((length = inputStream.read(buffer)) > 0) {
@@ -716,7 +1042,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.resumeUpdateButton.setVisibility(VISIBLE);
 
             binding.resumeName.setText(resumeName);
-            binding.resumeSize.setText(resumeSize);
+            binding.resumeSize.setText(formatResumeSize(resumeSize));
             binding.resumeUploadDate.setText(resumeDate);
         }else {
             System.out.println("resume name is null or empty in shared preferences");
