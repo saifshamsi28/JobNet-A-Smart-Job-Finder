@@ -65,23 +65,6 @@ public interface ApiService {
     @PATCH("home/job/{id}/update-description")
     Call<Void> updateJobDescription(@Path("id") String id, @Body JobUpdateDTO jobUpdateDTO);
 
-//    @Multipart
-//    @POST("/user/resume/upload")
-//    Call<ResponseBody> uploadResume(
-//            @Part("userId") String userId,
-//            @Part("resumeName") String resumeName,
-//            @Part("resumeDate") String resumeDate,
-//            @Part("resumeSize") String resumeSize,
-//            @Part MultipartBody.Part file
-//    );
-
-//    @Multipart
-//    @POST("/user/resume/upload")
-//    Call<ResponseBody> uploadResume(
-//            @PartMap Map<String, RequestBody> data,  // Use @PartMap for text fields
-//            @Part MultipartBody.Part file
-//    );
-
     @Multipart
     @POST("/user/resume/upload-chunk")
     Call<ResponseBody> uploadResumeChunk(
