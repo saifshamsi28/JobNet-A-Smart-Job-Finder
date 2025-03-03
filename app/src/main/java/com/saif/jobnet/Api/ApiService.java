@@ -2,7 +2,6 @@ package com.saif.jobnet.Api;
 
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;
-import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
@@ -12,17 +11,17 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import java.util.List;
-import java.util.Map;
 
 public interface ApiService {
     @GET("home")
@@ -76,12 +75,30 @@ public interface ApiService {
 //            @Part MultipartBody.Part file
 //    );
 
+//    @Multipart
+//    @POST("/user/resume/upload")
+//    Call<ResponseBody> uploadResume(
+//            @PartMap Map<String, RequestBody> data,  // Use @PartMap for text fields
+//            @Part MultipartBody.Part file
+//    );
+
     @Multipart
-    @POST("/user/resume/upload")
-    Call<ResponseBody> uploadResume(
-            @PartMap Map<String, RequestBody> data,  // Use @PartMap for text fields
+    @POST("/user/resume/upload-chunk")
+    Call<ResponseBody> uploadResumeChunk(
+            @Part("userId") RequestBody userId,
+            @Part("resumeName") RequestBody resumeName,
+            @Part("chunkIndex") RequestBody chunkIndex,
+            @Part("totalChunks") RequestBody totalChunks,
             @Part MultipartBody.Part file
     );
 
-
+    @FormUrlEncoded
+    @POST("user/resume/finalize-upload")
+    Call<ResponseBody> finalizeUpload(
+            @Field("userId") String userId,
+            @Field("resumeName") String resumeName,
+            @Field("resumeDate") String resumeDate,
+            @Field("resumeSize") String resumeSize,
+            @Field("totalChunks") Integer totalChunks
+    );
 }
