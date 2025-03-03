@@ -384,8 +384,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-
-
     private void setUpResumeFile(Response<ResponseBody> response){
         try {
             // Parse the Resume object from the response
@@ -398,7 +396,8 @@ public class ProfileActivity extends AppCompatActivity {
             resumeUrl = resume.getResumeUrl();
 
             user.setResumeUploaded(true);
-            user.setResumeUrl(resumeUrl);
+            user.setResumeName(resume.getResumeName());
+            user.setResumeUrl(resume.getResumeUrl());
             user.setResumeUploadDate(resume.getResumeUploadDate());
             user.setResumeSize(resume.getResumeSize());
 
@@ -451,8 +450,6 @@ public class ProfileActivity extends AppCompatActivity {
         return String.format("%.2f %s", formattedSize, unit);
     }
 
-
-
     private String sanitizeFileName(String fileName) {
         // Remove (number) pattern like (1), (2), etc.
         fileName = fileName.replaceAll("\\s*\\(\\d+\\)", "");
@@ -474,9 +471,7 @@ public class ProfileActivity extends AppCompatActivity {
         int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
         cursor.moveToFirst();
         long sizeInBytes = cursor.getLong(sizeIndex);
-        System.out.println("file size in bytes: "+sizeInBytes);
         cursor.close();
-
         return sizeInBytes+"";
     }
 
@@ -484,7 +479,6 @@ public class ProfileActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
         return sdf.format(new Date());
     }
-
 
     private String getFileName(Uri uri) {
         String result = null;
@@ -512,7 +506,6 @@ public class ProfileActivity extends AppCompatActivity {
         FileOutputStream outputStream = new FileOutputStream(file);
 
         resumeName=getFileName(uri);
-        System.out.println("got file name in convert uri to file: "+resumeName);
         byte[] buffer = new byte[1024];
         int length;
         while ((length = inputStream.read(buffer)) > 0) {
@@ -772,41 +765,59 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         String userId = sharedPreferences.getString("userId", null);
-        String name = sharedPreferences.getString("name", null);
-        String userName = sharedPreferences.getString("userName", null);
-        String email = sharedPreferences.getString("userEmail", null);
-        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
-        String password = sharedPreferences.getString("password", null);
-        boolean isResumeUploaded = sharedPreferences.getBoolean("isResumeUploaded", false);
-        resumeName = sharedPreferences.getString("resumeName", "");
-        resumeUrl = sharedPreferences.getString("resumeUrl", "");
-        resumeDate = sharedPreferences.getString("resumeDate", "");
-        resumeSize = sharedPreferences.getString("resumeSize", "");
-        System.out.println("is resume uploaded sharedpref: "+isResumeUploaded);
-        System.out.println("resume name from sharedpref: "+resumeName);
-        System.out.println("resume url sharedpref: "+resumeUrl);
-        System.out.println("resume date sharedpref: "+resumeDate);
-        System.out.println("resume size sharedpref: "+resumeSize);
+        //fetch user from local database
 
-        user = new User(name, userName, email, password,phoneNumber);
-        user.setId(userId);
-        binding.profileName.setText(name);
-        binding.username.setText(userName);
-        binding.userEmail.setText(email);
-        if(phoneNumber!=null && !phoneNumber.isEmpty()){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                user=jobDao.getCurrentUser(userId);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUpProfile(user);
+                    }
+                });
+            }
+        }).start();
+
+//        String name = sharedPreferences.getString("name", null);
+//        String userName = sharedPreferences.getString("userName", null);
+//        String email = sharedPreferences.getString("userEmail", null);
+//        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
+//        String password = sharedPreferences.getString("password", null);
+//        boolean isResumeUploaded = sharedPreferences.getBoolean("isResumeUploaded", false);
+//        resumeName = sharedPreferences.getString("resumeName", "");
+//        resumeUrl = sharedPreferences.getString("resumeUrl", "");
+//        resumeDate = sharedPreferences.getString("resumeDate", "");
+//        resumeSize = sharedPreferences.getString("resumeSize", "");
+//        System.out.println("is resume uploaded sharedpref: "+isResumeUploaded);
+//        System.out.println("resume name from sharedpref: "+resumeName);
+//        System.out.println("resume url sharedpref: "+resumeUrl);
+//        System.out.println("resume date sharedpref: "+resumeDate);
+//        System.out.println("resume size sharedpref: "+resumeSize);
+
+//        user = new User(name, userName, email, password,phoneNumber);
+//        user.setId(userId);
+    }
+
+    private void setUpProfile(User user) {
+        binding.profileName.setText(user.getName());
+        binding.username.setText(user.getUserName());
+        binding.userEmail.setText(user.getEmail());
+        if(user.getPhoneNumber()!=null && !user.getPhoneNumber().isEmpty()){
             binding.contactNumber.setVisibility(VISIBLE);
-            binding.contactNumber.setText(phoneNumber);
+            binding.contactNumber.setText(user.getPhoneNumber());
         }else{
             binding.contactNumber.setVisibility(GONE);
         }
-        if (isResumeUploaded) {
+        if (user.isResumeUploaded()) {
             binding.uploadResumeButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(VISIBLE);
 
-            binding.resumeName.setText(resumeName);
-            binding.resumeSize.setText(formatResumeSize(resumeSize));
-            binding.resumeUploadDate.setText(resumeDate);
+            binding.resumeName.setText(user.getResumeName());
+            binding.resumeSize.setText(formatResumeSize(user.getResumeSize()));
+            binding.resumeUploadDate.setText(user.getResumeUploadDate());
         }else {
             System.out.println("resume name is null or empty in shared preferences");
             binding.uploadResumeButton.setVisibility(VISIBLE);
