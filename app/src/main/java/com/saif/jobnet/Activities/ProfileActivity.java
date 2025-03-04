@@ -110,7 +110,6 @@ public class ProfileActivity extends AppCompatActivity {
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
 
-//        System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {
