@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -22,8 +23,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
@@ -51,6 +54,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
+import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Models.ResumeResponseEntity;
@@ -110,7 +114,6 @@ public class ProfileActivity extends AppCompatActivity {
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
 
-//        System.out.println("saved password: "+sharedPreferences.getString("password",null));
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {
@@ -120,6 +123,28 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
+        binding.userEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //enable if email field is not enable
+                if(!TextUtils.isEmpty(s) && !Patterns.EMAIL_ADDRESS.matcher(s).matches()){
+                    binding.updateButton.setEnabled(false);
+                }else{
+                    binding.updateButton.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         binding.uploadResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,10 +152,10 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d("Resume Upload", "Android 13+ detected, no permission required.");
                     openFilePicker(); // Directly open file picker, no need for permissions
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // Android 6 to 12
-                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                         openFilePicker();
                     } else {
-                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                     }
                 } else {
                     openFilePicker(); // Below Android 6, permissions are granted at install time
@@ -187,13 +212,13 @@ public class ProfileActivity extends AppCompatActivity {
                 openFilePicker();
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-                        requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES}, 100);
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_MEDIA_IMAGES}, 100);
                 }
                 // Check if we should request again or direct user to settings
                 else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     // User denied but didn't check "Don't ask again"
-                    requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
                 } else {
                     // User checked "Don't ask again" or denied multiple times
                     showSettingsDialog();
@@ -674,6 +699,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(ProfileActivity.this, "Error checking email availability.", Toast.LENGTH_SHORT).show();
+                    System.out.println("response: "+response);
                     binding.updateButton.setEnabled(true);
                 }
             }
@@ -727,7 +753,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        Call<User> response=apiService.registerUser(user);
+        Call<User> response=apiService.updateUser(user);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
@@ -748,6 +774,13 @@ public class ProfileActivity extends AppCompatActivity {
                         new Thread(() -> jobDao.insertOrUpdateUser(user1)).start();
                         userFieldsAccessibility(false);
                     }
+                }else{
+                    AuthResponse authResponse = null;
+                    if(response.errorBody()!=null)
+                        authResponse=new Gson().fromJson(response.errorBody().charStream(),AuthResponse.class);
+                    Log.e("ProfileActivity","response: "+authResponse);
+                    Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             }
 
@@ -779,25 +812,6 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
         }).start();
-
-//        String name = sharedPreferences.getString("name", null);
-//        String userName = sharedPreferences.getString("userName", null);
-//        String email = sharedPreferences.getString("userEmail", null);
-//        String phoneNumber = sharedPreferences.getString("phoneNumber", null);
-//        String password = sharedPreferences.getString("password", null);
-//        boolean isResumeUploaded = sharedPreferences.getBoolean("isResumeUploaded", false);
-//        resumeName = sharedPreferences.getString("resumeName", "");
-//        resumeUrl = sharedPreferences.getString("resumeUrl", "");
-//        resumeDate = sharedPreferences.getString("resumeDate", "");
-//        resumeSize = sharedPreferences.getString("resumeSize", "");
-//        System.out.println("is resume uploaded sharedpref: "+isResumeUploaded);
-//        System.out.println("resume name from sharedpref: "+resumeName);
-//        System.out.println("resume url sharedpref: "+resumeUrl);
-//        System.out.println("resume date sharedpref: "+resumeDate);
-//        System.out.println("resume size sharedpref: "+resumeSize);
-
-//        user = new User(name, userName, email, password,phoneNumber);
-//        user.setId(userId);
     }
 
     private void setUpProfile(User user) {
@@ -1012,7 +1026,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<User> response = apiService.registerUser(user);
+        Call<User> response = apiService.updateUser(user);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
@@ -1026,9 +1040,12 @@ public class ProfileActivity extends AppCompatActivity {
                         System.out.println("Password: " + user1.getPassword());
                     }
                 }else {
+                    AuthResponse authResponse = null;
+                    if(response.errorBody()!=null)
+                        authResponse=new Gson().fromJson(response.errorBody().charStream(),AuthResponse.class);
+                    Log.e("ProfileActivity","response: "+authResponse);
                     Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
                 }
-
             }
 
             @Override

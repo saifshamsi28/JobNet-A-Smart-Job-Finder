@@ -24,7 +24,6 @@ public interface JobDao {
     @Query("SELECT * FROM jobs WHERE title LIKE '%' || :query || '%' OR jobId LIKE '%' || :query || '%'")
     List<Job> searchJobs(String query);
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertJob(Job job);
 
