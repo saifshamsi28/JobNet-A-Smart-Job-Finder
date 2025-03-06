@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Api.ApiService;
@@ -291,46 +292,51 @@ public class SignUpActivity extends AppCompatActivity {
 
         ApiService apiService=retrofit.create(ApiService.class);
         User user=new User(name,username,email,password,phoneNumber);
-        Call<User> response=apiService.registerUser(user);
-        response.enqueue(new Callback<User>() {
+        Call<AuthResponse> response=apiService.registerUser(user);
+        response.enqueue(new Callback<AuthResponse>() {
             @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+            public void onResponse(@NonNull Call<AuthResponse> call, @NonNull Response<AuthResponse> response) {
                 progressDialog.dismiss();
                 if(response.isSuccessful()){
-                    User user1=response.body();
-                    if(user1!=null){
-                        Toast.makeText(SignUpActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
-                        //print user details received in response
-                        System.out.println("Name: "+user1.getName());
-                        System.out.println("user name: "+user1.getUserName());
-                        System.out.println("Email: "+user1.getEmail());
-                        System.out.println("Password: "+user1.getPassword());
-                        System.out.println("Phone number: "+user1.getPhoneNumber());
-                        System.out.println("saved jobs: "+user1.getSavedJobs());
-
-                        //save user details in shared prefs
-                        sharedPreferences.edit().putBoolean("userStored", true).apply();
-
-                        //save user details in shared prefs
-                        sharedPreferences.edit().putString("userId", user1.getId()).apply();
-                        sharedPreferences.edit().putString("name", user1.getName()).apply();
-                        sharedPreferences.edit().putString("userName", user1.getUserName()).apply();
-                        sharedPreferences.edit().putString("userEmail", user1.getEmail()).apply();
-                        sharedPreferences.edit().putString("phoneNumber", user1.getPhoneNumber()).apply();
-                        sharedPreferences.edit().putString("password", user1.getPassword()).apply();
-
-                        // going to Login Activity
-                        Intent intent=new Intent(SignUpActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else{
-                        Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
+                    AuthResponse authResponse=response.body();
+                    if(authResponse!=null){
+                        Log.d("SignUpActivity", "Server Response: " + authResponse);
+                        Toast.makeText(SignUpActivity.this, authResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+//                    User user1=response.body();
+//                    if(user1!=null){
+//                        Toast.makeText(SignUpActivity.this, "User Registered", Toast.LENGTH_SHORT).show();
+//                        //print user details received in response
+//                        System.out.println("Name: "+user1.getName());
+//                        System.out.println("user name: "+user1.getUserName());
+//                        System.out.println("Email: "+user1.getEmail());
+//                        System.out.println("Password: "+user1.getPassword());
+//                        System.out.println("Phone number: "+user1.getPhoneNumber());
+//                        System.out.println("saved jobs: "+user1.getSavedJobs());
+//
+//                        //save user details in shared prefs
+//                        sharedPreferences.edit().putBoolean("userStored", true).apply();
+//
+//                        //save user details in shared prefs
+//                        sharedPreferences.edit().putString("userId", user1.getId()).apply();
+//                        sharedPreferences.edit().putString("name", user1.getName()).apply();
+//                        sharedPreferences.edit().putString("userName", user1.getUserName()).apply();
+//                        sharedPreferences.edit().putString("userEmail", user1.getEmail()).apply();
+//                        sharedPreferences.edit().putString("phoneNumber", user1.getPhoneNumber()).apply();
+//                        sharedPreferences.edit().putString("password", user1.getPassword()).apply();
+//
+//                        // going to Login Activity
+//                        Intent intent=new Intent(SignUpActivity.this, LoginActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    } else{
+//                        Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
+//                    }
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
+            public void onFailure(@NonNull Call<AuthResponse> call, @NonNull Throwable throwable) {
                 progressDialog.dismiss();
                 Toast.makeText(SignUpActivity.this, "User Not Registered", Toast.LENGTH_SHORT).show();
                 Log.e("SignUpActivity", "Error registering user", throwable);

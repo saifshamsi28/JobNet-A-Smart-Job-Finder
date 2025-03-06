@@ -1,5 +1,6 @@
 package com.saif.jobnet.Api;
 
+import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobUpdateDTO;
 import com.saif.jobnet.Models.SaveJobsModel;
@@ -36,20 +37,20 @@ public interface ApiService {
     @GET("url")
     Call<Job> getJobDescriptionFromFlask(@Query("url") String url);
 
-    @POST("/user")
-    Call<User> registerUser(@Body User user);
+    @POST("/auth/register")
+    Call<AuthResponse> registerUser(@Body User user);
 
-    @GET("/user/id/{id}")
-    Call<User> getUserById(@Path("id") String id);
-
-    @POST("/user/login")
+    @POST("/auth/login")
     Call<User> loginUser(@Body UserLoginCredentials credentials);
 
     @POST("user/username/{username}")
     Call<Boolean> checkUserName(@Path("username") String username);
 
-    @POST("user/email/{email}")
-    Call<Boolean> checkEmailAlreadyExist(@Path("email") String email);
+    @GET("user/email")
+    Call<Boolean> checkEmailAlreadyExist(@Query("email") String email);
+
+    @PUT("user/update")
+    Call<User> updateUser(@Body User user);
 
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);
