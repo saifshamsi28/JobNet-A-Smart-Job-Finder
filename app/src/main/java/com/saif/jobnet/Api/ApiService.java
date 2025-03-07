@@ -6,6 +6,7 @@ import com.saif.jobnet.Models.JobUpdateDTO;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
+import com.saif.jobnet.Models.UserUpdateDTO;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -50,7 +51,7 @@ public interface ApiService {
     Call<Boolean> checkEmailAlreadyExist(@Query("email") String email);
 
     @PUT("user/update")
-    Call<User> updateUser(@Body User user);
+    Call<User> updateUser(@Body UserUpdateDTO user);
 
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);

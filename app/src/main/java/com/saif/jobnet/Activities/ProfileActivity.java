@@ -58,6 +58,7 @@ import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Models.ResumeResponseEntity;
+import com.saif.jobnet.Models.UserUpdateDTO;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Api.ApiService;
@@ -728,6 +729,7 @@ public class ProfileActivity extends AppCompatActivity {
         progressDialog.show();
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        UserUpdateDTO userUpdateDTO=new UserUpdateDTO(user.getId(),name,email,user.getPassword(),phoneNumber);
         //name updation
         editor.putString("name", name);
         editor.apply();
@@ -739,7 +741,7 @@ public class ProfileActivity extends AppCompatActivity {
         editor.apply();
         user.setEmail(email);
         binding.userEmail.setText(email);
-        Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
 
         if (!phoneNumber.isEmpty()) {
             editor.putString("phoneNumber", phoneNumber);
@@ -760,7 +762,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        Call<User> response=apiService.updateUser(user);
+        Call<User> response=apiService.updateUser(userUpdateDTO);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
@@ -777,17 +779,26 @@ public class ProfileActivity extends AppCompatActivity {
                         System.out.println("Password: " + user1.getPassword());
                         System.out.println("Phone number: " + user1.getPhoneNumber());
                         System.out.println("saved jobs: " + user1.getSavedJobs());
+                        System.out.println("Resume uploaded: " + user1.isResumeUploaded());
+                        System.out.println("Resume url: " + user1.getResumeUrl());
+                        System.out.println("Resume name: " + user1.getResumeName());
+                        System.out.println("Resume upload date: " + user1.getResumeUploadDate());
+                        System.out.println("Resume size: " + user1.getResumeSize());
+
+                        //update the user in local database
                         progressDialog.dismiss();
                         new Thread(() -> jobDao.insertOrUpdateUser(user1)).start();
                         userFieldsAccessibility(false);
                     }
                 }else{
                     AuthResponse authResponse = null;
+                    System.out.println("received raw response: "+response);
                     if(response.errorBody()!=null)
                         authResponse=new Gson().fromJson(response.errorBody().charStream(),AuthResponse.class);
                     Log.e("ProfileActivity","response: "+authResponse);
-                    Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Failed to update profile not email", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
+                    userFieldsAccessibility(false);
                 }
             }
 
@@ -797,6 +808,7 @@ public class ProfileActivity extends AppCompatActivity {
                 System.out.println("Error updating user");
                 progressDialog.dismiss();
                 System.out.println(throwable);
+                userFieldsAccessibility(false);
                 throwable.printStackTrace();
             }
         });
@@ -831,7 +843,7 @@ public class ProfileActivity extends AppCompatActivity {
         }else{
             binding.contactNumber.setVisibility(GONE);
         }
-        if (user.isResumeUploaded()) {
+        if (user.isResumeUploaded() || user.getResumeUrl()!=null || !user.getResumeUrl().isEmpty()) {
             binding.uploadResumeButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(VISIBLE);
@@ -840,7 +852,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.resumeSize.setText(formatResumeSize(user.getResumeSize()));
             binding.resumeUploadDate.setText(user.getResumeUploadDate());
         }else {
-            System.out.println("resume name is null or empty in shared preferences");
+            System.out.println("resume name is null or empty");
             binding.uploadResumeButton.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(GONE);
@@ -1039,36 +1051,36 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService = retrofit.create(ApiService.class);
-        Call<User> response = apiService.updateUser(user);
-        response.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                progressDialog.dismiss();
-                if(response.isSuccessful()){
-                    User user1=response.body();
-                    if(user1!=null){
-                        Toast.makeText(ProfileActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
-                        //print user details
-                        System.out.println("Password Updated Successfully");
-                        System.out.println("Password: " + user1.getPassword());
-                    }
-                }else {
-                    AuthResponse authResponse = null;
-                    if(response.errorBody()!=null)
-                        authResponse=new Gson().fromJson(response.errorBody().charStream(),AuthResponse.class);
-                    Log.e("ProfileActivity","response: "+authResponse);
-                    Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
-                progressDialog.dismiss();
-                Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
-                System.out.println(throwable);
-                throwable.printStackTrace();
-            }
-        });
+//        Call<User> response = apiService.updateUser(user);
+//        response.enqueue(new Callback<User>() {
+//            @Override
+//            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+//                progressDialog.dismiss();
+//                if(response.isSuccessful()){
+//                    User user1=response.body();
+//                    if(user1!=null){
+//                        Toast.makeText(ProfileActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+//                        //print user details
+//                        System.out.println("Password Updated Successfully");
+//                        System.out.println("Password: " + user1.getPassword());
+//                    }
+//                }else {
+//                    AuthResponse authResponse = null;
+//                    if(response.errorBody()!=null)
+//                        authResponse=new Gson().fromJson(response.errorBody().charStream(),AuthResponse.class);
+//                    Log.e("ProfileActivity","response: "+authResponse);
+//                    Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
+//                progressDialog.dismiss();
+//                Toast.makeText(ProfileActivity.this, "Failed to update password", Toast.LENGTH_SHORT).show();
+//                System.out.println(throwable);
+//                throwable.printStackTrace();
+//            }
+//        });
     }
 
     private boolean handlePasswordVisibility(MotionEvent event, String oldPassword) {
