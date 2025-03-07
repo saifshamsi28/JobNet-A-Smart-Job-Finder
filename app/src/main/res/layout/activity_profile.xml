@@ -13,71 +13,124 @@
         android:layout_height="wrap_content">
 
 
+        <!-- Song Title -->
+
         <ImageView
             android:id="@+id/user_profile_img"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="12dp"
             android:src="@drawable/profile_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.038"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/black" />
 
-        <!-- Song Title -->
+        <ImageView
+            android:id="@+id/profile_img_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/edit_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_img"
+            app:layout_constraintEnd_toEndOf="@+id/user_profile_img" />
+
+
+        <EditText
+            android:id="@+id/profile_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:hint="Enter your name "
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/user_profile_img"
+            app:layout_constraintTop_toBottomOf="@id/user_profile_img" />
+
+        <ImageView
+            android:id="@+id/basic_details_edit_button"
+            android:layout_width="25dp"
+            android:layout_height="18dp"
+            android:src="@drawable/edit_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_name"
+            app:layout_constraintStart_toEndOf="@id/profile_name"
+            app:layout_constraintTop_toTopOf="@+id/profile_name" />
+        <LinearLayout
+            android:id="@+id/saved_jobs_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="32sp"
+            app:layout_constraintTop_toTopOf="@id/user_profile_img"
+            app:layout_constraintBottom_toBottomOf="@id/user_profile_img"
+            app:layout_constraintStart_toEndOf="@id/user_profile_img"
+            >
+
+            <TextView
+                android:id="@+id/saved_jobs_number"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="24"
+                android:textStyle="bold"
+                android:drawableEnd="@drawable/right_arrow"
+                android:textColor="@color/colorActionBarBackground"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Saved jobs"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/college_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="Maulana Azad National Urdu University"
+            android:maxLines="2"
+            android:fontFamily="serif"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/profile_name"
+            app:layout_constraintTop_toBottomOf="@id/profile_name" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/basic_details_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="12sp"
+            app:cardCornerRadius="12sp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:cardUseCompatPadding="true"
-            app:cardCornerRadius="12sp"
-            android:elevation="12sp"
-            app:layout_constraintTop_toBottomOf="@id/user_profile_img"
-            >
+            app:layout_constraintTop_toBottomOf="@id/college_name">
+
             <LinearLayout
                 android:id="@+id/basic_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8sp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8sp">
 
-                <TextView
-                    android:id="@+id/tv_title_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16sp"
-                    android:text="Name "
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_title_label"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16sp"-->
+<!--                    android:text="Name "-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold" />-->
 
-                <EditText
-                    android:id="@+id/profile_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16sp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:hint="Enter your name "
-                    android:maxLines="2"
-                    android:padding="8dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <View
-                    android:id="@+id/border_below_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:background="@color/fields_divider"
-                    android:backgroundTint="@color/fields_divider" />
                 <!-- Artist -->
                 <TextView
                     android:id="@+id/tv_artist_label"
@@ -109,7 +162,7 @@
                     android:layout_marginStart="8sp"
                     android:layout_marginEnd="8sp"
                     android:background="@color/fields_divider"
-                    android:backgroundTint="@color/fields_divider"/>
+                    android:backgroundTint="@color/fields_divider" />
 
                 <TextView
                     android:id="@+id/tv_album_label"
@@ -151,7 +204,7 @@
                     android:text="Contact"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/contact_number"
@@ -168,29 +221,30 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:orientation="horizontal">
+
                     <Button
                         android:id="@+id/cancel_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8sp"
                         android:background="@drawable/custom_update_bg"
                         android:backgroundTint="@color/colorActionBarBackground"
-                        android:layout_gravity="center"
-                        android:textAllCaps="false"
-                        android:layout_marginEnd="8sp"
-                        android:text="Cencel"/>
+                        android:text="Cencel"
+                        android:textAllCaps="false" />
+
                     <Button
                         android:id="@+id/update_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:background="@drawable/custom_update_bg"
                         android:backgroundTint="@color/colorActionBarBackground"
-                        android:layout_gravity="center"
-                        android:textAllCaps="false"
-                        android:text="Update"/>
+                        android:text="Update"
+                        android:textAllCaps="false" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
 
 
         <androidx.cardview.widget.CardView
@@ -198,10 +252,10 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="12sp"
             app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/basic_details_cardview">
 
             <LinearLayout
@@ -237,10 +291,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8sp"
                         android:text="Update"
-                        android:visibility="gone"
                         android:textColor="@color/blue"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <!-- Resume Card -->
@@ -258,8 +312,8 @@
                         android:background="@color/resume_bg"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:visibility="gone"
-                        android:padding="12dp">
+                        android:padding="12dp"
+                        android:visibility="gone">
 
                         <!-- Resume Icon -->
                         <ImageView
@@ -307,17 +361,17 @@
                             android:textSize="14sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <Button
                     android:id="@+id/upload_resume_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8sp"
                     android:layout_marginEnd="8sp"
-                    android:textAllCaps="false"
-                    android:text="Upload Resume"
-                    android:textColor="@color/white"
                     android:background="@color/colorActionBarBackground"
-                    />
+                    android:text="Upload Resume"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
