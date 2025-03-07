@@ -163,6 +163,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        binding.savedJobsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, SavedJobsActivity.class);
+                intent.putExtra("source", "Profile");
+                startActivity(intent);
+            }
+        });
         binding.updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -363,9 +371,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 chunkIndex++;
             }
-
             fis.close();
-
         } catch (Exception e) {
             progressDialog.dismiss();
             Log.e("Upload", "File processing error: " + e.getMessage());
@@ -440,6 +446,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             binding.resumeName.setText(resume.getResumeName());
             binding.resumeName.setTextColor(Color.BLACK);
+            binding.resumeUploadDate.setTextColor(Color.BLACK);
             binding.resumeUploadDate.setText(resume.getResumeUploadDate());
             binding.resumeSize.setText(formatResumeSize(resume.getResumeSize()));
 
@@ -838,6 +845,12 @@ public class ProfileActivity extends AppCompatActivity {
             binding.resumeUpdateButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(GONE);
 //                binding.btnUploadResume.setText("Upload Resume");
+        }
+        if(!user.getSavedJobs().isEmpty()){
+            binding.savedJobsNumber.setText(user.getSavedJobs().size()+"");
+            binding.savedJobsLayout.setVisibility(VISIBLE);
+        }else {
+            binding.savedJobsLayout.setVisibility(GONE);
         }
 
         //enable/disable the editing of fields
