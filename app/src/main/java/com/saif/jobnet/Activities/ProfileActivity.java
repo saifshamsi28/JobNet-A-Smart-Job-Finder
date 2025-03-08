@@ -124,6 +124,14 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
+        binding.basicDetailsEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ProfileActivity.this,EditBasicDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
+
         binding.userEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
