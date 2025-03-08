@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.EditBasicDetailsActivity">
+
+    <LinearLayout
+        android:id="@+id/basic_details_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout_buttons"
+        >
+
+        <ScrollView
+            android:id="@+id/scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8sp"
+                    android:src="@drawable/arrow_back_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Basic Details"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8sp"
+                    android:text="@string/basic_instruction"
+                    android:textSize="16sp" />
+
+
+                <!--        </com.google.android.material.textfield.TextInputLayout>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="Full Name"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/edit_full_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Md Saifullah"
+                    android:text="Md Saifullah"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="Gender"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioMale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/gender_selector_bg"
+                            android:button="@null"
+                            android:drawableEnd="@null"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="Male"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioFemale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/gender_selector_bg"
+                            android:button="@null"
+                            android:drawableEnd="@null"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="Female"
+                            android:textColor="@color/black" />
+
+                        <RadioButton
+                            android:id="@+id/radioTransgender"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/gender_selector_bg"
+                            android:button="@null"
+                            android:drawableEnd="@null"
+                            android:gravity="center"
+                            android:padding="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="Transgender"
+                            android:textColor="@color/black" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="Date of birth(DD/MM/YYYY)"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/date_of_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="28022004"
+                    android:inputType="number"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="Current city"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/current_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hyderabad"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32sp"
+                    android:text="Hometown"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/home_town"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sitamarhi bihar"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16sp"
+                    android:text="Mobile number"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/mobile_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:text="+919905037927"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16sp"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12sp"
+            android:layout_marginEnd="12sp"
+            android:layout_weight="1"
+            android:textColor="@color/colorActionBarBackground"
+            android:background="@drawable/rounded_button"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="12sp"
+            android:layout_marginEnd="12sp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorActionBarBackground"
+            android:text="Save" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
