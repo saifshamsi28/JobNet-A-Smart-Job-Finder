@@ -115,6 +115,9 @@ public class ProfileActivity extends AppCompatActivity {
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
 
+        binding.updateButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorActionBarBackground));
+        binding.cancelButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
+
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (!isLoggedIn) {

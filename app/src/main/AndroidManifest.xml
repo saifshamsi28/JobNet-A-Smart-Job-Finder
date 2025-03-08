@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MediaStore.createWriteRequest" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -19,9 +20,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.SearchActivity"
-            android:theme="@style/Theme.JobNet"
+            android:name=".Activities.EditBasicDetailsActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:exported="false"
+            android:theme="@style/Theme.JobNet" />
         <activity
             android:name=".Activities.SavedJobsActivity"
             android:exported="false"
@@ -33,9 +37,8 @@
         <activity
             android:name=".Activities.ProfileActivity"
             android:exported="false"
-            android:theme="@style/Theme.JobNet"
             android:parentActivityName=".Activities.MainActivity"
-            />
+            android:theme="@style/Theme.JobNet" />
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="false" />

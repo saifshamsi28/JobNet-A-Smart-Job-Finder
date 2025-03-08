@@ -54,7 +54,7 @@
         <ImageView
             android:id="@+id/basic_details_edit_button"
             android:layout_width="25dp"
-            android:layout_height="18dp"
+            android:layout_height="20sp"
             android:src="@drawable/edit_icon"
             app:layout_constraintBottom_toBottomOf="@+id/profile_name"
             app:layout_constraintStart_toEndOf="@id/profile_name"
@@ -220,27 +220,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:orientation="horizontal">
-
+                    android:orientation="horizontal"
+                    >
                     <Button
                         android:id="@+id/cancel_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="8sp"
-                        android:background="@drawable/custom_update_bg"
-                        android:backgroundTint="@color/colorActionBarBackground"
-                        android:text="Cencel"
-                        android:textAllCaps="false" />
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="12sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorActionBarBackground"
+                        android:background="@drawable/rounded_button"
+                        android:text="Cancel" />
 
                     <Button
                         android:id="@+id/update_button"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/custom_update_bg"
+                        android:background="@drawable/rounded_button"
                         android:backgroundTint="@color/colorActionBarBackground"
                         android:text="Update"
+                        android:textColor="@color/white"
                         android:textAllCaps="false" />
                 </LinearLayout>
             </LinearLayout>
