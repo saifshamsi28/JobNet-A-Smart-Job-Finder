@@ -1,6 +1,7 @@
 package com.saif.jobnet.Models;
 
 import androidx.annotation.NonNull;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -32,6 +33,9 @@ public class User {
 
     @TypeConverters(Converters.class) // Convert List<Job> to a storable format
     private List<Job> savedJobs = new ArrayList<>();
+
+    @Embedded
+    private BasicDetails basicDetails;
 
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
@@ -163,4 +167,33 @@ public class User {
     public void setResumeSize(String resumeSize) {
         this.resumeSize = resumeSize;
     }
+
+    public BasicDetails getBasicDetails() {
+        return basicDetails;
+    }
+
+    public void setBasicDetails(BasicDetails basicDetails) {
+        this.basicDetails = basicDetails;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", userName='" + userName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isResumeUploaded=" + isResumeUploaded +
+                ", resumeUrl='" + resumeUrl + '\'' +
+                ", resumeName='" + resumeName + '\'' +
+                ", resumeUploadDate='" + resumeUploadDate + '\'' +
+                ", resumeSize='" + resumeSize + '\'' +
+//                ", savedJobs=" + savedJobs +
+                ", basicDetails=" + basicDetails +
+                '}';
+    }
 }
+
