@@ -131,7 +131,24 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ProfileActivity.this,EditBasicDetailsActivity.class);
+                intent.putExtra("source", "Profile");
+                intent.putExtra("userId",user.getId());
                 startActivity(intent);
+            }
+        });
+
+        // Observe user data from Room database
+        // Observe user data from Room database
+        jobDao.getCurrentUser(user.getId()).observe(this, user1 -> {
+            if (user != null) {
+                binding.profileName.setText(user.getName());
+                binding.contactNumber.setText(user.getPhoneNumber());
+
+                if (user.getBasicDetails() != null) {
+                    binding.gender.setText(user.getBasicDetails().getGender());
+                    binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
+//                    binding.setText(user.getBasicDetails().getHomeTown());
+                }
             }
         });
 
@@ -833,7 +850,7 @@ public class ProfileActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user=jobDao.getCurrentUser(userId);
+                user= jobDao.getCurrentUser(userId).getValue();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -845,6 +862,11 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setUpProfile(User user) {
+        if(user == null){
+            redirectToLogin();
+            finish();
+            return;
+        }
         binding.profileName.setText(user.getName());
         binding.username.setText(user.getUserName());
         binding.userEmail.setText(user.getEmail());
@@ -874,6 +896,13 @@ public class ProfileActivity extends AppCompatActivity {
             binding.savedJobsLayout.setVisibility(VISIBLE);
         }else {
             binding.savedJobsLayout.setVisibility(GONE);
+        }
+
+        if(user.getBasicDetails()!=null){
+            binding.basicDetailsLayout.setVisibility(VISIBLE);
+            binding.gender.setText(user.getBasicDetails().getGender());
+            binding.dateOfBirth.setText(user.getBasicDetails().getDateOfBirth());
+            binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
         }
 
         //enable/disable the editing of fields
@@ -1301,6 +1330,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         setTitle("Profile");
+
         super.onResume();
     }
 }
