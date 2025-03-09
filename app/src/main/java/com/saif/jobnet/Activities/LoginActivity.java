@@ -59,21 +59,21 @@ public class LoginActivity extends AppCompatActivity {
         binding.signupText.setVisibility(View.VISIBLE);
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-        if (isLoggedIn) {
-            // Redirect to LoginActivity
-            //restoring the user details from shared prefs
-            String name = sharedPreferences.getString("name", "User Name");
-            String username = sharedPreferences.getString("userName", "username");
-            String email = sharedPreferences.getString("userEmail", "email@example.com");
-            String phoneNumber = sharedPreferences.getString("phoneNumber", "9050346306");
-            String password = sharedPreferences.getString("password", "password");
-            String userId = sharedPreferences.getString("userId", "1");
-            User user = new User(name,username, email, phoneNumber, password);
-//            System.out.println("saved [password: "+password);
-            user.setId(userId);
-            redirectToProfile(user);
-            return;
-        }
+//        if (isLoggedIn) {
+//            // Redirect to LoginActivity
+//            //restoring the user details from shared prefs
+//            String name = sharedPreferences.getString("name", "User Name");
+//            String username = sharedPreferences.getString("userName", "username");
+//            String email = sharedPreferences.getString("userEmail", "email@example.com");
+//            String phoneNumber = sharedPreferences.getString("phoneNumber", "9050346306");
+//            String password = sharedPreferences.getString("password", "password");
+//            String userId = sharedPreferences.getString("userId", "1");
+//            User user = new User(name,username, email, phoneNumber, password);
+////            System.out.println("saved [password: "+password);
+//            user.setId(userId);
+//            redirectToProfile(user);
+//            return;
+//        }
         // Set up password visibility toggle with accessibility-compliant performClick
         binding.password.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
