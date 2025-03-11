@@ -3,9 +3,11 @@ package com.saif.jobnet.Activities;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.saif.jobnet.JobNetPermissions.REQUEST_MEDIA_PERMISSION;
 import static com.saif.jobnet.Utils.Config.BASE_URL;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -21,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.Editable;
@@ -44,16 +47,21 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.canhub.cropper.CropImage;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
+import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.Resume;
@@ -103,9 +111,9 @@ public class ProfileActivity extends AppCompatActivity {
     private String resumeUrl="";
     private String resumeDate="";
     private String resumeSize="";
-    String userId;
-
-
+    private String userId;
+    private Uri selectedImg;
+    private JobNetPermissions jobNetPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
         userId = sharedPreferences.getString("userId", null);
+        jobNetPermissions=new JobNetPermissions();
 
         binding.updateButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorActionBarBackground));
         binding.cancelButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
@@ -254,6 +263,21 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "No resume found!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        binding.userProfileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //check and request media permission
+                if(jobNetPermissions.isStoragePermissionOk(ProfileActivity.this)){
+                    openProfileImagePicker();
+                }else {
+//                    Toast.makeText(ProfileActivity.this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    if (!jobNetPermissions.isStoragePermissionOk(ProfileActivity.this)) {
+                        jobNetPermissions.requestStoragePermission(ProfileActivity.this);
+                    }
+                }
+            }
+        });
     }
 
     private void synchronizeUserDetails(String id) {
@@ -309,31 +333,27 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
+
+        if (requestCode == REQUEST_MEDIA_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openFilePicker();
+                openProfileImagePicker(); // Retry image selection after permission granted
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_MEDIA_IMAGES}, 100);
-                }
-                // Check if we should request again or direct user to settings
-                else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    // User denied but didn't check "Don't ask again"
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
-                } else {
-                    // User checked "Don't ask again" or denied multiple times
-                    showSettingsDialog();
-                }
+                showSettingsDialog("Image selection requires permission. Enable it in settings.");
+            }
+        } else if (requestCode == PICK_PDF_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openFilePicker(); // Retry resume selection after permission granted
+            } else {
+                showSettingsDialog("Resume upload requires permission. Enable it in settings.");
             }
         }
     }
 
     // Show a dialog directing the user to app settings
-    private void showSettingsDialog() {
+    private void showSettingsDialog(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Permission Required")
-                .setMessage("Storage permission is needed to upload your resume. Enable it in settings.")
+                .setMessage(message)
                 .setPositiveButton("Go to Settings", (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                             Uri.fromParts("package", getPackageName(), null));
@@ -344,6 +364,57 @@ public class ProfileActivity extends AppCompatActivity {
                 .show();
     }
 
+
+    private void openProfileImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*"); // Restricts to images only
+        pickImageLauncher.launch(intent);
+    }
+
+    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri imageUri = result.getData().getData();
+                    if (imageUri != null) {
+                        selectedImg = imageUri;
+                        startCropImageActivity(imageUri);
+                    }
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> cropImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri croppedImageUri = Uri.parse(result.getData().getStringExtra("croppedImageUri"));
+                    if (croppedImageUri != null) {
+                        selectedImg = croppedImageUri;
+                        sharedPreferences.edit().putString("profileImg", croppedImageUri.toString()).apply();
+                        Log.d("ProfileActivity", "croppedImageUri: " + croppedImageUri);
+
+//                        GlideApp.with(this)
+//                                .load(croppedImageUri)
+//                                .into(binding.userProfileImg); // Ensure this is your ImageView
+                        user.setProfileImage(String.valueOf(selectedImg));
+                        uploadProfileImage(selectedImg);
+                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+                        Toast.makeText(this, "setting image", Toast.LENGTH_SHORT).show();
+                        Glide.with(this).load(croppedImageUri)
+                                .placeholder(R.drawable.profile_icon)
+                                .error(R.drawable.profile_icon)
+                                .circleCrop()
+                                .into(binding.userProfileImg);
+                    }
+                }
+            });
+
+    //Send selected image to CropImageActivity
+    private void startCropImageActivity(Uri imageUri) {
+        Intent intent = new Intent(this, CropImageActivity.class);
+        intent.putExtra("imageUri", imageUri.toString());
+        cropImageLauncher.launch(intent);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -368,12 +439,65 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(resumeSelectIntent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
+    private void uploadProfileImage(Uri imageUri) {
+        File imageFile = null;
+        try {
+            imageFile = convertUriToFile(this, imageUri,"profile");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+        ApiService apiService=retrofit.create(ApiService.class);
+
+        apiService.uploadProfileImage(user.getId(),body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        if (response.body() != null) {
+                        User user1 = new Gson().fromJson(response.body().string(), User.class);
+                        user.setProfileImage(user1.getProfileImage());
+                            System.out.println("uploaded profile img to: "+user1.getProfileImage());
+                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+                        Toast.makeText(ProfileActivity.this, "Profile Image Updated", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    try {
+                        if (response.errorBody() != null) {
+                            AuthResponse errorResponse = new Gson().fromJson(response.errorBody().string(), AuthResponse.class);
+                            Log.e("ProfileActivity", "fail to upload profile: " + errorResponse);
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(ProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("ProfileActivity", "fail to upload profile: " + t.getMessage());
+            }
+        });
+    }
+
     private void uploadResumeInChunks(Uri fileUri) {
         progressDialog.setMessage("Uploading resume...");
         progressDialog.show();
 
         try {
-            File file = convertUriToFile(this, fileUri);
+            File file = convertUriToFile(this, fileUri,"resume");
             resumeName = sanitizeFileName(resumeName);
             long fileSize = file.length();
             int chunkSize = 512 * 1024; // 512 KB
@@ -626,20 +750,28 @@ public class ProfileActivity extends AppCompatActivity {
         return result;
     }
 
-    public File convertUriToFile(Context context, Uri uri) throws IOException {
+    public File convertUriToFile(Context context, Uri uri,String fileType) throws IOException {
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
-        File file = new File(context.getCacheDir(), "resume.pdf");
-        FileOutputStream outputStream = new FileOutputStream(file);
-
-        resumeName=getFileName(uri);
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = inputStream.read(buffer)) > 0) {
-            outputStream.write(buffer, 0, length);
+        File file;
+        if(fileType.contains("resume")){
+             file= new File(context.getCacheDir(), "resume.pdf");
+            resumeName=getFileName(uri);
+        }else {
+            file= new File(context.getCacheDir(), "profile.png");
         }
 
-        outputStream.close();
-        inputStream.close();
+        FileOutputStream outputStream = new FileOutputStream(file);
+
+        byte[] buffer = new byte[1024];
+        int length;
+
+        if (inputStream != null) {
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+        }
         return file;
     }
 
@@ -915,12 +1047,9 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void run() {
                 user= jobDao.getCurrentUser(userId);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("user got in database: "+user);
-                        setUpProfile(user);
-                    }
+                runOnUiThread(() -> {
+                    System.out.println("user got in database: "+user);
+                    setUpProfile(user);
                 });
             }
         }).start();
@@ -933,6 +1062,18 @@ public class ProfileActivity extends AppCompatActivity {
             redirectToLogin();
             finish();
             return;
+        }
+
+        if(user.getProfileImage()!=null){
+            Uri profileImageUri = Uri.parse(user.getProfileImage());
+            System.out.println("profile image uri: "+profileImageUri);
+//            Toast.makeText(ProfileActivity.this, "profile image uri: "+profileImageUri, Toast.LENGTH_SHORT).show();
+            Glide.with(ProfileActivity.this)
+                    .load(profileImageUri)
+                    .placeholder(R.drawable.profile_icon)
+                    .error(R.drawable.profile_icon)
+                    .circleCrop()
+                    .into(binding.userProfileImg);
         }
         binding.profileName.setText(user.getName());
         binding.username.setText(user.getUserName());
