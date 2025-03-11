@@ -24,6 +24,7 @@ public class User {
     private String userName;
     private String email;
     private String password;
+    private String profileImage;
     private String phoneNumber;
     private boolean isResumeUploaded;
     private String resumeUrl;
@@ -102,6 +103,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getPassword() {
