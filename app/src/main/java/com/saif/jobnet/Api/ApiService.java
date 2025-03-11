@@ -53,6 +53,12 @@ public interface ApiService {
     @PUT("user/update")
     Call<User> updateUser(@Body UserUpdateDTO user);
 
+    @PATCH("user/id/{id}/update-basic-details")
+    Call<ResponseBody> updateBasicDetails(@Path("id") String id, @Body User user);
+
+    @GET("user/profile")
+    Call<User> getUserProfile();
+
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);
 
