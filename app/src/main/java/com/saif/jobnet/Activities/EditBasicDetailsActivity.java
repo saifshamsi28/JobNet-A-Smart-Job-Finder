@@ -155,23 +155,8 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
         binding.radioTransgender.setOnClickListener(v -> handleSelection(binding.radioTransgender));
     }
 
-    private void getUserFromBackend(String userId) {
-        Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(new OkHttpClient()
-                        .newBuilder()
-                        .connectTimeout(15, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
-                        .build())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ApiService apiService=retrofit.create(ApiService.class);
-
-    }
-
     private void setBasicDetails(User user) {
+        Toast.makeText(this, "Setting basic details", Toast.LENGTH_SHORT).show();
         binding.editFullName.setText(user.getName());
         binding.mobileNumber.setText(user.getPhoneNumber());
         BasicDetails basicDetails = user.getBasicDetails();

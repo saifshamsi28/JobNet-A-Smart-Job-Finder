@@ -64,8 +64,6 @@
                     android:id="@+id/edit_full_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Md Saifullah"
-                    android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
