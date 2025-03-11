@@ -2,6 +2,7 @@ package com.saif.jobnet.Activities;
 
 import static com.saif.jobnet.Utils.Config.BASE_URL;
 
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -27,6 +29,10 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -37,6 +43,7 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
     private RadioButton lastSelected = null; // Track the last selected button
     private User user;
     private AppDatabase db;
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -48,6 +55,8 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
 
         String userId = getIntent().getStringExtra("userId");
         db = DatabaseClient.getInstance(this).getAppDatabase();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("updating details...");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -214,6 +223,7 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
     }
 
     private void saveBasicDetails() {
+        progressDialog.show();
         String fullName = binding.editFullName.getText().toString().trim();
         String dateOfBirth = binding.dateOfBirth.getText().toString().trim();
         RadioButton genderRadioButton = binding.radioGroupGender.findViewById(binding.radioGroupGender.getCheckedRadioButtonId());
@@ -235,15 +245,53 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
             public void run() {
                 db.jobDao().insertOrUpdateUser(user);
                 System.out.println("updated user: "+user);
+                updateBasicDetailsOnBackend(user);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(EditBasicDetailsActivity.this, "Details saved successfully", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                         finish();
                     }
                 });
             }
             }).start();
+    }
+
+    private void updateBasicDetailsOnBackend(User user) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient()
+                        .newBuilder()
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .readTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(15, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        System.out.println("calling method to update details on backend");
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        apiService.updateBasicDetails(user.getId(),user)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            System.out.println("basic details updated successfully");
+                        }else {
+                            System.out.println("basic details not updated");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+                        System.out.println("basic details not updated");
+                        throwable.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                });
+
     }
 
     private void handleSelection(RadioButton selected) {
