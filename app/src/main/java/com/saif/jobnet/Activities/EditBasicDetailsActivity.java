@@ -51,7 +51,7 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user = db.jobDao().getCurrentUser(userId).getValue();
+                user = db.jobDao().getCurrentUser(userId);
 
                 if (user != null) {
                     runOnUiThread(new Runnable() {
@@ -61,10 +61,6 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
                         }
                     });
                 }
-//                System.out.println("user: "+user);
-//                if (user == null) {
-//                    getUserFromBackend(userId);
-//                }
             }
         }).start();
 
@@ -170,7 +166,10 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
         binding.editFullName.setText(user.getName());
         binding.mobileNumber.setText(user.getPhoneNumber());
         BasicDetails basicDetails = user.getBasicDetails();
+        System.out.println("basic details: "+basicDetails);
+        System.out.println("user: "+user);
         if (basicDetails != null) {
+            System.out.println("user gender: "+basicDetails.getGender());
             binding.editFullName.setText(user.getName());
             binding.mobileNumber.setText(user.getPhoneNumber());
             binding.currentCity.setText(basicDetails.getCurrentCity());
@@ -236,9 +235,15 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
             public void run() {
                 db.jobDao().insertOrUpdateUser(user);
                 System.out.println("updated user: "+user);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(EditBasicDetailsActivity.this, "Details saved successfully", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
             }
             }).start();
-        finish();
     }
 
     private void handleSelection(RadioButton selected) {
