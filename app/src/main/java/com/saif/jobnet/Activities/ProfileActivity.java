@@ -69,6 +69,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -120,10 +121,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        System.out.println("ProfileActivity " +isLoggedIn);
         if (!isLoggedIn) {
             // Redirect to LoginActivity
+            Toast.makeText(this, "Redirected to login", Toast.LENGTH_SHORT).show();
             redirectToLogin();
         }else{
+            System.out.println("ProfileActivity ,");
             loadUserProfile();
         }
 
@@ -139,18 +143,22 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Observe user data from Room database
         // Observe user data from Room database
-        jobDao.getCurrentUser(user.getId()).observe(this, user1 -> {
-            if (user != null) {
-                binding.profileName.setText(user.getName());
-                binding.contactNumber.setText(user.getPhoneNumber());
-
-                if (user.getBasicDetails() != null) {
-                    binding.gender.setText(user.getBasicDetails().getGender());
-                    binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
-//                    binding.setText(user.getBasicDetails().getHomeTown());
-                }
-            }
-        });
+//        if(user!=null) {
+////            jobDao.getCurrentUser(user.getId()).observe(this, user1 -> {
+////                if (user != null) {
+////                    binding.profileName.setText(user.getName());
+////                    binding.contactNumber.setText(user.getPhoneNumber());
+////
+////                    if (user.getBasicDetails() != null) {
+////                        binding.gender.setText(user.getBasicDetails().getGender());
+////                        binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
+//////                    binding.setText(user.getBasicDetails().getHomeTown());
+////                    }
+////                }
+//            });
+//        }else{
+////            Log.d("ProfileActivity "+user.getPhoneNumber())
+//        }
 
         binding.userEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -845,15 +853,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void loadUserProfile() {
         String userId = sharedPreferences.getString("userId", null);
+        System.out.println("user id received: "+userId);
         //fetch user from local database
-
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user= jobDao.getCurrentUser(userId).getValue();
+                user= jobDao.getCurrentUser(userId);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        System.out.println("user got in database: "+user);
                         setUpProfile(user);
                     }
                 });
@@ -863,6 +872,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setUpProfile(User user) {
         if(user == null){
+            Log.e("Profile Activity","user is null");
+            Toast.makeText(ProfileActivity.this, "User not found", Toast.LENGTH_SHORT).show();
             redirectToLogin();
             finish();
             return;
@@ -901,7 +912,10 @@ public class ProfileActivity extends AppCompatActivity {
         if(user.getBasicDetails()!=null){
             binding.basicDetailsLayout.setVisibility(VISIBLE);
             binding.gender.setText(user.getBasicDetails().getGender());
-            binding.dateOfBirth.setText(user.getBasicDetails().getDateOfBirth());
+
+            //set the date of birth in words
+            binding.dateOfBirth.setText(formatDate(user.getBasicDetails().getDateOfBirth()));
+
             binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
         }
 
@@ -909,6 +923,35 @@ public class ProfileActivity extends AppCompatActivity {
         userFieldsAccessibility(false);
     }
 
+    private String formatDate(String inputDate) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("d'%s' MMMM yyyy", Locale.getDefault());
+
+            Date date = inputFormat.parse(inputDate);
+            if (date != null) {
+                int day = Integer.parseInt(new SimpleDateFormat("d", Locale.getDefault()).format(date));
+                String daySuffix = getDaySuffix(day);
+                return String.format(outputFormat.format(date), daySuffix);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return inputDate; // Return original if parsing fails
+    }
+
+    // Helper method to get the correct suffix for the day (st, nd, rd, th)
+    private String getDaySuffix(int day) {
+        if (day >= 11 && day <= 13) {
+            return "th"; // Special case for 11th, 12th, 13th
+        }
+        switch (day % 10) {
+            case 1: return "st";
+            case 2: return "nd";
+            case 3: return "rd";
+            default: return "th";
+        }
+    }
     private void userFieldsAccessibility(boolean b) {
         if(b){
             binding.profileName.setEnabled(true);
@@ -917,6 +960,10 @@ public class ProfileActivity extends AppCompatActivity {
             binding.contactNumber.setEnabled(true);
             binding.updateButton.setVisibility(VISIBLE);
             binding.cancelButton.setVisibility(VISIBLE);
+            binding.currentCity.setEnabled(true);
+            binding.dateOfBirth.setEnabled(true);
+            binding.gender.setEnabled(true);
+
 
             binding.profileName.requestFocus();
             binding.profileName.setSelection(binding.profileName.getText().length());
@@ -937,7 +984,11 @@ public class ProfileActivity extends AppCompatActivity {
             binding.contactNumber.setEnabled(false);
             binding.updateButton.setVisibility(GONE);
             binding.cancelButton.setVisibility(GONE);
+            binding.currentCity.setEnabled(false);
+            binding.dateOfBirth.setEnabled(false);
+            binding.gender.setEnabled(false);
         }
+
     }
 
     private void redirectToLogin() {
@@ -1331,6 +1382,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         setTitle("Profile");
 
+        //refresh layout when activity is resumed
+        loadUserProfile();
         super.onResume();
     }
 }
