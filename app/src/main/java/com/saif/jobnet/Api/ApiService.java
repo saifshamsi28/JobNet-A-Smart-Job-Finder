@@ -56,6 +56,10 @@ public interface ApiService {
     @PATCH("user/id/{id}/update-basic-details")
     Call<ResponseBody> updateBasicDetails(@Path("id") String id, @Body User user);
 
+    @Multipart
+    @POST("user/{id}/upload-profile-image")
+    Call<ResponseBody> uploadProfileImage(@Path("id") String id, @Part MultipartBody.Part file);
+
     @GET("user/{id}/profile")
     Call<User> getUserProfile(@Path("id") String id);
 
