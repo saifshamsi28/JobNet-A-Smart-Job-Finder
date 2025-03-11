@@ -1,5 +1,7 @@
 package com.saif.jobnet.Models;
 
+import androidx.annotation.NonNull;
+
 public class BasicDetails {
     private String gender;
     private String dateOfBirth;
@@ -46,5 +48,16 @@ public class BasicDetails {
 
     public void setHomeTown(String homeTown) {
         this.homeTown = homeTown;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "BasicDetails{" +
+                "gender='" + gender + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", currentCity='" + currentCity + '\'' +
+                ", homeTown='" + homeTown + '\'' +
+                '}';
     }
 }

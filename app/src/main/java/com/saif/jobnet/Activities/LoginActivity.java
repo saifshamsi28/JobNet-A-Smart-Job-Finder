@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -228,6 +229,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void redirectToProfile(User user) {
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+        Log.d("LoginActivity","user id: "+user.getId());
+        Log.d("LoginActivity","user name: "+user.getName());
+        Log.d("LoginActivity","user email: "+user.getEmail());
 //        intent.putExtra("user", user);
         //store the user details in shared prefs
         sharedPreferences.edit().putString("userId", user.getId()).apply();
