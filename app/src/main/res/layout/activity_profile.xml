@@ -132,87 +132,129 @@
 <!--                    android:textStyle="bold" />-->
 
                 <!-- Artist -->
-                <TextView
-                    android:id="@+id/tv_artist_label"
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_artist_label"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16sp"-->
+<!--                    android:text="Username"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold" />-->
+
+                <EditText
+                    android:id="@+id/gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
-                    android:text="Username"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:padding="8dp"
+                    android:drawableStart="@drawable/gender_icon"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <EditText
+                    android:id="@+id/current_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:padding="8dp"
+                    android:drawableStart="@drawable/location_img"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <EditText
+                    android:id="@+id/date_of_birth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:padding="8dp"
+                    android:drawableStart="@drawable/cake_icon"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <EditText
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16sp"
+                    android:layout_marginStart="8sp"
                     android:layout_marginEnd="8dp"
                     android:background="@android:color/transparent"
-                    android:hint="username"
                     android:padding="8dp"
+                    android:drawableStart="@drawable/icon_mail"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <View
-                    android:id="@+id/border_below_artist"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:background="@color/fields_divider"
-                    android:backgroundTint="@color/fields_divider" />
+<!--                <View-->
+<!--                    android:id="@+id/border_below_artist"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="1dp"-->
+<!--                    android:layout_marginStart="8sp"-->
+<!--                    android:layout_marginEnd="8sp"-->
+<!--                    android:background="@color/fields_divider"-->
+<!--                    android:backgroundTint="@color/fields_divider" />-->
 
-                <TextView
-                    android:id="@+id/tv_album_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
-                    android:text="Email"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_album_label"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16sp"-->
+<!--                    android:text="Email"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold" />-->
 
                 <EditText
                     android:id="@+id/user_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16sp"
+                    android:layout_marginStart="8sp"
                     android:layout_marginEnd="8dp"
                     android:background="@android:color/transparent"
-                    android:hint="Enter your email here"
                     android:onClick="sendEmail"
+                    android:drawableStart="@drawable/email_icon"
                     android:padding="8dp"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
-                <View
-                    android:id="@+id/border_below_album"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="8sp"
-                    android:layout_marginEnd="8sp"
-                    android:background="@color/fields_divider"
-                    android:backgroundTint="@color/fields_divider" />
+<!--                <View-->
+<!--                    android:id="@+id/border_below_album"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="1dp"-->
+<!--                    android:layout_marginStart="8sp"-->
+<!--                    android:layout_marginEnd="8sp"-->
+<!--                    android:background="@color/fields_divider"-->
+<!--                    android:backgroundTint="@color/fields_divider" />-->
                 <!-- Other Metadata -->
-                <TextView
-                    android:id="@+id/tv_duration_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp"
-                    android:text="Contact"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_duration_label"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16sp"-->
+<!--                    android:text="Contact"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold" />-->
+
 
                 <EditText
                     android:id="@+id/contact_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
-                    android:hint="Enter your phone number"
                     android:padding="8dp"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/phone_icon"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
