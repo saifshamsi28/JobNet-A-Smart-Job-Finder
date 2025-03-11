@@ -103,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String resumeUrl="";
     private String resumeDate="";
     private String resumeSize="";
+    String userId;
+
 
 
     @Override
@@ -115,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
         jobDao= DatabaseClient.getInstance(this).getAppDatabase().jobDao();
         progressDialog=new ProgressDialog(this);
+        userId = sharedPreferences.getString("userId", null);
 
         binding.updateButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorActionBarBackground));
         binding.cancelButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
@@ -130,6 +133,9 @@ public class ProfileActivity extends AppCompatActivity {
             System.out.println("ProfileActivity ,");
             loadUserProfile();
         }
+
+        //synchronise user details from server
+        synchronizeUserDetails(userId);
 
         binding.basicDetailsEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +255,57 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void synchronizeUserDetails(String id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient
+                        .Builder().connectTimeout(10, TimeUnit.SECONDS)
+                        .callTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        Call<User> response=apiService.getUserProfile(id);
+        response.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if(response.isSuccessful()){
+                    User user1=response.body();
+                    if(user1!=null){
+                        System.out.println("previous user basic details: "+user.getBasicDetails());
+                        user=user1;
+                        //save to local database
+                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+                        setUpProfile(user);
+                        System.out.println("updated user basic details: "+user.getBasicDetails());
+//                        Toast.makeText(ProfileActivity.this, "Profile synchronised Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Log.d("ProfileActivity", "Error synchronizing user details");
+                    try{
+                        if(response.errorBody()!=null){
+                            AuthResponse errorResponse=new Gson().fromJson(response.errorBody().string(),AuthResponse.class);
+                            Log.d("ProfileActivity", "Error synchronizing user details: "+errorResponse);
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable throwable) {
+                Log.e("ProfileActivity", "Error synchronizing user details: "+throwable);
+                Toast.makeText(ProfileActivity.this, "Error synchronizing user details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -852,7 +909,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserProfile() {
-        String userId = sharedPreferences.getString("userId", null);
         System.out.println("user id received: "+userId);
         //fetch user from local database
         new Thread(new Runnable() {

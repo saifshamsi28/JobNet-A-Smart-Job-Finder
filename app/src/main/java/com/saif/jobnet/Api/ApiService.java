@@ -56,8 +56,8 @@ public interface ApiService {
     @PATCH("user/id/{id}/update-basic-details")
     Call<ResponseBody> updateBasicDetails(@Path("id") String id, @Body User user);
 
-    @GET("user/profile")
-    Call<User> getUserProfile();
+    @GET("user/{id}/profile")
+    Call<User> getUserProfile(@Path("id") String id);
 
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);
