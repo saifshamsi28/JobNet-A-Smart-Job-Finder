@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         android:id="@+id/navigation_view"
         android:layout_gravity="start"
-        android:visibility="gone"
         android:theme="@style/navigation_theme"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
