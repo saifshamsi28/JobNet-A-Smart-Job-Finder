@@ -60,6 +60,15 @@ public interface ApiService {
     @POST("user/{id}/upload-profile-image")
     Call<ResponseBody> uploadProfileImage(@Path("id") String id, @Part MultipartBody.Part file);
 
+    @Multipart
+    @POST("user/{id}/upload-profile-chunk")
+    Call<ResponseBody> uploadProfileImageChunk(
+            @Path("id") String userId,
+            @Part MultipartBody.Part file,
+            @Part("chunkIndex") RequestBody chunkIndex,
+            @Part("totalChunks") RequestBody totalChunks
+    );
+
     @GET("user/{id}/profile")
     Call<User> getUserProfile(@Path("id") String id);
 

@@ -77,6 +77,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -143,9 +144,6 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
-        //synchronise user details from server
-        synchronizeUserDetails(userId);
-
         binding.basicDetailsEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,25 +153,6 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        // Observe user data from Room database
-        // Observe user data from Room database
-//        if(user!=null) {
-////            jobDao.getCurrentUser(user.getId()).observe(this, user1 -> {
-////                if (user != null) {
-////                    binding.profileName.setText(user.getName());
-////                    binding.contactNumber.setText(user.getPhoneNumber());
-////
-////                    if (user.getBasicDetails() != null) {
-////                        binding.gender.setText(user.getBasicDetails().getGender());
-////                        binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
-//////                    binding.setText(user.getBasicDetails().getHomeTown());
-////                    }
-////                }
-//            });
-//        }else{
-////            Log.d("ProfileActivity "+user.getPhoneNumber())
-//        }
 
         binding.userEmail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -299,7 +278,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if(response.isSuccessful()){
                     User user1=response.body();
-                    if(user1!=null){
+                    if(user1!=null && user!=null){
                         System.out.println("previous user basic details: "+user.getBasicDetails());
                         user=user1;
                         //save to local database
@@ -367,7 +346,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void openProfileImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*"); // Restricts to images only
+        intent.setType("image/*");
         pickImageLauncher.launch(intent);
     }
 
@@ -397,7 +376,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                                .load(croppedImageUri)
 //                                .into(binding.userProfileImg); // Ensure this is your ImageView
                         user.setProfileImage(String.valueOf(selectedImg));
-                        uploadProfileImage(selectedImg);
+                        uploadProfileImageInChunks(selectedImg);
                         new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
                         Toast.makeText(this, "setting image", Toast.LENGTH_SHORT).show();
                         Glide.with(this).load(croppedImageUri)
@@ -439,55 +418,121 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(resumeSelectIntent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
-    private void uploadProfileImage(Uri imageUri) {
-        File imageFile = null;
+
+//    private void uploadProfileImage(Uri imageUri) {
+//        File imageFile = null;
+//        try {
+//            imageFile = convertUriToFile(this, imageUri,"profile");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+//
+//        Retrofit retrofit=new Retrofit.Builder()
+//                .baseUrl(BASE_URL)
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//        ApiService apiService=retrofit.create(ApiService.class);
+//
+//        apiService.uploadProfileImage(user.getId(),body).enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+//                if (response.isSuccessful()) {
+//                    try {
+//                        if (response.body() != null) {
+//                        User user1 = new Gson().fromJson(response.body().string(), User.class);
+//                        user.setProfileImage(user1.getProfileImage());
+//                            System.out.println("uploaded profile img to: "+user1.getProfileImage());
+//                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+//                        Toast.makeText(ProfileActivity.this, "Profile Image Updated", Toast.LENGTH_SHORT).show();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Toast.makeText(ProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+//                    try {
+//                        if (response.errorBody() != null) {
+//                            AuthResponse errorResponse = new Gson().fromJson(response.errorBody().string(), AuthResponse.class);
+//                            Log.e("ProfileActivity", "fail to upload profile: " + errorResponse);
+//                        }
+//                    }catch (IOException e){
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                Toast.makeText(ProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//                Log.e("ProfileActivity", "fail to upload profile: " + t.getMessage());
+//            }
+//        });
+//    }
+
+    private void uploadProfileImageInChunks(Uri imageUri) {
         try {
-            imageFile = convertUriToFile(this, imageUri,"profile");
+            File imageFile = convertUriToFile(this, imageUri, "profile");
+            long chunkSize = 512 * 1024; // 512kb
+            long fileSize = imageFile.length();
+            int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
+
+            for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+                long startByte = chunkIndex * chunkSize;
+                long endByte = Math.min(startByte + chunkSize, fileSize);
+
+                byte[] chunkData = readFileChunk(imageFile, startByte, endByte);
+                File chunkFile = new File(getCacheDir(), "chunk_" + chunkIndex + ".jpg");
+                FileOutputStream fos = new FileOutputStream(chunkFile);
+                fos.write(chunkData);
+                fos.close();
+
+                uploadChunkToBackend(user.getId(), chunkFile, chunkIndex, totalChunks);
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to split file", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
+    // Read file chunk
+    private byte[] readFileChunk(File file, long start, long end) throws IOException {
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        raf.seek(start);
+        byte[] buffer = new byte[(int) (end - start)];
+        raf.readFully(buffer);
+        raf.close();
+        return buffer;
+    }
 
-        Retrofit retrofit=new Retrofit.Builder()
+    private void uploadChunkToBackend(String userId, File chunkFile, int chunkIndex, int totalChunks) {
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), chunkFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", chunkFile.getName(), requestFile);
+
+        RequestBody indexPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(chunkIndex));
+        RequestBody totalPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(totalChunks));
+
+        ApiService apiService = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-        ApiService apiService=retrofit.create(ApiService.class);
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService.class);
 
-        apiService.uploadProfileImage(user.getId(),body).enqueue(new Callback<ResponseBody>() {
+        apiService.uploadProfileImageChunk(userId, body, indexPart, totalPart).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    try {
-                        if (response.body() != null) {
-                        User user1 = new Gson().fromJson(response.body().string(), User.class);
-                        user.setProfileImage(user1.getProfileImage());
-                            System.out.println("uploaded profile img to: "+user1.getProfileImage());
-                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
-                        Toast.makeText(ProfileActivity.this, "Profile Image Updated", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Log.d("UploadChunk", "Chunk " + chunkIndex + " uploaded.");
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
-                    try {
-                        if (response.errorBody() != null) {
-                            AuthResponse errorResponse = new Gson().fromJson(response.errorBody().string(), AuthResponse.class);
-                            Log.e("ProfileActivity", "fail to upload profile: " + errorResponse);
-                        }
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
+                    Log.e("UploadChunk", "Failed to upload chunk " + chunkIndex);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("ProfileActivity", "fail to upload profile: " + t.getMessage());
+                Log.e("UploadChunk", "Error: " + t.getMessage());
             }
         });
     }
@@ -718,10 +763,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String getFileSize(Uri fileUri) {
         Cursor cursor = getContentResolver().query(fileUri, null, null, null, null);
-        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-        cursor.moveToFirst();
-        long sizeInBytes = cursor.getLong(sizeIndex);
-        cursor.close();
+        int sizeIndex = 0;
+        long sizeInBytes=0;
+        if (cursor != null) {
+            sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+            cursor.moveToFirst();
+            sizeInBytes= cursor.getLong(sizeIndex);
+            cursor.close();
+        }
         return sizeInBytes+"";
     }
 
@@ -732,20 +781,23 @@ public class ProfileActivity extends AppCompatActivity {
 
     private String getFileName(Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
+        if (uri!=null && uri.getScheme()!=null && uri.getScheme().equals("content")) {
             try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     result = cursor.getString(nameIndex);
                 }
             }
-        }
         if (result == null) {
             result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
+            int cut = 0;
+            if (result != null) {
+                cut = result.lastIndexOf('/');
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
             }
+        }
         }
         return result;
     }
@@ -1050,6 +1102,8 @@ public class ProfileActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     System.out.println("user got in database: "+user);
                     setUpProfile(user);
+                    //synchronise user details from server
+                    synchronizeUserDetails(userId);
                 });
             }
         }).start();
@@ -1067,6 +1121,8 @@ public class ProfileActivity extends AppCompatActivity {
         if(user.getProfileImage()!=null){
             Uri profileImageUri = Uri.parse(user.getProfileImage());
             System.out.println("profile image uri: "+profileImageUri);
+
+            System.out.println("file size of image: "+getFileSize(profileImageUri));
 //            Toast.makeText(ProfileActivity.this, "profile image uri: "+profileImageUri, Toast.LENGTH_SHORT).show();
             Glide.with(ProfileActivity.this)
                     .load(profileImageUri)
@@ -1085,6 +1141,8 @@ public class ProfileActivity extends AppCompatActivity {
             binding.contactNumber.setVisibility(GONE);
         }
         if (user.isResumeUploaded() || user.getResumeUrl()!=null || !user.getResumeUrl().isEmpty()) {
+
+            sharedPreferences.edit().putString("resumeUrl",user.getResumeUrl()).apply();
             binding.uploadResumeButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(VISIBLE);
