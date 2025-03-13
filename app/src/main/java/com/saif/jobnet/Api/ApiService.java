@@ -2,6 +2,7 @@ package com.saif.jobnet.Api;
 
 import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.JobUpdateDTO;
 import com.saif.jobnet.Models.SaveJobsModel;
 import com.saif.jobnet.Models.User;
@@ -62,7 +63,7 @@ public interface ApiService {
 
     @Multipart
     @POST("user/{id}/upload-profile-chunk")
-    Call<ResponseBody> uploadProfileImageChunk(
+    Call<JobNetResponse> uploadProfileImageChunk(
             @Path("id") String userId,
             @Part MultipartBody.Part file,
             @Part("chunkIndex") RequestBody chunkIndex,
