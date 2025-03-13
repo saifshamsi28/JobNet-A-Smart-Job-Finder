@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
@@ -56,6 +57,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.canhub.cropper.CropImage;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -64,6 +66,7 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.Resume;
 import com.saif.jobnet.Models.ResumeResponseEntity;
 import com.saif.jobnet.Models.UserUpdateDTO;
@@ -479,6 +482,12 @@ public class ProfileActivity extends AppCompatActivity {
             long fileSize = imageFile.length();
             int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
 
+            //if image size is greater than 5mb then return
+            if (totalChunks > 10) {
+                Toast.makeText(this, "Please upload file less than 5mb", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             for (int chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
                 long startByte = chunkIndex * chunkSize;
                 long endByte = Math.min(startByte + chunkSize, fileSize);
@@ -520,18 +529,45 @@ public class ProfileActivity extends AppCompatActivity {
                 .build()
                 .create(ApiService.class);
 
-        apiService.uploadProfileImageChunk(userId, body, indexPart, totalPart).enqueue(new Callback<ResponseBody>() {
+        apiService.uploadProfileImageChunk(userId, body, indexPart, totalPart).enqueue(new Callback<JobNetResponse>() {
             @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.d("UploadChunk", "Chunk " + chunkIndex + " uploaded.");
-                } else {
-                    Log.e("UploadChunk", "Failed to upload chunk " + chunkIndex);
+            public void onResponse(@NonNull Call<JobNetResponse> call, @NonNull Response<JobNetResponse> response) {
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        JobNetResponse jobNetResponse = response.body();
+                        Log.d("UploadChunk", "Response: " + jobNetResponse);;
+                        user.setProfileImage(jobNetResponse.getMessage());
+                        System.out.println("Updated profile image URL: " + jobNetResponse.getMessage());
+
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            if (user.getProfileImage() != null) {
+                                Glide.with(ProfileActivity.this)
+                                        .load(user.getProfileImage())
+                                        .placeholder(R.drawable.profile_icon)
+                                        .error(R.drawable.profile_icon)
+                                        .circleCrop()
+                                        .skipMemoryCache(true)  // Avoid caching in memory
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Avoid disk caching
+                                        .into(binding.userProfileImg);
+                            }
+                        }, 2000); // Delay by 2 seconds
+
+                        setUpProfile(user);
+                    } else {
+                        Log.e("UploadChunk", "Failed to upload chunk " + chunkIndex + ". Response Code: " + response.code());
+                        //parse body in jobnet response
+                        if (response.errorBody() != null) {
+                            JobNetResponse jobNetResponse = new Gson().fromJson(response.errorBody().string(), JobNetResponse.class);
+                            Log.e("UploadChunk", "Error Body: " + jobNetResponse);  // Log the error body
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("UploadChunk", "Error parsing response: " + e.getMessage());
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<JobNetResponse> call, Throwable t) {
                 Log.e("UploadChunk", "Error: " + t.getMessage());
             }
         });
@@ -1118,12 +1154,10 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        if(user.getProfileImage()!=null){
+        if (user.getProfileImage() != null) {
             Uri profileImageUri = Uri.parse(user.getProfileImage());
-            System.out.println("profile image uri: "+profileImageUri);
+            System.out.println("Updated profile image URL: " + profileImageUri);
 
-            System.out.println("file size of image: "+getFileSize(profileImageUri));
-//            Toast.makeText(ProfileActivity.this, "profile image uri: "+profileImageUri, Toast.LENGTH_SHORT).show();
             Glide.with(ProfileActivity.this)
                     .load(profileImageUri)
                     .placeholder(R.drawable.profile_icon)
