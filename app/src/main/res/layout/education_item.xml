@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16sp">
+
+        <!-- Education Title (e.g., B.Tech, Class XII) -->
+        <TextView
+            android:id="@+id/tv_education_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="B.Tech/B.E."
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <!-- College or School Name -->
+        <TextView
+            android:id="@+id/tv_college_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Maulana Azad National Urdu University, Hyderabad"
+            android:textSize="16sp"
+            android:textColor="#757575" />
+
+        <!-- Graduation Year -->
+        <TextView
+            android:id="@+id/tv_graduation_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Graduating in 2025, Full Time"
+            android:textSize="14sp"
+            android:textColor="#9E9E9E"/>
+</LinearLayout>
