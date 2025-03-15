@@ -55,16 +55,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.canhub.cropper.CropImage;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.saif.jobnet.Adapters.EducationAdapter;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
+import com.saif.jobnet.Models.Education;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.Resume;
@@ -83,6 +86,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -118,6 +122,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String userId;
     private Uri selectedImg;
     private JobNetPermissions jobNetPermissions;
+    private List<Education> educationList;
+    private EducationAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,9 +153,19 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile();
         }
 
-        binding.basicDetailsEditButton.setOnClickListener(new View.OnClickListener() {
+        binding.editBasicDetailsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent=new Intent(ProfileActivity.this,EditBasicDetailsActivity.class);
+                intent.putExtra("source", "Profile");
+                intent.putExtra("userId",user.getId());
+                startActivity(intent);
+            }
+        });
+
+        binding.editName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent=new Intent(ProfileActivity.this,EditBasicDetailsActivity.class);
                 intent.putExtra("source", "Profile");
                 intent.putExtra("userId",user.getId());
@@ -258,6 +274,14 @@ public class ProfileActivity extends AppCompatActivity {
                         jobNetPermissions.requestStoragePermission(ProfileActivity.this);
                     }
                 }
+            }
+        });
+
+        binding.btnAddEducation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
+                startActivity(intent);
             }
         });
     }

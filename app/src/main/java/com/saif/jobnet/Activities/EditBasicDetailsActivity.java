@@ -156,7 +156,7 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
     }
 
     private void setBasicDetails(User user) {
-        Toast.makeText(this, "Setting basic details", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Setting basic details", Toast.LENGTH_SHORT).show();
         binding.editFullName.setText(user.getName());
         binding.mobileNumber.setText(user.getPhoneNumber());
         BasicDetails basicDetails = user.getBasicDetails();
