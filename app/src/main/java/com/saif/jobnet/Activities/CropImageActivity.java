@@ -40,6 +40,7 @@ public class CropImageActivity extends AppCompatActivity {
         });
         binding.rotateLeft.setOnClickListener(v -> rotateImageLeft());
         binding.rotateRight.setOnClickListener(v -> rotateImageRight());
+        binding.cropRectangular.setOnClickListener(v -> cropImageView.setCropShape(CropImageView.CropShape.RECTANGLE));
         binding.resetButton.setOnClickListener(v -> resetImageCropping());
         binding.backBtn.setOnClickListener(v->finish());
     }
