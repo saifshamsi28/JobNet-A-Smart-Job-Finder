@@ -18,14 +18,38 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:src="@drawable/arrow_back_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Education"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="add education details about yourself"
+                android:textSize="16sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8sp"
+                android:layout_marginTop="16sp"
                 android:text="Education*"
                 android:textSize="12sp" />
             <!--course level-->
             <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/course_level"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 app:alignItems="center"
@@ -78,6 +102,7 @@
                     android:gravity="center"
                     android:padding="8sp"
                     android:text="Class XII"
+                    android:textSize="12sp"
                     android:textColor="@color/black" />
 
                 <RadioButton
