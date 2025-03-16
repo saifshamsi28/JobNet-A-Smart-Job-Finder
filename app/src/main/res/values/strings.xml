@@ -44,6 +44,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="basic_instruction">Add some basic information about yourself</string>
+    <string name="education_subheading">Adding your educational details help recruiters know your value as a potential candidate</string>
 
     <string-array name="gender_options">
         <item>Male</item>

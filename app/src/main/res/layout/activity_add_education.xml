@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8sp"
-                android:text="add education details about yourself"
+                android:text="@string/education_subheading"
                 android:textSize="16sp" />
 
             <TextView
@@ -124,8 +124,8 @@
                 android:id="@+id/graduation_edu_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:orientation="vertical">
                 <!-- Course Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -163,7 +163,7 @@
                         android:id="@+id/graduation_college_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="College Name" />
+                        android:hint="College Name*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- grading system -->
@@ -171,12 +171,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Grading system"
+                    android:text="Grading system*"
                     android:textColor="@color/black"
                     android:textSize="12sp" />
                 />
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/grading_system_flex_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:alignItems="center"
@@ -233,15 +234,18 @@
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/gpa_obtained_layout"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
+                    app:helperText="CGPA is the marks obtained from all the GPAs"
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/gpa_obtained"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="CGPA out of 10" />
+                        />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Start Year and End Year -->
@@ -291,6 +295,7 @@
                 />
 
                 <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/course_type_flex_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:alignItems="center"
@@ -340,8 +345,8 @@
                 android:id="@+id/intermediate_edu_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:visibility="gone"
+                android:orientation="vertical"
                 >
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -430,8 +435,8 @@
                 android:id="@+id/matriculation_edu_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:visibility="gone"
+                android:orientation="vertical"
                 >
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
