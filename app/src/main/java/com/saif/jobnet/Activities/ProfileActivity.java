@@ -285,7 +285,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
                 intent.putExtra("userId",user.getId());
-                intent.putExtra("educationSection","graduation");
+                intent.putExtra("educationSection","Graduation/Diploma");
                 startActivity(intent);
             }
         });
@@ -295,7 +295,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
                 intent.putExtra("userId",user.getId());
-                intent.putExtra("educationSection","class12");
+                intent.putExtra("educationSection","Class XII");
                 startActivity(intent);
             }
         });
@@ -305,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
                 intent.putExtra("userId",user.getId());
-                intent.putExtra("educationSection","class10");
+                intent.putExtra("educationSection","Class X");
                 startActivity(intent);
             }
         });
