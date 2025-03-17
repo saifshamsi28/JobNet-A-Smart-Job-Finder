@@ -66,9 +66,14 @@ public class AddEducationActivity extends AppCompatActivity {
                 user=db.jobDao().getCurrentUser(userId);
 
                 //if there exists education details then set the visibility of education section
-                if(user.getEducationList()!=null && !user.getEducationList().isEmpty()){
-                    setEducationDetails(educationSection);
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(user.getEducationList()!=null && !user.getEducationList().isEmpty()){
+                            setEducationDetails(educationSection);
+                        }
+                    }
+                });
             }
         }).start();
 
@@ -114,7 +119,104 @@ public class AddEducationActivity extends AppCompatActivity {
     }
 
     private void setEducationDetails(String educationSection) {
+        Education education = getEducationByLevel(educationSection);
+
+        System.out.println("setting the education: "+education);
+
+        if (education == null) {
+            Toast.makeText(this, "No details found for " + educationSection, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        switch (educationSection) {
+            case "Graduation/Diploma":
+                setGraduationDetails(education);
+                break;
+            case "Class XII":
+//                setIntermediateDetails(education);
+                break;
+            case "Class X":
+//                setMatriculationDetails(education);
+                break;
+        }
     }
+
+    // ✅ Helper method to find Education object by level
+    private Education getEducationByLevel(String level) {
+        if (user == null || user.getEducationList() == null) return null;
+
+        for (Education edu : user.getEducationList()) {
+            if (edu.getEducationLevel().equalsIgnoreCase(level)) {
+                return edu; // Found the education object
+            }
+        }
+        return null; // No matching education found
+    }
+
+    // ✅ Set Graduation Details
+    private void setGraduationDetails(Education education) {
+        binding.graduationEduSection.setVisibility(View.VISIBLE);
+
+        // ✅ Set "Graduation/Diploma" Radio Button
+        if (education.getEducationLevel().equalsIgnoreCase("Graduation/Diploma")) {
+            showSelectedRadioButton(binding.graduationOrDiploma, binding.courseLevel);
+        }
+
+        // ✅ Set Course & Specialization
+        binding.graduationCourseName.setText(education.getCourse());
+        binding.courseSpecialization.setText(education.getSpecialization());
+        binding.graduationCollegeName.setText(education.getCollege());
+
+        // ✅ Set "Full Time / Part Time / Distance" Radio Button
+        if (education.getCourseType().equalsIgnoreCase("Full Time")) {
+            showSelectedRadioButton(binding.fullTime, binding.courseTypeFlexLayout);
+        } else if (education.getCourseType().equalsIgnoreCase("Part Time")) {
+            showSelectedRadioButton(binding.partTime, binding.courseTypeFlexLayout);
+        } else {
+            showSelectedRadioButton(binding.correspondence, binding.courseTypeFlexLayout);
+        }
+
+        // ✅ Set GPA Scale (Grading System)
+        if (education.getGpaScale().equals("10")) {
+            showSelectedRadioButton(binding.gpaOutOf10, binding.gradingSystemFlexLayout);
+        } else if (education.getGpaScale().equals("4")) {
+            showSelectedRadioButton(binding.gpaOutOf04, binding.gradingSystemFlexLayout);
+        } else if (education.getGpaScale().equals("100")) {
+            showSelectedRadioButton(binding.percentage, binding.gradingSystemFlexLayout);
+        }else{
+            showSelectedRadioButton(binding.courseRequiresAPass, binding.gradingSystemFlexLayout);
+        }
+
+        // ✅ Set CGPA / GPA / Percentage
+        binding.gpaObtained.setText(education.getCgpaObtained());
+
+        // ✅ Set Start & End Year
+        binding.graduationStartYear.setText(education.getEnrollmentYear());
+        binding.graduationEndYear.setText(education.getPassingYear());
+    }
+
+
+    // ✅ Set Intermediate (Class 12) Details
+//    private void setIntermediateDetails(Education education) {
+//        binding.class12EduSection.setVisibility(View.VISIBLE);
+//        binding.class12SchoolName.setText(education.getCollege()); // Assuming college field holds school name
+//        binding.class12Stream.setText(education.getSpecialization());
+//        binding.class12Board.setText(education.getCourseType()); // Example: "CBSE", "State Board"
+//        binding.class12Percentage.setText(education.getCgpaObtained()); // Assuming it's stored as GPA
+//        binding.class12StartYear.setText(education.getEnrollmentYear());
+//        binding.class12EndYear.setText(education.getPassingYear());
+//    }
+
+    // ✅ Set Matriculation (Class 10) Details
+//    private void setMatriculationDetails(Education education) {
+//        binding.class10EduSection.setVisibility(View.VISIBLE);
+//        binding.class10SchoolName.setText(education.getCollege());
+//        binding.class10Board.setText(education.getCourseType());
+//        binding.class10Percentage.setText(education.getCgpaObtained());
+//        binding.class10StartYear.setText(education.getEnrollmentYear());
+//        binding.class10EndYear.setText(education.getPassingYear());
+//    }
+
 
     private void savedEducationDetails() {
         if(courseLevelSelectedRadioButton!=null){
