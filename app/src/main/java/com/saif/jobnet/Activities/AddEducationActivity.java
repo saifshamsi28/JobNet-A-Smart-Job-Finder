@@ -1,12 +1,12 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.VISIBLE;
+
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -19,6 +19,8 @@ import com.saif.jobnet.ApiResponse;
 import com.saif.jobnet.BottomSheetFragment;
 import com.saif.jobnet.Course;
 import com.saif.jobnet.Database.AppDatabase;
+import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Models.Education;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityAddEducationBinding;
@@ -39,10 +41,12 @@ public class AddEducationActivity extends AppCompatActivity {
     private ActivityAddEducationBinding binding;
     Drawable closeIcon;
     private RadioButton lastSelected = null; // Track the last selected button
+    private RadioButton courseLevelSelectedRadioButton;
     private User user;
     private AppDatabase db;
     private ProgressDialog progressDialog;
     private ArrayList<String> coursesList = new ArrayList<>();
+    private ArrayList<Course> courses=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,22 @@ public class AddEducationActivity extends AppCompatActivity {
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
         progressDialog=new ProgressDialog(this);
+        db= DatabaseClient.getInstance(this).getAppDatabase();
+
+        //fetch user from local database
+        String userId=getIntent().getStringExtra("userId");
+        String educationSection=getIntent().getStringExtra("educationSection");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                user=db.jobDao().getCurrentUser(userId);
+
+                //if there exists education details then set the visibility of education section
+                if(user.getEducationList()!=null && !user.getEducationList().isEmpty()){
+                    setEducationDetails(educationSection);
+                }
+            }
+        }).start();
 
         closeIcon = ContextCompat.getDrawable(this, R.drawable.cancel_icon);
         if (closeIcon != null) {
@@ -72,29 +92,145 @@ public class AddEducationActivity extends AppCompatActivity {
         binding.fullTime.setOnClickListener(v -> handleSelection(binding.fullTime, binding.courseTypeFlexLayout));
         binding.partTime.setOnClickListener(v -> handleSelection(binding.partTime, binding.courseTypeFlexLayout));
         binding.correspondence.setOnClickListener(v -> handleSelection(binding.correspondence, binding.courseTypeFlexLayout));
-//        binding.setOnClickListener(v -> handleSelection(binding.internship, binding.courseTypeFlexLayout));
 
-        binding.saveButton.setOnClickListener(view -> Toast.makeText(AddEducationActivity.this, "Save button clicked", Toast.LENGTH_SHORT).show());
+        //action buttons
+        binding.saveButton.setOnClickListener(view -> savedEducationDetails());
         binding.cancelButton.setOnClickListener(view -> finish());
         binding.backButton.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
         binding.graduationCourseName.setOnClickListener(view -> {
-            // Open Bottom Sheet
-//            ArrayList<String> courses = new ArrayList<>();
-//            courses.add("B.Tech");
-//            courses.add("B.Com");
-//            courses.add("B.Sc");
-//            courses.add("B.A");
-//            courses.add("BCA");
-//            courses.add("MBA");
-//
-//            BottomSheetFragment bottomSheet = new BottomSheetFragment(this, courses);
-//            bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
             fetchCourses();
         });
 
+        binding.courseSpecialization.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Open Bottom Sheet after filtering
+                filterUnderGraduateCourses(courses,"specialization");
+            }
+        });
+
     }
+
+    private void setEducationDetails(String educationSection) {
+    }
+
+    private void savedEducationDetails() {
+        if(courseLevelSelectedRadioButton!=null){
+            switch (courseLevelSelectedRadioButton.getText().toString()){
+                case "Graduation/Diploma":
+                    saveGraduationDetails();
+                    break;
+                case "Class XII":
+                    saveIntermediateDetails();
+                    break;
+                case "Class X":
+                    saveMatriculationDetails();
+                    break;
+                case "Post Graduate":
+                    Toast.makeText(this, "PG coming soon", Toast.LENGTH_SHORT).show();
+                    break;
+                case "Doctorate":
+                    Toast.makeText(this, "Doctorate coming soon", Toast.LENGTH_SHORT).show();
+                    break;
+
+            }
+        }
+    }
+
+    private void saveMatriculationDetails() {
+    }
+
+    private void saveIntermediateDetails() {
+
+    }
+
+    private void saveGraduationDetails() {
+        if (binding.graduationCourseName.getText()==null || binding.graduationCourseName.getText().toString().isEmpty()) {
+            binding.graduationCourseName.setError("Please select a course");
+            return;
+        }
+        if (binding.courseSpecialization.getText()==null || binding.courseSpecialization.getText().toString().isEmpty()) {
+            binding.courseSpecialization.setError("Please select a specialization");
+            return;
+        }
+        if (binding.graduationCollegeName.getText()==null || binding.graduationCollegeName.getText().toString().isEmpty()) {
+            binding.graduationCollegeName.setError("Please enter a college name");
+            return;
+        }
+
+        //check if any grading system radio button not selected then through error
+        if (binding.gpaObtained.getText()==null || binding.gpaObtained.getText().toString().isEmpty()) {
+            binding.gpaObtained.setError("Please enter GPA");
+            binding.gpaObtained.setVisibility(VISIBLE);
+            return;
+        }
+
+        if(binding.graduationStartYear.getText()==null || binding.graduationStartYear.getText().toString().isEmpty()) {
+            binding.graduationStartYear.setError("Please enter start year");
+            return;
+        }
+        if(binding.graduationEndYear.getText()==null || binding.graduationEndYear.getText().toString().isEmpty()) {
+            binding.graduationEndYear.setError("Please enter end year");
+            return;
+        }
+
+        //check course type radio button is selected or not
+        if (!binding.fullTime.isChecked() && !binding.partTime.isChecked() && !binding.correspondence.isChecked()) {
+            binding.courseTypeHeading.setError("Please select a course type");
+            return;
+        }
+
+        //set the details in user object
+
+        String courseLevel=courseLevelSelectedRadioButton.getText().toString();
+        String course=binding.graduationCourseName.getText().toString().trim();
+        String specialization=binding.courseSpecialization.getText().toString().trim();
+        String collegeName=binding.graduationCollegeName.getText().toString().trim();
+        String startYear=binding.graduationStartYear.getText().toString().trim();
+        String endYear=binding.graduationEndYear.getText().toString().trim();
+        String gpa=binding.gpaObtained.getText().toString().trim();
+        String gpaScale="";
+        if(binding.gpaOutOf10.isChecked()){
+            gpaScale="10";
+        }else if(binding.gpaOutOf04.isChecked()){
+            gpaScale="4";
+        }else if(binding.percentage.isChecked()){
+            gpaScale="Percentage";
+        }else{
+            gpaScale="Course Requires A Pass";
+        }
+        String courseType="";
+        if(binding.fullTime.isChecked()){
+            courseType="Full Time";
+        }else if(binding.partTime.isChecked()){
+            courseType="Part Time";
+        }else if(binding.correspondence.isChecked()){
+            courseType="Correspondence";
+        }
+
+//        UGDetails ugDetails=new UGDetails(course,specialization,collegeName,courseType,gpaScale,gpa,startYear,endYear);
+        Education education=new Education(user.getId(),courseLevel,course,specialization,collegeName,courseType,gpaScale,gpa,startYear,endYear);
+        if (user.getEducationList() == null) {
+            System.out.println("education list is null, creating new list");
+            user.setEducationList(new ArrayList<>());
+        }
+        System.out.println("size of education list before: "+user.getEducationList().size());
+        user.getEducationList().add(education);
+        System.out.println("size of education list after: "+user.getEducationList().size());
+
+        new Thread(() -> {
+            db.jobDao().insertOrUpdateUser(user);
+            db.jobDao().insertEducation(education);
+            runOnUiThread(() -> {
+                Toast.makeText(AddEducationActivity.this, "Education added successfully", Toast.LENGTH_SHORT).show();
+                System.out.println("user details: "+user);
+                finish();
+            });
+        }).start();
+    }
+
     private void fetchCourses() {
         progressDialog.setMessage("Fetching courses...");
         progressDialog.show();
@@ -111,7 +247,7 @@ public class AddEducationActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("API_RESPONSE", "Response successful");
                     Log.d("API_RESPONSE", "Response received: "+response.body());
-                    filterUnderGraduateCourses(response.body().getRecords());
+                    filterUnderGraduateCourses(response.body().getRecords(),"name");
                 }
             }
 
@@ -123,36 +259,54 @@ public class AddEducationActivity extends AppCompatActivity {
         });
     }
 
-    private void filterUnderGraduateCourses(List<Course> records) {
+    private void filterUnderGraduateCourses(List<Course> records, String filed) {
         coursesList.clear();
+
+        courses.addAll(records);
 
         Set<String> uniqueCourses = new HashSet<>();
 
-        for (Course course : records) {
-            uniqueCourses.add(course.getProgramme());
-            System.out.println("course: "+course);
+        if(filed.contains("name")){
+            for (Course course : records) {
+                uniqueCourses.add(course.getProgramme());
+//                System.out.println("course: " + course);
+            }
+            coursesList.addAll(uniqueCourses);
+        }else {
+//            System.out.println("extracting discipline");
+            for (Course course : records) {
+                uniqueCourses.add(course.getDiscipline());
+//                System.out.println("course: " + course);
+            }
+            coursesList.addAll(uniqueCourses);
         }
-        coursesList.addAll(uniqueCourses);
 
         // Open Bottom Sheet after filtering
-        BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList);
+        BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList,filed);
         bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
     }
 
-    public void setSelectedCourse(String course) {
-        binding.graduationCourseName.setText(course);
+    public void setSelectedCourse(String course, String field) {
+        if (field.contains("name")){
+            binding.graduationCourseName.setText(course);
+        }else {
+            binding.courseSpecialization.setText(course);
+        }
     }
-
 
     private void handleSelection(RadioButton selected, FlexboxLayout radioButtonCategory) {
         if (selected == lastSelected) {
             // User clicked the same button, so reset everything
             resetRadioButtonsSelection(radioButtonCategory);
             lastSelected = null;
+            courseLevelSelectedRadioButton = null;
         } else {
             // New selection, show only this and hide others
             showSelectedRadioButton(selected, radioButtonCategory);
             lastSelected = selected;
+            if (radioButtonCategory.getId()==binding.courseLevel.getId()) {
+                courseLevelSelectedRadioButton = selected;
+            }
         }
     }
 
@@ -164,7 +318,7 @@ public class AddEducationActivity extends AppCompatActivity {
                 if (radioButton == selected) {
                     radioButton.setChecked(true);
                     radioButton.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
-                    radioButton.setVisibility(View.VISIBLE);
+                    radioButton.setVisibility(VISIBLE);
                     if (radioButtonCategory.getId()==binding.courseLevel.getId()) {
                         System.out.println("selected radio button category: "+radioButtonCategory.getChildAt(0));
                         showEducationSection(radioButton);
@@ -175,8 +329,8 @@ public class AddEducationActivity extends AppCompatActivity {
                             binding.gpaObtainedLayout.setVisibility(View.GONE);
                             binding.gpaObtained.setVisibility(View.GONE);
                         }else {
-                            binding.gpaObtained.setVisibility(View.VISIBLE);
-                            binding.gpaObtainedLayout.setVisibility(View.VISIBLE);
+                            binding.gpaObtained.setVisibility(VISIBLE);
+                            binding.gpaObtainedLayout.setVisibility(VISIBLE);
 
                             // Set the hint on TextInputLayout, not on EditText
                             binding.gpaObtainedLayout.setHint(selected.getText().toString()+"*");
@@ -207,13 +361,13 @@ public class AddEducationActivity extends AppCompatActivity {
         hideEducationSection();
         switch (radioButton.getText().toString()){
             case "Graduation/Diploma":
-                binding.graduationEduSection.setVisibility(View.VISIBLE);
+                binding.graduationEduSection.setVisibility(VISIBLE);
                 break;
             case "Class XII":
-                binding.intermediateEduSection.setVisibility(View.VISIBLE);
+                binding.intermediateEduSection.setVisibility(VISIBLE);
                 break;
             case "Class X":
-                binding.matriculationEduSection.setVisibility(View.VISIBLE);
+                binding.matriculationEduSection.setVisibility(VISIBLE);
                 break;
             case "Post Graduate":
                 Toast.makeText(this, "PG coming soon", Toast.LENGTH_SHORT).show();
@@ -237,7 +391,7 @@ public class AddEducationActivity extends AppCompatActivity {
             View view = radioButtonCategory.getChildAt(i);
             if (view instanceof RadioButton) {
                 RadioButton radioButton = (RadioButton) view;
-                radioButton.setVisibility(View.VISIBLE);
+                radioButton.setVisibility(VISIBLE);
                 radioButton.setChecked(false);
 //                System.out.println("radio button deselected: "+radioButton.getText());
                 radioButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_unselected));
