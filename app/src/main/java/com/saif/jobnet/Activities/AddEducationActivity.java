@@ -3,7 +3,10 @@ package com.saif.jobnet.Activities;
 import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -11,13 +14,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.saif.jobnet.Api.ApiService;
+import com.saif.jobnet.ApiResponse;
 import com.saif.jobnet.BottomSheetFragment;
+import com.saif.jobnet.Course;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityAddEducationBinding;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddEducationActivity extends AppCompatActivity {
 
@@ -27,6 +42,7 @@ public class AddEducationActivity extends AppCompatActivity {
     private User user;
     private AppDatabase db;
     private ProgressDialog progressDialog;
+    private ArrayList<String> coursesList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +50,7 @@ public class AddEducationActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+        progressDialog=new ProgressDialog(this);
 
         closeIcon = ContextCompat.getDrawable(this, R.drawable.cancel_icon);
         if (closeIcon != null) {
@@ -63,21 +80,63 @@ public class AddEducationActivity extends AppCompatActivity {
 
 
         binding.graduationCourseName.setOnClickListener(view -> {
-            ArrayList<String> courses = new ArrayList<>();
-            courses.add("B.Tech");
-            courses.add("B.Com");
-            courses.add("B.Sc");
-            courses.add("B.A");
-            courses.add("BCA");
-            courses.add("MBA");
-
-            // Disable keyboard pop-up
-            binding.graduationCourseName.setShowSoftInputOnFocus(false);
-
-            BottomSheetFragment bottomSheet = new BottomSheetFragment(this,courses);
-            bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
+            // Open Bottom Sheet
+//            ArrayList<String> courses = new ArrayList<>();
+//            courses.add("B.Tech");
+//            courses.add("B.Com");
+//            courses.add("B.Sc");
+//            courses.add("B.A");
+//            courses.add("BCA");
+//            courses.add("MBA");
+//
+//            BottomSheetFragment bottomSheet = new BottomSheetFragment(this, courses);
+//            bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
+            fetchCourses();
         });
 
+    }
+    private void fetchCourses() {
+        progressDialog.setMessage("Fetching courses...");
+        progressDialog.show();
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("https://api.data.gov.in/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        apiService.getCourses().enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                progressDialog.dismiss();
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_RESPONSE", "Response successful");
+                    Log.d("API_RESPONSE", "Response received: "+response.body());
+                    filterUnderGraduateCourses(response.body().getRecords());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e("API_ERROR", "Error fetching data: " + t.getMessage());
+            }
+        });
+    }
+
+    private void filterUnderGraduateCourses(List<Course> records) {
+        coursesList.clear();
+
+        Set<String> uniqueCourses = new HashSet<>();
+
+        for (Course course : records) {
+            uniqueCourses.add(course.getProgramme());
+            System.out.println("course: "+course);
+        }
+        coursesList.addAll(uniqueCourses);
+
+        // Open Bottom Sheet after filtering
+        BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList);
+        bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
     }
 
     public void setSelectedCourse(String course) {
