@@ -1,22 +1,73 @@
 package com.saif.jobnet.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "education")
 public class Education {
-    private String title;
+
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String educationLevel; // UG, PG, 12th, 10th, PhD
+    private String course;
+    private String specialization;
     private String college;
-    private String graduationYear;
+    private String courseType;  // Full-time / Part-time
+    private String gpaScale;
+    private String cgpaObtained;
+    private String enrollmentYear;
+    private String passingYear;
 
-    public Education(String title, String college, String graduationYear) {
-        this.title = title;
+    // Constructor
+    public Education(@NonNull String id, String educationLevel, String course, String specialization, String college,
+                     String courseType, String gpaScale, String cgpaObtained, String enrollmentYear, String passingYear) {
+        this.id = id;
+        this.educationLevel = educationLevel;
+        this.course = course;
+        this.specialization = specialization;
         this.college = college;
-        this.graduationYear = graduationYear;
+        this.courseType = courseType;
+        this.gpaScale = gpaScale;
+        this.cgpaObtained = cgpaObtained;
+        this.enrollmentYear = enrollmentYear;
+        this.passingYear = passingYear;
     }
 
-    public String getTitle() {
-        return title;
+    // Getters and Setters
+
+    @NonNull
+    public String getId() {
+        return id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(int id) {
+        this.id = String.valueOf(id);
+    }
+
+    public String getEducationLevel() {
+        return educationLevel;
+    }
+
+    public void setEducationLevel(String educationLevel) {
+        this.educationLevel = educationLevel;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
     }
 
     public String getCollege() {
@@ -26,12 +77,61 @@ public class Education {
     public void setCollege(String college) {
         this.college = college;
     }
-    public String getGraduationYear() {
-        return graduationYear;
+
+    public String getCourseType() {
+        return courseType;
     }
 
+    public void setCourseType(String courseType) {
+        this.courseType = courseType;
+    }
 
-    public void setGraduationYear(String graduationYear) {
-        this.graduationYear = graduationYear;
+    public String getGpaScale() {
+        return gpaScale;
+    }
+
+    public void setGpaScale(String gpaScale) {
+        this.gpaScale = gpaScale;
+    }
+
+    public String getCgpaObtained() {
+        return cgpaObtained;
+    }
+
+    public void setCgpaObtained(String cgpaObtained) {
+        this.cgpaObtained = cgpaObtained;
+    }
+
+    public String getEnrollmentYear() {
+        return enrollmentYear;
+    }
+
+    public void setEnrollmentYear(String enrollmentYear) {
+        this.enrollmentYear = enrollmentYear;
+    }
+
+    public String getPassingYear() {
+        return passingYear;
+    }
+
+    public void setPassingYear(String passingYear) {
+        this.passingYear = passingYear;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Education{" +
+                "id=" + id +
+                ", educationLevel='" + educationLevel + '\'' +
+                ", course='" + course + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", college='" + college + '\'' +
+                ", courseType='" + courseType + '\'' +
+                ", gpaScale='" + gpaScale + '\'' +
+                ", cgpaObtained='" + cgpaObtained + '\'' +
+                ", enrollmentYear='" + enrollmentYear + '\'' +
+                ", passingYear='" + passingYear + '\'' +
+                '}';
     }
 }
