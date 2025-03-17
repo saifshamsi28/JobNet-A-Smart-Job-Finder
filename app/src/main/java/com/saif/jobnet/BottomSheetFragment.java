@@ -26,10 +26,12 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     private ArrayList<String> items;
     private CustomAdapter adapter;
     private Context context;
+    private String field;
 
-    public BottomSheetFragment(Context context, ArrayList<String> items) {
+    public BottomSheetFragment(Context context, ArrayList<String> items, String filed) {
         this.context = context;
         this.items = items;
+        this.field=filed;
         System.out.println("bottom sheet fragment constructor called: course= "+items.size());
     }
 
@@ -71,10 +73,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         // Set Selected Course
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             String selectedCourse = adapter.getItem(position);
-            ((AddEducationActivity) context).setSelectedCourse(selectedCourse);
+            ((AddEducationActivity) context).setSelectedCourse(selectedCourse,field);
             dismiss();
         });
-
         return view;
     }
 
