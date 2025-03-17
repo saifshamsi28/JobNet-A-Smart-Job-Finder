@@ -1,5 +1,6 @@
 package com.saif.jobnet.Api;
 
+import com.saif.jobnet.ApiResponse;
 import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobNetResponse;
@@ -106,4 +107,11 @@ public interface ApiService {
             @Field("resumeSize") String resumeSize,
             @Field("totalChunks") Integer totalChunks
     );
+
+    //get courses list
+    @GET("resource/71b1ac8e-dc91-4084-aeb6-6d275dbc90d2" +
+            "?api-key=579b464db66ec23bdd000001aa537eb831f5403d540d6ed40caa5f76" +
+            "&format=json" +
+            "&limit=500")
+    Call<ApiResponse> getCourses();
 }
