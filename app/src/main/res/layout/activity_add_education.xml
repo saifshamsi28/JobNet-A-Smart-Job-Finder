@@ -131,6 +131,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:hintAnimationEnabled="true"
+                    android:layout_marginTop="16sp"
                     app:hintEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -139,6 +140,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:focusable="false"
+                        android:textSize="14sp"
                         android:cursorVisible="false"
                         android:hint="Course Name*" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -147,12 +149,16 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/course_specialization"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:textSize="14sp"
+                        android:cursorVisible="false"
                         android:hint="Specialization*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,12 +166,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/graduation_college_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textSize="14sp"
                         android:hint="College Name*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,7 +180,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="16dp"
                     android:text="Grading system*"
                     android:textColor="@color/black"
                     android:textSize="12sp" />
@@ -196,7 +203,6 @@
                         android:button="@null"
                         android:padding="8sp"
                         android:text="GPA out of 10"
-                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <RadioButton
@@ -208,7 +214,6 @@
                         android:button="@null"
                         android:padding="8sp"
                         android:text="GPA out of 4"
-                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <RadioButton
@@ -220,7 +225,6 @@
                         android:button="@null"
                         android:padding="8sp"
                         android:text="Percentage"
-                        android:textColor="@color/black"
                         android:textSize="12sp" />
 
                     <RadioButton
@@ -232,8 +236,7 @@
                         android:button="@null"
                         android:gravity="center"
                         android:padding="8sp"
-                        android:text="Course requires a pass"
-                        android:textColor="@color/black" />
+                        android:text="Course requires a pass" />
                 </com.google.android.flexbox.FlexboxLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -241,13 +244,14 @@
                     android:layout_width="match_parent"
                     android:visibility="gone"
                     android:layout_height="wrap_content"
-                    app:helperText="CGPA is the marks obtained from all the GPAs"
-                    android:layout_marginTop="10dp">
+                    app:helperText="CGPA is the totalMarks obtained from all the GPAs"
+                    android:layout_marginTop="16dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/gpa_obtained"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textSize="14sp"
                         />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -255,7 +259,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="16dp"
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -267,7 +271,8 @@
                             android:id="@+id/graduation_start_year"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Start Year" />
+                            android:textSize="14sp"
+                            android:hint="Start Year*" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <View
@@ -283,16 +288,18 @@
                             android:id="@+id/graduation_end_year"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="End Year" />
+                            android:textSize="14sp"
+                            android:hint="End Year*" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <!-- Course type -->
                 <TextView
+                    android:id="@+id/course_type_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16sp"
-                    android:text="Course type"
+                    android:text="Course type*"
                     android:textColor="@color/black"
                     android:textSize="12sp" />
                 />
@@ -392,7 +399,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:helperText="% marks of 100 maximum"
+                    app:helperText="% totalMarks of 100 maximum"
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -414,7 +421,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:hint="English marks*" />
+                        android:hint="English totalMarks*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -428,7 +435,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:hint="Maths marks*" />
+                        android:hint="Maths totalMarks*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -482,7 +489,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:helperText="% marks of 100 maximum"
+                    app:helperText="% totalMarks of 100 maximum"
                     android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
