@@ -280,6 +280,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:paddingBottom="16sp"
                 android:paddingStart="16sp"
                 android:paddingEnd="16sp">
 
@@ -312,117 +313,164 @@
                 <!-- graduation details-->
                 <LinearLayout
                     android:id="@+id/graduation_edu_section"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="12sp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
                     >
-                    <!-- Education Title (e.g., B.Tech, Class XII) -->
-                    <TextView
-                        android:id="@+id/graduation_course_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="B.Tech/B.E."
-                        android:textStyle="bold"
-                        android:textSize="18sp" />
 
-                    <!-- College or School Name -->
-                    <TextView
-                        android:id="@+id/graduation_college_name"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Maulana Azad National Urdu University, Hyderabad"
-                        android:textSize="12sp"
-                        android:textColor="#757575" />
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:paddingTop="8sp"
+                        android:paddingBottom="8sp"
+                        >
+                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <TextView
+                            android:id="@+id/graduation_course_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="B.Tech/B.E."
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
 
-                    <!-- Graduation Year -->
-                    <TextView
-                        android:id="@+id/graduation_year"
+                        <!-- College or School Name -->
+                        <TextView
+                            android:id="@+id/graduation_college_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Maulana Azad National Urdu University, Hyderabad"
+                            android:textSize="12sp"
+                            android:textColor="#757575" />
+
+                        <!-- Graduation Year -->
+                        <TextView
+                            android:id="@+id/graduation_year"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Graduating in 2025, Full Time"
+                            android:textSize="12sp"
+                            android:textColor="#9E9E9E"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/graduation_edit_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Graduating in 2025, Full Time"
-                        android:textSize="12sp"
-                        android:textColor="#9E9E9E"/>
+                        android:src="@drawable/edit_icon"
+                        android:layout_gravity="end"
+                        />
+
                 </LinearLayout>
 
-                <!--                <View-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="16sp"-->
-                <!--                    android:layout_margin="8sp"-->
-                <!--                    android:translationZ="12sp"-->
-                <!--                    android:backgroundTint="@color/blue"-->
-                <!--                    android:layout_marginBottom="8sp"-->
-
-                <!--                    />-->
-
+                <!-- Intermediate details-->
                 <LinearLayout
                     android:id="@+id/intermediate_edu_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="12sp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
                     >
-                    <!-- Education Title (e.g., B.Tech, Class XII) -->
-                    <TextView
-                        android:id="@+id/intermediate_course_title"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Class XII"
-                        android:textStyle="bold"
-                        android:textSize="18sp" />
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="12sp"
+                        android:paddingTop="8sp"
+                        android:paddingBottom="8sp"
+                        >
+                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <TextView
+                            android:id="@+id/intermediate_course_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Class XII"
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
 
-                    <!-- College or School Name -->
-                    <TextView
-                        android:id="@+id/intermediate_college_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bihar, Hindi"
-                        android:textSize="12sp"
-                        android:textColor="#757575" />
+                        <!-- College or School Name -->
+                        <TextView
+                            android:id="@+id/intermediate_college_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bihar, Hindi"
+                            android:textSize="12sp"
+                            android:textColor="#757575" />
 
-                    <!-- Graduation Year -->
-                    <TextView
-                        android:id="@+id/intermediate_year"
+                        <!-- Graduation Year -->
+                        <TextView
+                            android:id="@+id/intermediate_year"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Scored 81.8%, Passed out in 2021"
+                            android:textSize="10sp"
+                            android:textColor="#9E9E9E"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/intermediate_edit_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Scored 81.8%, Passed out in 2021"
-                        android:textSize="10sp"
-                        android:textColor="#9E9E9E"/>
+                        android:src="@drawable/edit_icon"
+                        android:layout_gravity="end"
+                        />
+
                 </LinearLayout>
 
+                <!-- matriculation details-->
                 <LinearLayout
                     android:id="@+id/matriculation_edu_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
                     >
-                    <!-- Education Title (e.g., B.Tech, Class XII) -->
-                    <TextView
-                        android:id="@+id/matriculation_course_title"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Class X"
-                        android:textStyle="bold"
-                        android:textSize="18sp" />
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        >
+                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <TextView
+                            android:id="@+id/matriculation_course_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Class X"
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
 
-                    <!-- College or School Name -->
-                    <TextView
-                        android:id="@+id/matriculation_college_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bihar, Hindi"
-                        android:textSize="12sp"
-                        android:textColor="#757575" />
+                        <!-- College or School Name -->
+                        <TextView
+                            android:id="@+id/matriculation_college_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bihar, Hindi"
+                            android:textSize="12sp"
+                            android:textColor="#757575" />
 
-                    <!-- Graduation Year -->
-                    <TextView
-                        android:id="@+id/matriculation_year"
+                        <!-- Graduation Year -->
+                        <TextView
+                            android:id="@+id/matriculation_year"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Scored 87%, Passed out in 2019"
+                            android:textSize="10sp"
+                            android:textColor="#9E9E9E"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/matric_edit_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Scored 87%, Passed out in 2019"
-                        android:textSize="10sp"
-                        android:textColor="#9E9E9E"/>
+                        android:src="@drawable/edit_icon"
+                        android:layout_gravity="end"
+                        />
                 </LinearLayout>
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

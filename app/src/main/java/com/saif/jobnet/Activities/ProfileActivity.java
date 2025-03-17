@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.Editable;
@@ -55,14 +54,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.canhub.cropper.CropImage;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
-import com.saif.jobnet.Adapters.EducationAdapter;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.JobNetPermissions;
@@ -86,7 +82,6 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -122,8 +117,6 @@ public class ProfileActivity extends AppCompatActivity {
     private String userId;
     private Uri selectedImg;
     private JobNetPermissions jobNetPermissions;
-    private List<Education> educationList;
-    private EducationAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,6 +274,38 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
+                intent.putExtra("userId",user.getId());
+                intent.putExtra("educationSection","All");
+                startActivity(intent);
+            }
+        });
+
+        binding.graduationEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
+                intent.putExtra("userId",user.getId());
+                intent.putExtra("educationSection","graduation");
+                startActivity(intent);
+            }
+        });
+
+        binding.intermediateEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
+                intent.putExtra("userId",user.getId());
+                intent.putExtra("educationSection","class12");
+                startActivity(intent);
+            }
+        });
+
+        binding.matricEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
+                intent.putExtra("userId",user.getId());
+                intent.putExtra("educationSection","class10");
                 startActivity(intent);
             }
         });
@@ -1163,7 +1188,7 @@ public class ProfileActivity extends AppCompatActivity {
                     System.out.println("user got in database: "+user);
                     setUpProfile(user);
                     //synchronise user details from server
-                    synchronizeUserDetails(userId);
+//                    synchronizeUserDetails(userId);
                 });
             }
         }).start();
@@ -1198,6 +1223,8 @@ public class ProfileActivity extends AppCompatActivity {
         }else{
             binding.contactNumber.setVisibility(GONE);
         }
+
+        //set resume details
         if (user.isResumeUploaded() || user.getResumeUrl()!=null || !user.getResumeUrl().isEmpty()) {
 
             sharedPreferences.edit().putString("resumeUrl",user.getResumeUrl()).apply();
@@ -1222,6 +1249,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.savedJobsLayout.setVisibility(GONE);
         }
 
+        //set basic details
         if(user.getBasicDetails()!=null){
             binding.basicDetailsLayout.setVisibility(VISIBLE);
             binding.gender.setText(user.getBasicDetails().getGender());
@@ -1230,6 +1258,21 @@ public class ProfileActivity extends AppCompatActivity {
             binding.dateOfBirth.setText(formatDate(user.getBasicDetails().getDateOfBirth()));
 
             binding.currentCity.setText(user.getBasicDetails().getCurrentCity());
+        }
+
+        //set education details
+        if(user.getEducationList()!=null && !user.getEducationList().isEmpty()){
+            //check education level is ug then on the visibility of graduation section
+            if(user.getEducationList().get(0).getEducationLevel().contains("Graduation")){
+                binding.graduationEduSection.setVisibility(VISIBLE);
+                binding.graduationCourseTitle.setText(user.getEducationList().get(0).getCourse());
+                binding.graduationCollegeName.setText(user.getEducationList().get(0).getCollege());
+                binding.graduationYear.setText(user.getEducationList().get(0).getPassingYear()+", "+user.getEducationList().get(0).getCourseType());
+            }else if(user.getEducationList().get(0).getEducationLevel().equals("PG")){
+                binding.intermediateEduSection.setVisibility(GONE);
+            }else {
+                binding.matriculationEduSection.setVisibility(VISIBLE);
+            }
         }
 
         //enable/disable the editing of fields
