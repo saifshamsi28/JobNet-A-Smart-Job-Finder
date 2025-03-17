@@ -38,6 +38,9 @@ public class User {
     @Embedded
     private BasicDetails basicDetails;
 
+    @TypeConverters(EducationTypeConverter.class)
+    private List<Education> educationList = new ArrayList<>();
+
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
                 String password, String phoneNumber,
@@ -185,6 +188,14 @@ public class User {
         this.basicDetails = basicDetails;
     }
 
+    public List<Education> getEducationList() {
+        return educationList;
+    }
+
+    public void setEducationList(List<Education> educationList) {
+        this.educationList = educationList;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -200,8 +211,8 @@ public class User {
                 ", resumeName='" + resumeName + '\'' +
                 ", resumeUploadDate='" + resumeUploadDate + '\'' +
                 ", resumeSize='" + resumeSize + '\'' +
-//                ", savedJobs=" + savedJobs +
                 ", basicDetails=" + basicDetails +
+                ", educationList=" + educationList +
                 '}';
     }
 }

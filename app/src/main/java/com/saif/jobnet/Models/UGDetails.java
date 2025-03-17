@@ -2,9 +2,7 @@ package com.saif.jobnet.Models;
 
 import androidx.annotation.NonNull;
 
-import com.saif.jobnet.EducationDetails;
-
-public class UGDetails implements EducationDetails {
+public class UGDetails  {
     private String course;
     private String specialization;
     private String college;
@@ -108,4 +106,9 @@ public class UGDetails implements EducationDetails {
                 ", passingYear='" + passingYear + '\'' +
                 '}';
     }
+
+//    @Override
+//    public String getEducationType() {
+//        return "UGDetails";
+//    }
 }

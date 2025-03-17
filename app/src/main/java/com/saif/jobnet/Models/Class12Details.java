@@ -2,9 +2,7 @@ package com.saif.jobnet.Models;
 
 import androidx.annotation.NonNull;
 
-import com.saif.jobnet.EducationDetails;
-
-public class Class12Details implements EducationDetails {
+public class Class12Details  {
     private String board;
     private String schoolName;
     private String medium;
@@ -105,4 +103,9 @@ public class Class12Details implements EducationDetails {
                 ", passingYear='" + passingYear + '\'' +
                 '}';
     }
+
+//    @Override
+//    public String getEducationType() {
+//        return "Class12th";
+//    }
 }
