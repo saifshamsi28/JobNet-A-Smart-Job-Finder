@@ -284,8 +284,6 @@ public class AddEducationActivity extends AppCompatActivity {
             return;
         }
 
-        //set the details in user object
-
         String courseLevel=courseLevelSelectedRadioButton.getText().toString();
         String course=binding.graduationCourseName.getText().toString().trim();
         String specialization=binding.courseSpecialization.getText().toString().trim();

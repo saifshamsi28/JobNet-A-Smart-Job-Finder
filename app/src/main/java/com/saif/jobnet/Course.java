@@ -8,13 +8,15 @@ public class Course {
     private String levell;
     private String _department;
     private String discipline;
+    private String duration_year;
 
-    public Course(String name, String programme, String levell, String _department, String discipline) {
+    public Course(String name, String programme, String levell, String _department, String discipline, String duration_year) {
         this.name = name;
         this.programme = programme;
         this.levell = levell;
         this._department = _department;
         this.discipline = discipline;
+        this.duration_year = duration_year;
     }
 
     public String getName() {
@@ -57,9 +59,17 @@ public class Course {
         this.discipline = discipline;
     }
 
+    public String getDuration_year() {
+        return duration_year;
+    }
+
+    public void setDuration_year(String duration_year) {
+        this.duration_year = duration_year;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return "Course{" + "name=" + name + ", programme=" + programme + ", levell=" + levell + ", _department=" + _department + ", discipline=" + discipline + "}";
+        return "Course{" + "name=" + name + ", programme=" + programme + ", levell=" + levell + ", _department=" + _department + ", discipline=" + discipline + ", duration_year=" + duration_year + "}";
     }
 }
