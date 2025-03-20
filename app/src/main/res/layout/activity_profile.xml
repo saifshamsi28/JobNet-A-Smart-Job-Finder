@@ -327,7 +327,7 @@
                         android:paddingTop="8sp"
                         android:paddingBottom="8sp"
                         >
-                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <!-- GraduationDetails Title (e.g., B.Tech, Class XII) -->
                         <TextView
                             android:id="@+id/graduation_course_title"
                             android:layout_width="wrap_content"
@@ -382,7 +382,7 @@
                         android:paddingTop="8sp"
                         android:paddingBottom="8sp"
                         >
-                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <!-- GraduationDetails Title (e.g., B.Tech, Class XII) -->
                         <TextView
                             android:id="@+id/intermediate_course_title"
                             android:layout_width="wrap_content"
@@ -434,7 +434,7 @@
                         android:orientation="vertical"
                         android:layout_weight="1"
                         >
-                        <!-- Education Title (e.g., B.Tech, Class XII) -->
+                        <!-- GraduationDetails Title (e.g., B.Tech, Class XII) -->
                         <TextView
                             android:id="@+id/matriculation_course_title"
                             android:layout_width="wrap_content"

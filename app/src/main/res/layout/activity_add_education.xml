@@ -355,7 +355,6 @@
                 android:id="@+id/intermediate_edu_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:orientation="vertical"
                 >
                 <com.google.android.material.textfield.TextInputLayout
@@ -372,6 +371,19 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Course specialization -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintAnimationEnabled="true"
+                    app:hintEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/stream_12th"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Stream*"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -394,6 +406,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="School medium*" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/school_name_12th"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="School name*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
