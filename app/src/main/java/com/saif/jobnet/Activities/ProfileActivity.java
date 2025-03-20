@@ -63,7 +63,6 @@ import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
-import com.saif.jobnet.Models.Education;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.Resume;
@@ -1261,14 +1260,14 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //set education details
-        if(user.getEducationList()!=null && !user.getEducationList().isEmpty()){
+        if(user.getGraduationDetailsList()!=null && !user.getGraduationDetailsList().isEmpty()){
             //check education level is ug then on the visibility of graduation section
-            if(user.getEducationList().get(0).getEducationLevel().contains("Graduation")){
+            if(user.getGraduationDetailsList().get(0).getEducationLevel().contains("Graduation")){
                 binding.graduationEduSection.setVisibility(VISIBLE);
-                binding.graduationCourseTitle.setText(user.getEducationList().get(0).getCourse());
-                binding.graduationCollegeName.setText(user.getEducationList().get(0).getCollege());
-                binding.graduationYear.setText(user.getEducationList().get(0).getPassingYear()+", "+user.getEducationList().get(0).getCourseType());
-            }else if(user.getEducationList().get(0).getEducationLevel().equals("PG")){
+                binding.graduationCourseTitle.setText(user.getGraduationDetailsList().get(0).getCourse());
+                binding.graduationCollegeName.setText(user.getGraduationDetailsList().get(0).getCollege());
+                binding.graduationYear.setText(user.getGraduationDetailsList().get(0).getPassingYear()+", "+user.getGraduationDetailsList().get(0).getCourseType());
+            }else if(user.getGraduationDetailsList().get(0).getEducationLevel().equals("PG")){
                 binding.intermediateEduSection.setVisibility(GONE);
             }else {
                 binding.matriculationEduSection.setVisibility(VISIBLE);

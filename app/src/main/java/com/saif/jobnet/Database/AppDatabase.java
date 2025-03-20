@@ -4,13 +4,13 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.saif.jobnet.Models.Education;
-import com.saif.jobnet.Models.EducationTypeConverter;
+import com.saif.jobnet.Models.Education.GraduationDetails;
+import com.saif.jobnet.Models.Education.EducationTypeConverter;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Converters;
 
-@Database(entities = {User.class, Job.class, Education.class}, version = 2)
+@Database(entities = {User.class, Job.class, GraduationDetails.class}, version = 1)
 @TypeConverters({Converters.class, EducationTypeConverter.class})
 
 public abstract class AppDatabase extends RoomDatabase {

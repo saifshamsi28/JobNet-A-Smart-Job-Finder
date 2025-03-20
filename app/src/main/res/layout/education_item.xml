@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="16sp">
 
-        <!-- Education Title (e.g., B.Tech, Class XII) -->
+        <!-- GraduationDetails Title (e.g., B.Tech, Class XII) -->
         <TextView
             android:id="@+id/tv_education_title"
             android:layout_width="wrap_content"
