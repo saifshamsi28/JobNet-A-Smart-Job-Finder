@@ -1,4 +1,4 @@
-package com.saif.jobnet.Models;
+package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
 

@@ -8,9 +8,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 
+import com.saif.jobnet.EducationDetails;
+import com.saif.jobnet.Models.Education.EducationTypeConverter;
+import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Utils.Converters;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class User {
     private BasicDetails basicDetails;
 
     @TypeConverters(EducationTypeConverter.class)
-    private List<Education> educationList = new ArrayList<>();
+    private List<GraduationDetails> graduationDetailsList = new ArrayList<>();
 
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
@@ -188,12 +190,12 @@ public class User {
         this.basicDetails = basicDetails;
     }
 
-    public List<Education> getEducationList() {
-        return educationList;
+    public List<GraduationDetails> getGraduationDetailsList() {
+        return graduationDetailsList;
     }
 
-    public void setEducationList(List<Education> educationList) {
-        this.educationList = educationList;
+    public void setGraduationDetailsList(List<GraduationDetails> graduationDetailsList) {
+        this.graduationDetailsList = graduationDetailsList;
     }
 
     @NonNull
@@ -212,7 +214,7 @@ public class User {
                 ", resumeUploadDate='" + resumeUploadDate + '\'' +
                 ", resumeSize='" + resumeSize + '\'' +
                 ", basicDetails=" + basicDetails +
-                ", educationList=" + educationList +
+                ", graduationDetailsList=" + graduationDetailsList +
                 '}';
     }
 }
