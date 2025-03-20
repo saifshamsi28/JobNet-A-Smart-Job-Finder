@@ -1,8 +1,8 @@
-package com.saif.jobnet.Models;
+package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
 
-public class Class12Details  {
+public class Class12Details extends GraduationDetails {
     private String board;
     private String schoolName;
     private String medium;
@@ -11,10 +11,14 @@ public class Class12Details  {
     private String englishMarks;
     private String mathsMarks;
     private String passingYear;
+    private String level;
+
+    public Class12Details() {
+    }
 
     public Class12Details(String board, String schoolName, String medium,
                           String stream, String totalMarks, String englishMarks,
-                          String mathsMarks, String passingYear) {
+                          String mathsMarks, String passingYear, String educationLevel) {
         this.board = board;
         this.schoolName = schoolName;
         this.medium = medium;
@@ -23,6 +27,7 @@ public class Class12Details  {
         this.englishMarks = englishMarks;
         this.mathsMarks = mathsMarks;
         this.passingYear = passingYear;
+        this.level=educationLevel;
     }
 
     public String getBoard() {
@@ -89,6 +94,14 @@ public class Class12Details  {
         this.passingYear = passingYear;
     }
 
+    public String getEducationLevel() {
+        return level;
+    }
+
+    public void setEducationLevel(String educationLevel) {
+        this.level = educationLevel;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -101,6 +114,7 @@ public class Class12Details  {
                 ", englishMarks='" + englishMarks + '\'' +
                 ", mathsMarks='" + mathsMarks + '\'' +
                 ", passingYear='" + passingYear + '\'' +
+                ", educationLevel='" + level + '\'' +
                 '}';
     }
 

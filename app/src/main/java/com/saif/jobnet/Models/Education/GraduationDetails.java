@@ -1,11 +1,11 @@
-package com.saif.jobnet.Models;
+package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "education")
-public class Education {
+public class GraduationDetails {
 
     @PrimaryKey
     @NonNull
@@ -20,9 +20,13 @@ public class Education {
     private String enrollmentYear;
     private String passingYear;
 
+    // Default constructor
+    public GraduationDetails() {
+    }
+
     // Constructor
-    public Education(@NonNull String id, String educationLevel, String course, String specialization, String college,
-                     String courseType, String gpaScale, String cgpaObtained, String enrollmentYear, String passingYear) {
+    public GraduationDetails(@NonNull String id, String educationLevel, String course, String specialization, String college,
+                             String courseType, String gpaScale, String cgpaObtained, String enrollmentYear, String passingYear) {
         this.id = id;
         this.educationLevel = educationLevel;
         this.course = course;
@@ -42,8 +46,8 @@ public class Education {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = String.valueOf(id);
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 
     public String getEducationLevel() {
@@ -121,7 +125,7 @@ public class Education {
     @NonNull
     @Override
     public String toString() {
-        return "Education{" +
+        return "GraduationDetails{" +
                 "id=" + id +
                 ", educationLevel='" + educationLevel + '\'' +
                 ", course='" + course + '\'' +
