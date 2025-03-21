@@ -20,13 +20,14 @@ import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
-import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
+import com.saif.jobnet.Utils.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivityAddEducationBinding;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class AddEducationActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ArrayList<String> coursesList = new ArrayList<>();
     private List<Course> courses=new ArrayList<>();
+    private Course selectedCourse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +74,6 @@ public class AddEducationActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if(user.getEducationDetailsList()!=null && !user.getEducationDetailsList().isEmpty()){
-//                            if(educationSection.contains("Graduation") || educationSection.contains("Diploma")) {
-//                                setEducationDetails("Graduation");
-//                            } else if (educationSection.contains("XII")) {
-//
-//                            }
                             setEducationDetails(educationSection);
                         }
                     }
@@ -111,23 +108,72 @@ public class AddEducationActivity extends AppCompatActivity {
         binding.backButton.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
 
+        //graduation button click listeners
         binding.graduationCourseName.setOnClickListener(view -> {
 
             if(courses.isEmpty())
                 fetchCourses();
             else
-                filterUnderGraduateCourses(courses,"name");
+                filterUnderGraduateCourses(courses,"course","courseSheet");
         });
-
         binding.courseSpecialization.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Open Bottom Sheet after filtering
-                filterUnderGraduateCourses(courses,"specialization");
+                filterUnderGraduateCourses(courses,"specialization", "SpecializationSheet");
+            }
+        });
+        binding.gpaObtained.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(String newText) {
+                if (newText.isEmpty()) return; // Prevent crash when text is empty
+                try {
+                    double value = Double.parseDouble(newText); // Convert input to a number
+                    double maxLimit = 10; // Default max (GPA out of 10)
+
+                    if (binding.gpaOutOf04.isChecked()) {
+                        maxLimit = 4;
+                    } else if (binding.percentage.isChecked()) {
+                        maxLimit = 100;
+                    }
+
+                    if (value > maxLimit) {
+                        binding.gpaObtainedLayout.setError("Value cannot be greater than " + maxLimit);
+                        binding.saveButton.setEnabled(false);
+                    } else {
+                        binding.gpaObtainedLayout.setError(null); // Clear error if valid
+                        binding.saveButton.setEnabled(true);
+                    }
+
+                } catch (NumberFormatException e) {
+                    binding.gpaObtained.setError("Invalid input");
+                }
             }
         });
 
+        //graduation start and end year click listeners
+        binding.graduationStartYear.setOnClickListener(view -> showYearSelectionBottomSheet("start year"));
+        binding.graduationEndYear.setOnClickListener(view -> showYearSelectionBottomSheet("end year"));
     }
+
+    private void showYearSelectionBottomSheet(String field) {
+        // Get Current Year
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        //add 10 year
+        currentYear+=10;
+
+        // Generate List of Years (Last 20 years)
+        ArrayList<String> yearList = new ArrayList<>();
+        for (int i = currentYear; i >= currentYear - 30; i--) {
+            yearList.add(String.valueOf(i));
+        }
+
+        // Open Bottom Sheet
+        BottomSheetFragment bottomSheet = new BottomSheetFragment(this, yearList, field);
+        bottomSheet.show(getSupportFragmentManager(), "YearBottomSheet");
+    }
+
     private void setEducationDetails(String educationSection) {
 //        EducationDetails educationDetails = getEducationByLevel(educationSection);
 //        System.out.println("Setting details for: " + educationSection + " -> " + educationDetails);
@@ -465,7 +511,7 @@ public class AddEducationActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("API_RESPONSE", "Response successful");
                     Log.d("API_RESPONSE", "Response received: "+response.body());
-                    filterUnderGraduateCourses(response.body().getRecords(),"name");
+                    filterUnderGraduateCourses(response.body().getRecords(),"course", "courseSheet");
                 }
             }
 
@@ -477,24 +523,23 @@ public class AddEducationActivity extends AppCompatActivity {
         });
     }
 
-    private void filterUnderGraduateCourses(List<Course> records, String filed) {
+    private void filterUnderGraduateCourses(List<Course> records, String field, String sheetTag) {
         coursesList.clear();
 
         courses.addAll(records);
 
         Set<String> uniqueCourses = new HashSet<>();
 
-        if(filed.contains("name")){
+        if(field.contains("course")){
+            //filter for course
             for (Course course : records) {
                 uniqueCourses.add(course.getProgramme());
-//                System.out.println("course: " + course);
             }
             coursesList.addAll(uniqueCourses);
         }else {
-//            System.out.println("extracting discipline");
+           //filter for specialization
             for (Course course : records) {
                 uniqueCourses.add(course.getDiscipline());
-//                System.out.println("course: " + course);
             }
             coursesList.addAll(uniqueCourses);
         }
@@ -506,15 +551,24 @@ public class AddEducationActivity extends AppCompatActivity {
         }).start();
 
         // Open Bottom Sheet after filtering
-        BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList,filed);
-        bottomSheet.show(getSupportFragmentManager(), "BottomSheet");
+        BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList,field);
+        bottomSheet.show(getSupportFragmentManager(), sheetTag);
     }
 
     public void setSelectedCourse(String course, String field) {
-        if (field.contains("name")){
-            binding.graduationCourseName.setText(course);
-        }else {
-            binding.courseSpecialization.setText(course);
+        switch (field){
+            case "course":
+                binding.graduationCourseName.setText(course);
+                break;
+            case "specialization":
+                binding.courseSpecialization.setText(course);
+                break;
+            case "start year":
+                binding.graduationStartYear.setText(course);
+                break;
+            case "end year":
+                binding.graduationEndYear.setText(course);
+                break;
         }
     }
 
@@ -544,23 +598,25 @@ public class AddEducationActivity extends AppCompatActivity {
                     radioButton.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
                     radioButton.setVisibility(VISIBLE);
                     if (radioButtonCategory.getId()==binding.courseLevel.getId()) {
-                        System.out.println("selected radio button category: "+radioButtonCategory.getChildAt(0));
+//                        System.out.println("selected radio button category: "+radioButtonCategory.getChildAt(0));
                         showEducationSection(radioButton);
                     } else if (radioButtonCategory.getId()==binding.gradingSystemFlexLayout.getId()) {
-                        System.out.println("called grading flex");
+//                        System.out.println("called grading flex");
                         //if none of the grading system radio button is selected, hide GPA obtained layout
                         if (binding.gradingSystemFlexLayout.isSelected()) {
                             binding.gpaObtainedLayout.setVisibility(View.GONE);
                             binding.gpaObtained.setVisibility(View.GONE);
                         }else {
-                            binding.gpaObtained.setVisibility(VISIBLE);
-                            binding.gpaObtainedLayout.setVisibility(VISIBLE);
+                            if(!selected.getText().toString().contains("Course require")){
+                                binding.gpaObtained.setVisibility(VISIBLE);
+                                binding.gpaObtainedLayout.setVisibility(VISIBLE);
 
-                            // Set the hint on TextInputLayout, not on EditText
-                            binding.gpaObtainedLayout.setHint(selected.getText().toString()+"*");
+                                // Set the hint on TextInputLayout, not on EditText
+                                binding.gpaObtainedLayout.setHint(selected.getText().toString()+"*");
 
-                            binding.gpaObtainedLayout.setHintAnimationEnabled(true);
-                            binding.gpaObtainedLayout.setHintEnabled(true);
+                                binding.gpaObtainedLayout.setHintAnimationEnabled(true);
+                                binding.gpaObtainedLayout.setHintEnabled(true);
+                            }
                         }
                     }
 //                    System.out.println("radio button selected: "+radioButton.getText());
