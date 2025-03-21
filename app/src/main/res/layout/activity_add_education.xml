@@ -356,6 +356,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -469,8 +470,8 @@
                 android:id="@+id/matriculation_edu_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
@@ -508,6 +509,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="School medium*" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/school_name_10th"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="School name*" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

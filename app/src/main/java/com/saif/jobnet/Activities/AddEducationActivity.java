@@ -9,10 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.flexbox.FlexboxLayout;
 import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.ApiResponse;
@@ -20,7 +18,9 @@ import com.saif.jobnet.BottomSheetFragment;
 import com.saif.jobnet.Course;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
+import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
@@ -47,7 +47,7 @@ public class AddEducationActivity extends AppCompatActivity {
     private AppDatabase db;
     private ProgressDialog progressDialog;
     private ArrayList<String> coursesList = new ArrayList<>();
-    private ArrayList<Course> courses=new ArrayList<>();
+    private List<Course> courses=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,12 +65,18 @@ public class AddEducationActivity extends AppCompatActivity {
             @Override
             public void run() {
                 user=db.jobDao().getCurrentUser(userId);
+                courses=db.jobDao().getAllCourses();
 
                 //if there exists education details then set the visibility of education section
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(user.getGraduationDetailsList()!=null && !user.getGraduationDetailsList().isEmpty()){
+                        if(user.getEducationDetailsList()!=null && !user.getEducationDetailsList().isEmpty()){
+//                            if(educationSection.contains("Graduation") || educationSection.contains("Diploma")) {
+//                                setEducationDetails("Graduation");
+//                            } else if (educationSection.contains("XII")) {
+//
+//                            }
                             setEducationDetails(educationSection);
                         }
                     }
@@ -106,7 +112,11 @@ public class AddEducationActivity extends AppCompatActivity {
 
 
         binding.graduationCourseName.setOnClickListener(view -> {
-            fetchCourses();
+
+            if(courses.isEmpty())
+                fetchCourses();
+            else
+                filterUnderGraduateCourses(courses,"name");
         });
 
         binding.courseSpecialization.setOnClickListener(new View.OnClickListener() {
@@ -118,84 +128,142 @@ public class AddEducationActivity extends AppCompatActivity {
         });
 
     }
-
     private void setEducationDetails(String educationSection) {
-        GraduationDetails graduationDetails = getEducationByLevel(educationSection);
+//        EducationDetails educationDetails = getEducationByLevel(educationSection);
+//        System.out.println("Setting details for: " + educationSection + " -> " + educationDetails);
 
-        System.out.println("setting the graduationDetails: "+ graduationDetails);
-
-        if (graduationDetails == null) {
-            Toast.makeText(this, "No details found for " + educationSection, Toast.LENGTH_SHORT).show();
-            return;
-        }
+//        if (educationDetails == null) {
+//            Toast.makeText(this, "No details found for " + educationSection, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         switch (educationSection) {
             case "Graduation/Diploma":
-                setGraduationDetails(graduationDetails);
+//                if () {
+//                    setGraduationDetails((GraduationDetails) educationDetails);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GraduationDetails graduationDetails=db.jobDao().getGraduationDetailsByUserId(user.getId());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    setGraduationDetails(graduationDetails);
+                                }
+                            });
+                        }
+                    }).start();
+//                }
                 break;
             case "Class XII":
-//                setIntermediateDetails(graduationDetails);
+//                if (educationDetails instanceof Class12Details) {
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Class12Details class12Details=db.jobDao().getGraduationDetailsByUserId(user.getId());
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                setGraduationDetails(graduationDetails);
+//                            }
+//                        });
+//                    }
+//                }).start();
+//                }
                 break;
             case "Class X":
-//                setMatriculationDetails(graduationDetails);
+//                if (educationDetails instanceof Class10Details) {
+//                    setClass10Details((Class10Details) educationDetails);
+//                }
                 break;
         }
     }
 
-    // ✅ Helper method to find GraduationDetails object by level
-    private GraduationDetails getEducationByLevel(String level) {
-        if (user == null || user.getGraduationDetailsList() == null) return null;
+    // Get EducationDetails by Level
+//    private EducationDetails getEducationByLevel(String level) {
+//        if (user == null || user.getEducationDetailsList() == null) return null;
+//
+//        for (EducationDetails edu : user.getEducationDetailsList()) {
+//            System.out.println("leve="+level+", edu found in user: "+edu);
+//            if (edu.getEducationLevel().equals(level) || edu.getEducationLevel().contains(level)) {
+//                return edu; // Found the education object
+//            }else {
+//                Toast.makeText(this, "Education level missing", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        return null; // No matching education found
+//    }
 
-        for (GraduationDetails edu : user.getGraduationDetailsList()) {
-            if (edu.getEducationLevel().equalsIgnoreCase(level)) {
-                return edu; // Found the education object
-            }
-        }
-        return null; // No matching education found
-    }
-
-    // ✅ Set Graduation Details
+    // Set Graduation Details
     private void setGraduationDetails(GraduationDetails graduationDetails) {
         binding.graduationEduSection.setVisibility(View.VISIBLE);
 
-        // ✅ Set "Graduation/Diploma" Radio Button
-        if (graduationDetails.getEducationLevel().equalsIgnoreCase("Graduation/Diploma")) {
-            showSelectedRadioButton(binding.graduationOrDiploma, binding.courseLevel);
-        }
+        // Set Course Level
+        showSelectedRadioButton(binding.graduationOrDiploma, binding.courseLevel);
 
-        // ✅ Set Course & Specialization
+        // Set Course Details
         binding.graduationCourseName.setText(graduationDetails.getCourse());
         binding.courseSpecialization.setText(graduationDetails.getSpecialization());
         binding.graduationCollegeName.setText(graduationDetails.getCollege());
 
-        // ✅ Set "Full Time / Part Time / Distance" Radio Button
-        if (graduationDetails.getCourseType().equalsIgnoreCase("Full Time")) {
-            showSelectedRadioButton(binding.fullTime, binding.courseTypeFlexLayout);
-        } else if (graduationDetails.getCourseType().equalsIgnoreCase("Part Time")) {
-            showSelectedRadioButton(binding.partTime, binding.courseTypeFlexLayout);
-        } else {
-            showSelectedRadioButton(binding.correspondence, binding.courseTypeFlexLayout);
+        // Set Course Type
+        switch (graduationDetails.getCourseType()) {
+            case "Full Time":
+                showSelectedRadioButton(binding.fullTime, binding.courseTypeFlexLayout);
+                break;
+            case "Part Time":
+                showSelectedRadioButton(binding.partTime, binding.courseTypeFlexLayout);
+                break;
+            case "Correspondence":
+                showSelectedRadioButton(binding.correspondence, binding.courseTypeFlexLayout);
+                break;
         }
 
-        // ✅ Set GPA Scale (Grading System)
-        if (graduationDetails.getGpaScale().equals("10")) {
-            showSelectedRadioButton(binding.gpaOutOf10, binding.gradingSystemFlexLayout);
-        } else if (graduationDetails.getGpaScale().equals("4")) {
-            showSelectedRadioButton(binding.gpaOutOf04, binding.gradingSystemFlexLayout);
-        } else if (graduationDetails.getGpaScale().equals("100")) {
-            showSelectedRadioButton(binding.percentage, binding.gradingSystemFlexLayout);
-        }else{
-            showSelectedRadioButton(binding.courseRequiresAPass, binding.gradingSystemFlexLayout);
+        // Set GPA Scale
+        switch (graduationDetails.getGpaScale()) {
+            case "10":
+                showSelectedRadioButton(binding.gpaOutOf10, binding.gradingSystemFlexLayout);
+                break;
+            case "4":
+                showSelectedRadioButton(binding.gpaOutOf04, binding.gradingSystemFlexLayout);
+                break;
+            case "Percentage":
+                showSelectedRadioButton(binding.percentage, binding.gradingSystemFlexLayout);
+                break;
+            default:
+                showSelectedRadioButton(binding.courseRequiresAPass, binding.gradingSystemFlexLayout);
         }
 
-        // ✅ Set CGPA / GPA / Percentage
+        // Set CGPA
         binding.gpaObtained.setText(graduationDetails.getCgpaObtained());
 
-        // ✅ Set Start & End Year
+        // Set Years
         binding.graduationStartYear.setText(graduationDetails.getEnrollmentYear());
         binding.graduationEndYear.setText(graduationDetails.getPassingYear());
     }
 
+    private void setClass12Details(Class12Details class12Details) {
+        binding.intermediateEduSection.setVisibility(View.VISIBLE);
+
+        binding.boardName12th.setText(class12Details.getBoard());
+        binding.schoolName12th.setText(class12Details.getSchoolName());
+        binding.schoolMedium12th.setText(class12Details.getMedium());
+        binding.stream12th.setText(class12Details.getStream());
+        binding.marks12th.setText(class12Details.getTotalMarks());
+        binding.englishMarks12th.setText(class12Details.getEnglishMarks());
+        binding.mathsMarks12th.setText(class12Details.getMathsMarks());
+        binding.passOutYear12th.setText(class12Details.getPassingYear());
+    }
+
+    private void setClass10Details(Class10Details class10Details) {
+        binding.matriculationEduSection.setVisibility(View.VISIBLE);
+
+        binding.boardName10th.setText(class10Details.getBoard());
+        binding.schoolMedium10th.setText(class10Details.getMedium());
+        binding.marks10th.setText(class10Details.getMarks());
+        binding.passOutYear10th.setText(class10Details.getPassingYear());
+        binding.schoolName10th.setText(class10Details.getSchoolName());
+    }
 
     // ✅ Set Intermediate (Class 12) Details
 //    private void setIntermediateDetails(GraduationDetails education) {
@@ -240,6 +308,8 @@ public class AddEducationActivity extends AppCompatActivity {
         }
     }
 
+
+    //save the education details
     private void saveMatriculationDetails() {
     }
 
@@ -286,33 +356,22 @@ public class AddEducationActivity extends AppCompatActivity {
         String englishMarks=binding.englishMarks12th.getText().toString().trim();
         String mathsMarks=binding.mathsMarks12th.getText().toString().trim();
         String passingYear=binding.passOutYear12th.getText().toString().trim();
-        Class12Details class12Details=new Class12Details(board,schoolName,medium,stream,totalMarks,englishMarks,mathsMarks,passingYear,"Class XII");
-        if (user.getGraduationDetailsList() == null || user.getGraduationDetailsList().isEmpty()) {
-            System.out.println("class12Details list is null, creating new list");
-            user.setGraduationDetailsList(new ArrayList<>());
-        }
-        user.getGraduationDetailsList().add(class12Details);
-        System.out.println("size of class12Details list after: "+user.getGraduationDetailsList().size());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                db.jobDao().insertOrUpdateUser(user);
-                db.jobDao().insertEducation(class12Details);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(AddEducationActivity.this, "Class12Details added successfully", Toast.LENGTH_SHORT).show();
-                        System.out.println("user details: "+user);
-                        finish();
-                    }
-                });
 
-            }
+        Class12Details class12Details = new Class12Details(user.getId(), "Class XII",
+                board, schoolName, medium, stream, totalMarks, englishMarks, mathsMarks, passingYear);
+
+        user.getEducationDetailsList().add(class12Details);
+
+        new Thread(() -> {
+            db.jobDao().insertOrUpdateUser(user);
+            db.jobDao().insertEducation(class12Details);
+            runOnUiThread(() -> Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show());
         }).start();
 
     }
 
     private void saveGraduationDetails() {
+        System.out.println("saveGraduationDetails");
         if (binding.graduationCourseName.getText()==null || binding.graduationCourseName.getText().toString().isEmpty()) {
             binding.graduationCourseName.setError("Please select a course");
             return;
@@ -374,22 +433,17 @@ public class AddEducationActivity extends AppCompatActivity {
             courseType="Correspondence";
         }
 
-//        UGDetails ugDetails=new UGDetails(course,specialization,collegeName,courseType,gpaScale,gpa,startYear,endYear);
-        GraduationDetails graduationDetails =new GraduationDetails(user.getId(),courseLevel,course,specialization,collegeName,courseType,gpaScale,gpa,startYear,endYear);
-        if (user.getGraduationDetailsList() == null) {
-            System.out.println("graduationDetails list is null, creating new list");
-            user.setGraduationDetailsList(new ArrayList<>());
-        }
-        System.out.println("size of graduationDetails list before: "+user.getGraduationDetailsList().size());
-        user.getGraduationDetailsList().add(graduationDetails);
-        System.out.println("size of graduationDetails list after: "+user.getGraduationDetailsList().size());
+        GraduationDetails graduationDetails = new GraduationDetails(user.getId(), "Graduation",
+                course, specialization, collegeName, courseType, gpaScale, gpa, startYear, endYear);
 
+        user.getEducationDetailsList().add(graduationDetails);
+
+        System.out.println("saving to database");
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
             db.jobDao().insertEducation(graduationDetails);
             runOnUiThread(() -> {
-                Toast.makeText(AddEducationActivity.this, "GraduationDetails added successfully", Toast.LENGTH_SHORT).show();
-                System.out.println("user details: "+user);
+                Toast.makeText(AddEducationActivity.this, "Graduation added!", Toast.LENGTH_SHORT).show();
                 finish();
             });
         }).start();
@@ -444,6 +498,12 @@ public class AddEducationActivity extends AppCompatActivity {
             }
             coursesList.addAll(uniqueCourses);
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.jobDao().insertCourses(courses);
+            }
+        }).start();
 
         // Open Bottom Sheet after filtering
         BottomSheetFragment bottomSheet = new BottomSheetFragment(AddEducationActivity.this, coursesList,filed);

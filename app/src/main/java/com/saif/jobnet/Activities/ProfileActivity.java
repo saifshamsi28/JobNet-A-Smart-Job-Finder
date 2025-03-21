@@ -63,6 +63,10 @@ import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
+import com.saif.jobnet.Models.Education.Class10Details;
+import com.saif.jobnet.Models.Education.Class12Details;
+import com.saif.jobnet.Models.Education.EducationDetails;
+import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.Resume;
@@ -1204,7 +1208,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (user.getProfileImage() != null) {
             Uri profileImageUri = Uri.parse(user.getProfileImage());
-            System.out.println("Updated profile image URL: " + profileImageUri);
+//            System.out.println("Updated profile image URL: " + profileImageUri);
 
             Glide.with(ProfileActivity.this)
                     .load(profileImageUri)
@@ -1260,23 +1264,99 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //set education details
-        if(user.getGraduationDetailsList()!=null && !user.getGraduationDetailsList().isEmpty()){
-            //check education level is ug then on the visibility of graduation section
-            if(user.getGraduationDetailsList().get(0).getEducationLevel().contains("Graduation")){
-                binding.graduationEduSection.setVisibility(VISIBLE);
-                binding.graduationCourseTitle.setText(user.getGraduationDetailsList().get(0).getCourse());
-                binding.graduationCollegeName.setText(user.getGraduationDetailsList().get(0).getCollege());
-                binding.graduationYear.setText(user.getGraduationDetailsList().get(0).getPassingYear()+", "+user.getGraduationDetailsList().get(0).getCourseType());
-            }else if(user.getGraduationDetailsList().get(0).getEducationLevel().equals("PG")){
-                binding.intermediateEduSection.setVisibility(GONE);
-            }else {
-                binding.matriculationEduSection.setVisibility(VISIBLE);
-            }
+        if(user.getEducationDetailsList()!=null && !user.getEducationDetailsList().isEmpty()){
+            setEducationDetails();
         }
 
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
     }
+
+    private void setEducationDetails() {
+        if (user.getEducationDetailsList() == null || user.getEducationDetailsList().isEmpty()) {
+            System.out.println("No education details found");
+            return; // No education details available
+        }
+
+        System.out.println("Education Details: " + user.getEducationDetailsList());
+
+        for (EducationDetails edu : user.getEducationDetailsList()) {
+            if (edu == null) continue; // Skip null objects
+
+            String level = edu.getEducationLevel();
+            String passingYear = edu.getPassingYear();
+            String educationType = edu.getEducationType(); // UG, PG, 12th, 10th
+
+            // Handle Graduation (UG & PG separately)
+            if (educationType.contains("Graduation") || "PG".equalsIgnoreCase(educationType)) {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        GraduationDetails grad = jobDao.getGraduationDetailsByUserId(user.getId());
+                        if (grad != null) {
+                            System.out.println("Graduation/Post-Graduation Details in db: " + grad);
+                            binding.graduationEduSection.setVisibility(View.VISIBLE);
+                            binding.graduationCourseTitle.setText(grad.getCourse() != null ? grad.getCourse() : "N/A");
+                            binding.graduationCollegeName.setText(grad.getCollege() != null ? grad.getCollege() : "N/A");
+                            binding.graduationYear.setText((passingYear != null ? passingYear : "N/A") +
+                                    ", " + (grad.getCourseType() != null ? grad.getCourseType() : "N/A"));
+                        }
+                    }
+                }).start();
+                System.out.println("setting graduation details");
+                if (edu instanceof GraduationDetails) {
+                    GraduationDetails grad = (GraduationDetails) edu;
+
+                    System.out.println("Graduation/Post-Graduation Details: " + grad);
+
+                    binding.graduationEduSection.setVisibility(View.VISIBLE);
+                    binding.graduationCourseTitle.setText(grad.getCourse() != null ? grad.getCourse() : "N/A");
+                    binding.graduationCollegeName.setText(grad.getCollege() != null ? grad.getCollege() : "N/A");
+                    binding.graduationYear.setText((passingYear != null ? passingYear : "N/A") +
+                            ", " + (grad.getCourseType() != null ? grad.getCourseType() : "N/A"));
+
+                    // You can further differentiate PG courses if required.
+                    if ("PG".equalsIgnoreCase(educationType)) {
+                        binding.graduationCourseTitle.setText("Post Graduation - " + grad.getCourse());
+                    }
+                }
+            }
+            // Handle Intermediate (12th)
+            else if (educationType.contains("Class12Details")) {
+                if (edu instanceof Class12Details) {
+                    Class12Details inter = (Class12Details) edu;
+
+                    System.out.println("Intermediate (12th) Details: " + inter);
+
+                    binding.intermediateEduSection.setVisibility(View.VISIBLE);
+                    binding.intermediateCourseTitle.setText("Class XII");
+                    binding.intermediateCollegeName.setText(inter.getSchoolName() != null ? inter.getSchoolName() : "N/A");
+                    binding.intermediateYear.setText("Scored " +
+                            (inter.getTotalMarks() != null ? inter.getTotalMarks() : "N/A") +
+                            "%, Passed out in " + (passingYear != null ? passingYear : "N/A"));
+                }
+            }
+            // Handle Matriculation (10th)
+            else if (educationType.contains("Class10Details")) {
+                if (edu instanceof Class10Details) {
+                    Class10Details matric = (Class10Details) edu;
+
+                    System.out.println("Matriculation (10th) Details: " + matric);
+
+                    binding.matriculationEduSection.setVisibility(View.VISIBLE);
+                    binding.matriculationCourseTitle.setText("Class X");
+                    binding.matriculationCollegeName.setText(matric.getSchoolName() != null ? matric.getSchoolName() : "N/A");
+                    binding.matriculationYear.setText("Scored " +
+                            (matric.getMarks() != null ? matric.getMarks() : "N/A") +
+                            "%, Passed out in " + (passingYear != null ? passingYear : "N/A"));
+                }
+            }
+        }
+    }
+
+
+
 
     private String formatDate(String inputDate) {
         try {
