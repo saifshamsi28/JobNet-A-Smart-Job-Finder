@@ -48,7 +48,9 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
             BottomSheetDialogFragment bottomSheet = (BottomSheetDialogFragment) BottomSheetFragment.this;
             View bottomSheetInternal = bottomSheet.getDialog().findViewById(com.google.android.material.R.id.design_bottom_sheet);
             BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheetInternal);
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);  // By default, expanded
+            behavior.setState(BottomSheetBehavior.STATE_HALF_EXPANDED);  // By default, expanded
+            //set the hint for search view
+            searchView.setQueryHint("Search for "+field);
         });
 
         // Set Custom Adapter
