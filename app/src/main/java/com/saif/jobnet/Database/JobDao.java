@@ -70,4 +70,7 @@ public interface JobDao {
     //get courses from database
     @Query("SELECT * FROM courses")
     List<Course> getAllCourses();
+
+//    @Query("SELECT * FROM courses WHERE id=id")
+//    Course getCourseById(String id);
 }
