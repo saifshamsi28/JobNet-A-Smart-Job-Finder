@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 
-import com.saif.jobnet.EducationDetails;
+import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.EducationTypeConverter;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Utils.Converters;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "user")
+@TypeConverters({EducationTypeConverter.class,Converters.class})
 public class User {
     @PrimaryKey
     @NonNull
@@ -41,7 +42,7 @@ public class User {
     private BasicDetails basicDetails;
 
     @TypeConverters(EducationTypeConverter.class)
-    private List<GraduationDetails> graduationDetailsList = new ArrayList<>();
+    private List<EducationDetails> educationDetailsList;
 
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
@@ -190,12 +191,15 @@ public class User {
         this.basicDetails = basicDetails;
     }
 
-    public List<GraduationDetails> getGraduationDetailsList() {
-        return graduationDetailsList;
+    public List<EducationDetails> getEducationDetailsList() {
+        if (educationDetailsList == null) {
+            educationDetailsList = new ArrayList<>();
+        }
+        return educationDetailsList;
     }
 
-    public void setGraduationDetailsList(List<GraduationDetails> graduationDetailsList) {
-        this.graduationDetailsList = graduationDetailsList;
+    public void setEducationDetailsList(List<EducationDetails> educationDetailsList) {
+        this.educationDetailsList = educationDetailsList;
     }
 
     @NonNull
@@ -214,7 +218,7 @@ public class User {
                 ", resumeUploadDate='" + resumeUploadDate + '\'' +
                 ", resumeSize='" + resumeSize + '\'' +
                 ", basicDetails=" + basicDetails +
-                ", graduationDetailsList=" + graduationDetailsList +
+                ", graduationDetailsList=" + educationDetailsList +
                 '}';
     }
 }
