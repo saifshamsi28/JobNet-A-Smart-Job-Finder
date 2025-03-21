@@ -5,6 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.saif.jobnet.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
@@ -54,4 +55,7 @@ public interface JobDao {
     // Clear all user data (e.g., during logout)
     @Query("DELETE FROM user")
     void clearUser();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertEducation(EducationDetails education);
 }
