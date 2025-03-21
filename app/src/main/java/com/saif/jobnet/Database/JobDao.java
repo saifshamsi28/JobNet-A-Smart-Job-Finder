@@ -5,7 +5,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.saif.jobnet.EducationDetails;
+import com.saif.jobnet.Course;
+import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.User;
@@ -58,4 +59,15 @@ public interface JobDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertEducation(EducationDetails education);
+
+    @Query("SELECT * FROM ug_education WHERE id = :userId")
+    GraduationDetails getGraduationDetailsByUserId(String userId);
+
+    //save courses to database
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertCourses(List<Course> courses);
+
+    //get courses from database
+    @Query("SELECT * FROM courses")
+    List<Course> getAllCourses();
 }
