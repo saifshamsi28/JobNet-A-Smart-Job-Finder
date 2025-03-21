@@ -1,14 +1,22 @@
 package com.saif.jobnet;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "courses")
 public class Course {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String name;
     private String programme;
     private String levell;
     private String _department;
     private String discipline;
     private String duration_year;
+
+    public Course() {
+    }
 
     public Course(String name, String programme, String levell, String _department, String discipline, String duration_year) {
         this.name = name;
@@ -17,6 +25,14 @@ public class Course {
         this._department = _department;
         this.discipline = discipline;
         this.duration_year = duration_year;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

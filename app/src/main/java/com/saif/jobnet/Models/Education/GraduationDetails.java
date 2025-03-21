@@ -4,13 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "education")
-public class GraduationDetails {
+@Entity(tableName = "ug_education")
+public class GraduationDetails extends EducationDetails{
 
-    @PrimaryKey
-    @NonNull
-    private String id;
-    private String educationLevel; // UG, PG, 12th, 10th, PhD
     private String course;
     private String specialization;
     private String college;
@@ -18,17 +14,17 @@ public class GraduationDetails {
     private String gpaScale;
     private String cgpaObtained;
     private String enrollmentYear;
-    private String passingYear;
 
     // Default constructor
     public GraduationDetails() {
     }
 
     // Constructor
-    public GraduationDetails(@NonNull String id, String educationLevel, String course, String specialization, String college,
+    public GraduationDetails(String id, String educationLevel,String course, String specialization, String college,
                              String courseType, String gpaScale, String cgpaObtained, String enrollmentYear, String passingYear) {
-        this.id = id;
-        this.educationLevel = educationLevel;
+//        this.id = id;
+//        this.educationLevel = educationLevel;
+        super(id, educationLevel, passingYear,"GraduationDetails");
         this.course = course;
         this.specialization = specialization;
         this.college = college;
@@ -36,27 +32,26 @@ public class GraduationDetails {
         this.gpaScale = gpaScale;
         this.cgpaObtained = cgpaObtained;
         this.enrollmentYear = enrollmentYear;
-        this.passingYear = passingYear;
     }
 
     // Getters and Setters
+//
+//    @NonNull
+//    public String getId() {
+//        return id;
+//    }
+//
+//    public void setId(@NonNull String id) {
+//        this.id = id;
+//    }
 
-    @NonNull
-    public String getId() {
-        return id;
-    }
-
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
-    public String getEducationLevel() {
-        return educationLevel;
-    }
-
-    public void setEducationLevel(String educationLevel) {
-        this.educationLevel = educationLevel;
-    }
+//    public String getEducationLevel() {
+//        return educationLevel;
+//    }
+//
+//    public void setEducationLevel(String educationLevel) {
+//        this.educationLevel = educationLevel;
+//    }
 
     public String getCourse() {
         return course;
@@ -114,20 +109,20 @@ public class GraduationDetails {
         this.enrollmentYear = enrollmentYear;
     }
 
-    public String getPassingYear() {
-        return passingYear;
-    }
-
-    public void setPassingYear(String passingYear) {
-        this.passingYear = passingYear;
-    }
+//    public String getPassingYear() {
+//        return passingYear;
+//    }
+//
+//    public void setPassingYear(String passingYear) {
+//        this.passingYear = passingYear;
+//    }
 
     @NonNull
     @Override
     public String toString() {
         return "GraduationDetails{" +
-                "id=" + id +
-                ", educationLevel='" + educationLevel + '\'' +
+                "id=" + super.getId() +
+                ", educationLevel='" + super.getEducationLevel() + '\'' +
                 ", course='" + course + '\'' +
                 ", specialization='" + specialization + '\'' +
                 ", college='" + college + '\'' +
@@ -135,7 +130,7 @@ public class GraduationDetails {
                 ", gpaScale='" + gpaScale + '\'' +
                 ", cgpaObtained='" + cgpaObtained + '\'' +
                 ", enrollmentYear='" + enrollmentYear + '\'' +
-                ", passingYear='" + passingYear + '\'' +
+                ", passingYear='" + super.getPassingYear() + '\'' +
                 '}';
     }
 }
