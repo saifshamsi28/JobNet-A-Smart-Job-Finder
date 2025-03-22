@@ -225,21 +225,6 @@ public class AddEducationActivity extends AppCompatActivity {
         }
     }
 
-    // Get EducationDetails by Level
-//    private EducationDetails getEducationByLevel(String level) {
-//        if (user == null || user.getEducationDetailsList() == null) return null;
-//
-//        for (EducationDetails edu : user.getEducationDetailsList()) {
-//            System.out.println("leve="+level+", edu found in user: "+edu);
-//            if (edu.getEducationLevel().equals(level) || edu.getEducationLevel().contains(level)) {
-//                return edu; // Found the education object
-//            }else {
-//                Toast.makeText(this, "Education level missing", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        return null; // No matching education found
-//    }
-
     // Set Graduation Details
     private void setGraduationDetails(GraduationDetails graduationDetails) {
         binding.graduationEduSection.setVisibility(View.VISIBLE);
@@ -310,27 +295,6 @@ public class AddEducationActivity extends AppCompatActivity {
         binding.passOutYear10th.setText(class10Details.getPassingYear());
         binding.schoolName10th.setText(class10Details.getSchoolName());
     }
-
-    // ✅ Set Intermediate (Class 12) Details
-//    private void setIntermediateDetails(GraduationDetails education) {
-//        binding.class12EduSection.setVisibility(View.VISIBLE);
-//        binding.class12SchoolName.setText(education.getCollege()); // Assuming college field holds school name
-//        binding.class12Stream.setText(education.getSpecialization());
-//        binding.class12Board.setText(education.getCourseType()); // Example: "CBSE", "State Board"
-//        binding.class12Percentage.setText(education.getCgpaObtained()); // Assuming it's stored as GPA
-//        binding.class12StartYear.setText(education.getEnrollmentYear());
-//        binding.class12EndYear.setText(education.getPassingYear());
-//    }
-
-    // ✅ Set Matriculation (Class 10) Details
-//    private void setMatriculationDetails(GraduationDetails education) {
-//        binding.class10EduSection.setVisibility(View.VISIBLE);
-//        binding.class10SchoolName.setText(education.getCollege());
-//        binding.class10Board.setText(education.getCourseType());
-//        binding.class10Percentage.setText(education.getCgpaObtained());
-//        binding.class10StartYear.setText(education.getEnrollmentYear());
-//        binding.class10EndYear.setText(education.getPassingYear());
-//    }
 
     private void savedEducationDetails() {
         if(courseLevelSelectedRadioButton!=null){
