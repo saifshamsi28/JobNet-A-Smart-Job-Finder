@@ -22,10 +22,9 @@ public class Class12Details {
     public Class12Details() {
     }
 
-    public Class12Details(String id, String board, String schoolName, String medium,
+    public Class12Details(String board, String schoolName, String medium,
                           String stream, String totalMarks, String englishMarks,
-                          String mathsMarks, @NonNull String passingYear, String educationLevel) {
-//        super(id, educationLevel, passingYear,"Class12Details");
+                          String mathsMarks, @NonNull String passingYear) {
         this.board = board;
         this.schoolName = schoolName;
         this.medium = medium;

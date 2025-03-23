@@ -7,7 +7,6 @@ import androidx.room.TypeConverters;
 import com.saif.jobnet.Course;
 import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
-import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Education.GraduationTypeConverter;
 import com.saif.jobnet.Models.Job;
