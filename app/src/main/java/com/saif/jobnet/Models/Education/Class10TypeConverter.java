@@ -6,20 +6,18 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
-public class EducationTypeConverter {
+public class Class10TypeConverter {
     private static final Gson gson = new Gson();
 
     @TypeConverter
-    public static String fromEducationDetails(List<EducationDetails> list) {
-        return gson.toJson(list);
+    public static String fromEducationDetails(Class10Details class10Details) {
+        return gson.toJson(class10Details);
     }
 
     @TypeConverter
-    public static List<EducationDetails> toEducationDetails(String json) {
-        Type listType = new TypeToken<List<EducationDetails>>() {}.getType();
+    public static Class10Details toEducationDetails(String json) {
+        Type listType = new TypeToken<Class10Details>() {}.getType();
         return gson.fromJson(json, listType);
     }
 }
-
