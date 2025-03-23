@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.google.android.flexbox.FlexboxLayout;
@@ -73,7 +75,7 @@ public class AddEducationActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(user.getEducationDetailsList()!=null && !user.getEducationDetailsList().isEmpty()){
+                        if(user.getGraduationDetails()!=null){
                             setEducationDetails(educationSection);
                         }
                     }
@@ -190,7 +192,7 @@ public class AddEducationActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            GraduationDetails graduationDetails=db.jobDao().getGraduationDetailsByUserId(user.getId());
+                            GraduationDetails graduationDetails=db.jobDao().getGraduationDetailsByUserId();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -293,7 +295,7 @@ public class AddEducationActivity extends AppCompatActivity {
         binding.schoolMedium10th.setText(class10Details.getMedium());
         binding.marks10th.setText(class10Details.getMarks());
         binding.passOutYear10th.setText(class10Details.getPassingYear());
-        binding.schoolName10th.setText(class10Details.getSchoolName());
+        binding.schoolName10th.setText(class10Details.getSchoolName10th());
     }
 
     private void savedEducationDetails() {
@@ -318,9 +320,48 @@ public class AddEducationActivity extends AppCompatActivity {
         }
     }
 
-
     //save the education details
     private void saveMatriculationDetails() {
+        if(binding.boardName10th.getText()==null || binding.boardName10th.getText().toString().isEmpty()){
+            binding.boardName10th.setError("Please enter board name");
+            return;
+        }
+        if(binding.schoolMedium10th.getText()==null || binding.schoolMedium10th.getText().toString().isEmpty()){
+            binding.schoolMedium10th.setError("Please enter school medium");
+            return;
+        }
+        if(binding.schoolName10th.getText()==null || binding.schoolName10th.getText().toString().isEmpty()) {
+            binding.schoolName10th.setError("Please enter school name");
+            return;
+        }
+        if(binding.passOutYear10th.getText()==null || binding.passOutYear10th.getText().toString().isEmpty()){
+            binding.passOutYear10th.setError("Please enter pass out year");
+            return;
+        }
+        if(binding.marks10th.getText()==null || binding.marks10th.getText().toString().isEmpty()){
+            binding.marks10th.setError("Please enter obtained marks");
+            return;
+        }
+
+        String board=binding.boardName10th.getText().toString().trim();
+        String schoolName=binding.schoolName10th.getText().toString().trim();
+        String medium=binding.schoolMedium10th.getText().toString().trim();
+        String passingYear=binding.passOutYear10th.getText().toString().trim();
+        String totalMarks=binding.marks10th.getText().toString().trim();
+
+        Class10Details class10Details = new Class10Details(
+                board, schoolName, medium, totalMarks, passingYear);
+
+        user.setClass10Details(class10Details);
+        new Thread(() -> {
+            db.jobDao().insertOrUpdateUser(user);
+            db.jobDao().insertEducation(class10Details);
+            runOnUiThread(() -> {
+                Toast.makeText(AddEducationActivity.this, "Class 10 added!", Toast.LENGTH_SHORT).show();
+                    finish();
+                    }
+            );
+        }).start();
     }
 
     private void saveIntermediateDetails() {
@@ -370,12 +411,15 @@ public class AddEducationActivity extends AppCompatActivity {
         Class12Details class12Details = new Class12Details(user.getId(), "Class XII",
                 board, schoolName, medium, stream, totalMarks, englishMarks, mathsMarks, passingYear);
 
-        user.getEducationDetailsList().add(class12Details);
+        user.setClass12Details(class12Details);
 
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
             db.jobDao().insertEducation(class12Details);
-            runOnUiThread(() -> Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show());
+            runOnUiThread(() -> {
+                Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show();
+                finish();
+            });
         }).start();
 
     }
@@ -446,7 +490,7 @@ public class AddEducationActivity extends AppCompatActivity {
         GraduationDetails graduationDetails = new GraduationDetails(user.getId(), "Graduation",
                 course, specialization, collegeName, courseType, gpaScale, gpa, startYear, endYear);
 
-        user.getEducationDetailsList().add(graduationDetails);
+        user.setGraduationDetails(graduationDetails);
 
         System.out.println("saving to database");
         new Thread(() -> {
@@ -470,7 +514,7 @@ public class AddEducationActivity extends AppCompatActivity {
 
         apiService.getCourses().enqueue(new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                 progressDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("API_RESPONSE", "Response successful");
@@ -480,7 +524,7 @@ public class AddEducationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
                 progressDialog.dismiss();
                 Log.e("API_ERROR", "Error fetching data: " + t.getMessage());
             }
