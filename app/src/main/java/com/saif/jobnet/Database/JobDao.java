@@ -6,6 +6,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.saif.jobnet.Course;
+import com.saif.jobnet.Models.Education.Class10Details;
+import com.saif.jobnet.Models.Education.Class12Details;
 import com.saif.jobnet.Models.Education.EducationDetails;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
@@ -53,15 +55,29 @@ public interface JobDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertEducation(GraduationDetails graduationDetails);
 
+    //insert class12Details
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertEducation(Class12Details class12Details);
+
+    //insert class10Details
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertEducation(Class10Details class10Details);
+
     // Clear all user data (e.g., during logout)
     @Query("DELETE FROM user")
     void clearUser();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertEducation(EducationDetails education);
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    void insertEducation(EducationDetails education);
 
-    @Query("SELECT * FROM ug_education WHERE id = :userId")
-    GraduationDetails getGraduationDetailsByUserId(String userId);
+    @Query("SELECT * FROM education_ug")
+    GraduationDetails getGraduationDetailsByUserId();
+
+    @Query("SELECT * FROM education_12th")
+    Class12Details getClass12Details();
+
+    @Query("SELECT * FROM education_10th")
+    Class10Details getClass10Details();
 
     //save courses to database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
