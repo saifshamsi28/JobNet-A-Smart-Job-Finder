@@ -10,6 +10,7 @@ import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
 import com.saif.jobnet.Models.UserUpdateDTO;
 
+import kotlin.ParameterName;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -57,6 +58,11 @@ public interface ApiService {
 
     @PATCH("user/id/{id}/update-basic-details")
     Call<ResponseBody> updateBasicDetails(@Path("id") String id, @Body User user);
+
+    @PATCH("user/id/{id}/update-education-details")
+    Call<ResponseBody> updateEducationDetails(@Path("id") String id,
+                                              @Query("education_level") String educationLevel,
+                                              @Body User user);
 
     @Multipart
     @POST("user/{id}/upload-profile-image")
