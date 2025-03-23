@@ -8,16 +8,20 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 
+import com.saif.jobnet.Models.Education.Class10Details;
+import com.saif.jobnet.Models.Education.Class10TypeConverter;
+import com.saif.jobnet.Models.Education.Class12Details;
+import com.saif.jobnet.Models.Education.Class12TypeConverter;
 import com.saif.jobnet.Models.Education.EducationDetails;
-import com.saif.jobnet.Models.Education.EducationTypeConverter;
 import com.saif.jobnet.Models.Education.GraduationDetails;
+import com.saif.jobnet.Models.Education.GraduationTypeConverter;
 import com.saif.jobnet.Utils.Converters;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "user")
-@TypeConverters({EducationTypeConverter.class,Converters.class})
+@TypeConverters({GraduationTypeConverter.class, Class10TypeConverter.class, Class12TypeConverter.class,Converters.class})
 public class User {
     @PrimaryKey
     @NonNull
@@ -41,8 +45,14 @@ public class User {
     @Embedded
     private BasicDetails basicDetails;
 
-    @TypeConverters(EducationTypeConverter.class)
-    private List<EducationDetails> educationDetailsList;
+    @TypeConverters(GraduationTypeConverter.class)
+    private GraduationDetails graduationDetails;
+
+    @TypeConverters(Class12TypeConverter.class)
+    private Class12Details class12Details;
+
+    @TypeConverters(Class10TypeConverter.class)
+    private Class10Details class10Details;
 
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
@@ -191,15 +201,28 @@ public class User {
         this.basicDetails = basicDetails;
     }
 
-    public List<EducationDetails> getEducationDetailsList() {
-        if (educationDetailsList == null) {
-            educationDetailsList = new ArrayList<>();
-        }
-        return educationDetailsList;
+    public GraduationDetails getGraduationDetails() {
+        return graduationDetails;
     }
 
-    public void setEducationDetailsList(List<EducationDetails> educationDetailsList) {
-        this.educationDetailsList = educationDetailsList;
+    public void setGraduationDetails(GraduationDetails educationDetails) {
+        this.graduationDetails = educationDetails;
+    }
+
+    public Class12Details getClass12Details() {
+        return class12Details;
+    }
+
+    public void setClass12Details(Class12Details class12Details) {
+        this.class12Details = class12Details;
+    }
+
+    public Class10Details getClass10Details() {
+        return class10Details;
+    }
+
+    public void setClass10Details(Class10Details class10Details) {
+        this.class10Details = class10Details;
     }
 
     @NonNull
@@ -218,7 +241,9 @@ public class User {
                 ", resumeUploadDate='" + resumeUploadDate + '\'' +
                 ", resumeSize='" + resumeSize + '\'' +
                 ", basicDetails=" + basicDetails +
-                ", graduationDetailsList=" + educationDetailsList +
+                ", graduationDetails=" + graduationDetails +
+                ", class12Details=" + class12Details +
+                ", class10Details=" + class10Details +
                 '}';
     }
 }
