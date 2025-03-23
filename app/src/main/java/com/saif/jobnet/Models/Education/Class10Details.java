@@ -1,20 +1,31 @@
 package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
-public class Class10Details extends EducationDetails {
+@Entity(tableName = "education_10th")
+@TypeConverters(Class10TypeConverter.class)
+public class Class10Details {
     private String board;
     private String schoolName10th;
     private String medium;
     private String marks;
+    @PrimaryKey
+    @NonNull
+    private String passingYear;
 
-    public Class10Details(String id,String educationLevel,String board, String schoolName, String medium,
-                          String marks, String passingYear) {
-        super(id, educationLevel, passingYear,"Class10Details");
+    public Class10Details() {
+    }
+
+    public Class10Details(String board, String schoolName, String medium,
+                          String marks, @NonNull String passingYear) {
         this.board = board;
         this.schoolName10th = schoolName;
         this.medium = medium;
         this.marks = marks;
+        this.passingYear = passingYear;
     }
 
     public String getBoard() {
@@ -25,12 +36,12 @@ public class Class10Details extends EducationDetails {
         this.board = board;
     }
 
-    public String getSchoolName() {
+    public String getSchoolName10th() {
         return schoolName10th;
     }
 
-    public void setSchoolName(String schoolName) {
-        this.schoolName10th = schoolName;
+    public void setSchoolName10th(String schoolName10th) {
+        this.schoolName10th = schoolName10th;
     }
 
     public String getMedium() {
@@ -49,13 +60,14 @@ public class Class10Details extends EducationDetails {
         this.marks = marks;
     }
 
-//    public String getPassingYear() {
-//        return passingYear;
-//    }
-//
-//    public void setPassingYear(String passingYear) {
-//        this.passingYear = passingYear;
-//    }
+    @NonNull
+    public String getPassingYear() {
+        return passingYear;
+    }
+
+    public void setPassingYear(@NonNull String passingYear) {
+        this.passingYear = passingYear;
+    }
 
     @NonNull
     @Override
@@ -65,7 +77,7 @@ public class Class10Details extends EducationDetails {
                 ", schoolName='" + schoolName10th + '\'' +
                 ", medium='" + medium + '\'' +
                 ", marks='" + marks + '\'' +
-                ", passingYear='" + super.getPassingYear() + '\'' +
+                ", passingYear='" + passingYear + '\'' +
                 '}';
     }
 }

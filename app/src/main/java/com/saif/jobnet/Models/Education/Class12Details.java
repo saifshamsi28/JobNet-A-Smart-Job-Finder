@@ -1,8 +1,13 @@
 package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
-public class Class12Details extends EducationDetails {
+@Entity(tableName = "education_12th")
+@TypeConverters(Class12TypeConverter.class)
+public class Class12Details {
     private String board;
     private String schoolName;
     private String medium;
@@ -10,14 +15,17 @@ public class Class12Details extends EducationDetails {
     private String totalMarks;
     private String englishMarks;
     private String mathsMarks;
+    @PrimaryKey
+    @NonNull
+    private String passingYear;
 
     public Class12Details() {
     }
 
-    public Class12Details(String id,String board, String schoolName, String medium,
+    public Class12Details(String id, String board, String schoolName, String medium,
                           String stream, String totalMarks, String englishMarks,
-                          String mathsMarks, String passingYear, String educationLevel) {
-        super(id, educationLevel, passingYear,"Class12Details");
+                          String mathsMarks, @NonNull String passingYear, String educationLevel) {
+//        super(id, educationLevel, passingYear,"Class12Details");
         this.board = board;
         this.schoolName = schoolName;
         this.medium = medium;
@@ -25,6 +33,7 @@ public class Class12Details extends EducationDetails {
         this.totalMarks = totalMarks;
         this.englishMarks = englishMarks;
         this.mathsMarks = mathsMarks;
+        this.passingYear = passingYear;
     }
 
     public String getBoard() {
@@ -83,13 +92,14 @@ public class Class12Details extends EducationDetails {
         this.mathsMarks = mathsMarks;
     }
 
-//    public String getPassingYear() {
-//        return passingYear;
-//    }
-//
-//    public void setPassingYear(String passingYear) {
-//        this.passingYear = passingYear;
-//    }
+    @NonNull
+    public String getPassingYear() {
+        return passingYear;
+    }
+
+    public void setPassingYear(@NonNull String passingYear) {
+        this.passingYear = passingYear;
+    }
 //
 //    public String getEducationLevel() {
 //        return level;
@@ -110,8 +120,7 @@ public class Class12Details extends EducationDetails {
                 ", totalMarks='" + totalMarks + '\'' +
                 ", englishMarks='" + englishMarks + '\'' +
                 ", mathsMarks='" + mathsMarks + '\'' +
-                ", passingYear='" + super.getPassingYear() + '\'' +
-                ", educationLevel='" + super.getEducationLevel() + '\'' +
+                ", passingYear='" + passingYear + '\'' +
                 '}';
     }
 
