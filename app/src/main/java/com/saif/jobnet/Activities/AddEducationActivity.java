@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -14,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.ApiResponse;
 import com.saif.jobnet.BottomSheetFragment;
@@ -23,17 +27,21 @@ import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
 import com.saif.jobnet.Models.Education.GraduationDetails;
+import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
+import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Utils.SimpleTextWatcher;
 import com.saif.jobnet.databinding.ActivityAddEducationBinding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -125,37 +133,67 @@ public class AddEducationActivity extends AppCompatActivity {
                 filterUnderGraduateCourses(courses,"specialization", "SpecializationSheet");
             }
         });
+        // GPA validation with dynamic limit (10 by default)
+        addLimitValidation(binding.gpaObtained, 10, binding.gpaObtainedLayout);
+
+        // Adjust limit dynamically based on selection
         binding.gpaObtained.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(String newText) {
+                if (newText.isEmpty()) return;
+
+                double maxLimit = 10; // Default
+
+                if (binding.gpaOutOf04.isChecked()) {
+                    maxLimit = 4;
+                } else if (binding.percentage.isChecked()) {
+                    maxLimit = 100;
+                }
+
+                addLimitValidation(binding.gpaObtained, maxLimit, binding.gpaObtainedLayout);
+            }
+        });
+
+        // 12th Marks Validation
+        addLimitValidation(binding.marks12th, 100, binding.marks12thLayout);
+        addLimitValidation(binding.englishMarks12th, 100, binding.englishMarks12thLayout);
+        addLimitValidation(binding.mathsMarks12th, 100, binding.mathsMarks12thLayout);
+
+        // 10th Marks Validation
+        addLimitValidation(binding.marks10th, 100, binding.marks10thLayout);
+
+
+        //graduation start and end year click listeners
+        binding.graduationStartYear.setOnClickListener(view -> showYearSelectionBottomSheet("start year graduation"));
+        binding.graduationEndYear.setOnClickListener(view -> showYearSelectionBottomSheet("end year graduation"));
+
+        //class 12th passing year click listener
+        binding.passOutYear12th.setOnClickListener(view -> showYearSelectionBottomSheet("passing year 12th"));
+        //class 10th passing year click listener
+        binding.passOutYear10th.setOnClickListener(view -> showYearSelectionBottomSheet("passing year 10th"));
+    }
+
+    private void addLimitValidation(TextInputEditText editText, double maxLimit, TextInputLayout inputLayout) {
+        editText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(String newText) {
                 if (newText.isEmpty()) return; // Prevent crash when text is empty
                 try {
                     double value = Double.parseDouble(newText); // Convert input to a number
-                    double maxLimit = 10; // Default max (GPA out of 10)
-
-                    if (binding.gpaOutOf04.isChecked()) {
-                        maxLimit = 4;
-                    } else if (binding.percentage.isChecked()) {
-                        maxLimit = 100;
-                    }
 
                     if (value > maxLimit) {
-                        binding.gpaObtainedLayout.setError("Value cannot be greater than " + maxLimit);
+                        inputLayout.setError("Value cannot be greater than " + maxLimit);
                         binding.saveButton.setEnabled(false);
                     } else {
-                        binding.gpaObtainedLayout.setError(null); // Clear error if valid
+                        inputLayout.setError(null); // Clear error if valid
                         binding.saveButton.setEnabled(true);
                     }
 
                 } catch (NumberFormatException e) {
-                    binding.gpaObtained.setError("Invalid input");
+                    inputLayout.setError("Invalid input");
                 }
             }
         });
-
-        //graduation start and end year click listeners
-        binding.graduationStartYear.setOnClickListener(view -> showYearSelectionBottomSheet("start year"));
-        binding.graduationEndYear.setOnClickListener(view -> showYearSelectionBottomSheet("end year"));
     }
 
     private void showYearSelectionBottomSheet(String field) {
@@ -177,14 +215,6 @@ public class AddEducationActivity extends AppCompatActivity {
     }
 
     private void setEducationDetails(String educationSection) {
-//        EducationDetails educationDetails = getEducationByLevel(educationSection);
-//        System.out.println("Setting details for: " + educationSection + " -> " + educationDetails);
-
-//        if (educationDetails == null) {
-//            Toast.makeText(this, "No details found for " + educationSection, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-
         switch (educationSection) {
             case "Graduation/Diploma":
 //                if () {
@@ -205,24 +235,33 @@ public class AddEducationActivity extends AppCompatActivity {
                 break;
             case "Class XII":
 //                if (educationDetails instanceof Class12Details) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Class12Details class12Details=db.jobDao().getGraduationDetailsByUserId(user.getId());
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                setGraduationDetails(graduationDetails);
-//                            }
-//                        });
-//                    }
-//                }).start();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Class12Details class12Details=db.jobDao().getClass12Details();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setClass12Details(class12Details);
+                            }
+                        });
+                    }
+                }).start();
 //                }
                 break;
             case "Class X":
-//                if (educationDetails instanceof Class10Details) {
-//                    setClass10Details((Class10Details) educationDetails);
-//                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Class10Details class10Details=db.jobDao().getClass10Details();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setClass10Details(class10Details);
+                            }
+                        });
+                    }
+                }).start();
                 break;
         }
     }
@@ -233,6 +272,7 @@ public class AddEducationActivity extends AppCompatActivity {
 
         // Set Course Level
         showSelectedRadioButton(binding.graduationOrDiploma, binding.courseLevel);
+        courseLevelSelectedRadioButton=binding.graduationOrDiploma;
 
         // Set Course Details
         binding.graduationCourseName.setText(graduationDetails.getCourse());
@@ -276,6 +316,11 @@ public class AddEducationActivity extends AppCompatActivity {
     }
 
     private void setClass12Details(Class12Details class12Details) {
+
+        // Set Course Level
+        showSelectedRadioButton(binding.intermediate, binding.courseLevel);
+        courseLevelSelectedRadioButton=binding.intermediate;
+
         binding.intermediateEduSection.setVisibility(View.VISIBLE);
 
         binding.boardName12th.setText(class12Details.getBoard());
@@ -289,6 +334,11 @@ public class AddEducationActivity extends AppCompatActivity {
     }
 
     private void setClass10Details(Class10Details class10Details) {
+
+        // Set Course Level
+        showSelectedRadioButton(binding.matriculation, binding.courseLevel);
+        courseLevelSelectedRadioButton=binding.matriculation;
+
         binding.matriculationEduSection.setVisibility(View.VISIBLE);
 
         binding.boardName10th.setText(class10Details.getBoard());
@@ -299,12 +349,14 @@ public class AddEducationActivity extends AppCompatActivity {
     }
 
     private void savedEducationDetails() {
+//        System.out.println("savedEducationDetails for: "+courseLevelSelectedRadioButton.getText().toString());
         if(courseLevelSelectedRadioButton!=null){
             switch (courseLevelSelectedRadioButton.getText().toString()){
                 case "Graduation/Diploma":
                     saveGraduationDetails();
                     break;
                 case "Class XII":
+//                    Toast.makeText(this, "Class 12 coming soon", Toast.LENGTH_SHORT).show();
                     saveIntermediateDetails();
                     break;
                 case "Class X":
@@ -343,6 +395,9 @@ public class AddEducationActivity extends AppCompatActivity {
             return;
         }
 
+        progressDialog.setMessage("saving details...");
+        progressDialog.show();
+
         String board=binding.boardName10th.getText().toString().trim();
         String schoolName=binding.schoolName10th.getText().toString().trim();
         String medium=binding.schoolMedium10th.getText().toString().trim();
@@ -358,6 +413,7 @@ public class AddEducationActivity extends AppCompatActivity {
             db.jobDao().insertEducation(class10Details);
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Class 10 added!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                     finish();
                     }
             );
@@ -399,6 +455,9 @@ public class AddEducationActivity extends AppCompatActivity {
             return;
         }
 
+        progressDialog.setMessage("saving details...");
+        progressDialog.show();
+
         String board=binding.boardName12th.getText().toString().trim();
         String schoolName=binding.schoolName12th.getText().toString().trim();
         String medium=binding.schoolMedium12th.getText().toString().trim();
@@ -408,8 +467,8 @@ public class AddEducationActivity extends AppCompatActivity {
         String mathsMarks=binding.mathsMarks12th.getText().toString().trim();
         String passingYear=binding.passOutYear12th.getText().toString().trim();
 
-        Class12Details class12Details = new Class12Details(user.getId(), "Class XII",
-                board, schoolName, medium, stream, totalMarks, englishMarks, mathsMarks, passingYear);
+        Class12Details class12Details = new Class12Details(board,schoolName,medium,
+                stream,totalMarks,englishMarks,mathsMarks,passingYear);
 
         user.setClass12Details(class12Details);
 
@@ -418,11 +477,13 @@ public class AddEducationActivity extends AppCompatActivity {
             db.jobDao().insertEducation(class12Details);
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 finish();
             });
         }).start();
 
     }
+
 
     private void saveGraduationDetails() {
         System.out.println("saveGraduationDetails");
@@ -461,6 +522,9 @@ public class AddEducationActivity extends AppCompatActivity {
             return;
         }
 
+        progressDialog.setMessage("saving details...");
+        progressDialog.show();
+
         String courseLevel=courseLevelSelectedRadioButton.getText().toString();
         String course=binding.graduationCourseName.getText().toString().trim();
         String specialization=binding.courseSpecialization.getText().toString().trim();
@@ -498,6 +562,7 @@ public class AddEducationActivity extends AppCompatActivity {
             db.jobDao().insertEducation(graduationDetails);
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Graduation added!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 finish();
             });
         }).start();
@@ -571,11 +636,17 @@ public class AddEducationActivity extends AppCompatActivity {
             case "specialization":
                 binding.courseSpecialization.setText(course);
                 break;
-            case "start year":
+            case "start year graduation":
                 binding.graduationStartYear.setText(course);
                 break;
-            case "end year":
+            case "end year graduation":
                 binding.graduationEndYear.setText(course);
+                break;
+            case "passing year 12th":
+                binding.passOutYear12th.setText(course);
+                break;
+            case "passing year 10th":
+                binding.passOutYear10th.setText(course);
                 break;
         }
     }
