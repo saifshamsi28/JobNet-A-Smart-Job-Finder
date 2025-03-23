@@ -411,6 +411,7 @@ public class AddEducationActivity extends AppCompatActivity {
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
             db.jobDao().insertEducation(class10Details);
+            saveUserToBackend("class10thDetails");
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Class 10 added!", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
@@ -475,6 +476,7 @@ public class AddEducationActivity extends AppCompatActivity {
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
             db.jobDao().insertEducation(class12Details);
+            saveUserToBackend("class12thDetails");
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
@@ -482,6 +484,52 @@ public class AddEducationActivity extends AppCompatActivity {
             });
         }).start();
 
+    }
+
+    private void saveUserToBackend(String educationLevel) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Config.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        apiService.updateEducationDetails(user.getId(),educationLevel,user)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if(response.isSuccessful()){
+                            try {
+                                if (response.body() != null) {
+                                    JobNetResponse jobNetResponse=new Gson().fromJson(response.body().string(), JobNetResponse.class);
+                                    Log.d("response","response successful: "+jobNetResponse);
+
+                                }else {
+                                    System.err.println("response body is null");
+                                    System.out.println(response);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            try {
+                                if (response.body() != null) {
+                                    JobNetResponse jobNetResponse=new Gson().fromJson(response.body().string(), JobNetResponse.class);
+                                    System.out.println("response not successful: "+jobNetResponse);
+                                }else {
+                                    System.err.println("response body is null");
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
 
@@ -560,6 +608,7 @@ public class AddEducationActivity extends AppCompatActivity {
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
             db.jobDao().insertEducation(graduationDetails);
+            saveUserToBackend("graduationDetails");
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Graduation added!", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
