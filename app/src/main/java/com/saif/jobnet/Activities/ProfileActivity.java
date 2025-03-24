@@ -469,60 +469,6 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(resumeSelectIntent, "Select Resume"), PICK_PDF_REQUEST);
     }
 
-
-//    private void uploadProfileImage(Uri imageUri) {
-//        File imageFile = null;
-//        try {
-//            imageFile = convertUriToFile(this, imageUri,"profile");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
-//
-//        Retrofit retrofit=new Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                                .build();
-//        ApiService apiService=retrofit.create(ApiService.class);
-//
-//        apiService.uploadProfileImage(user.getId(),body).enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        if (response.body() != null) {
-//                        User user1 = new Gson().fromJson(response.body().string(), User.class);
-//                        user.setProfileImage(user1.getProfileImage());
-//                            System.out.println("uploaded profile img to: "+user1.getProfileImage());
-//                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
-//                        Toast.makeText(ProfileActivity.this, "Profile Image Updated", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    Toast.makeText(ProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
-//                    try {
-//                        if (response.errorBody() != null) {
-//                            AuthResponse errorResponse = new Gson().fromJson(response.errorBody().string(), AuthResponse.class);
-//                            Log.e("ProfileActivity", "fail to upload profile: " + errorResponse);
-//                        }
-//                    }catch (IOException e){
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Toast.makeText(ProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-//                Log.e("ProfileActivity", "fail to upload profile: " + t.getMessage());
-//            }
-//        });
-//    }
-
     private void uploadProfileImageInChunks(Uri imageUri) {
         try {
             File imageFile = convertUriToFile(this, imageUri, "profile");
@@ -1187,7 +1133,7 @@ public class ProfileActivity extends AppCompatActivity {
                     System.out.println("user got in database: "+user);
                     setUpProfile(user);
                     //synchronise user details from server
-//                    synchronizeUserDetails(userId);
+                    synchronizeUserDetails(userId);
                 });
             }
         }).start();
