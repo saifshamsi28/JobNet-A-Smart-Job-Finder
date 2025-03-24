@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-@Entity(tableName = "education_12th")
+//@Entity(tableName = "education_12th")
 @TypeConverters(Class12TypeConverter.class)
 public class Class12Details {
     private String board;
@@ -15,8 +15,8 @@ public class Class12Details {
     private String totalMarks;
     private String englishMarks;
     private String mathsMarks;
-    @PrimaryKey
-    @NonNull
+//    @PrimaryKey
+//    @NonNull
     private String passingYear;
 
     public Class12Details() {

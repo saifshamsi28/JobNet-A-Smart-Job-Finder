@@ -69,14 +69,14 @@ public interface JobDao {
 //    @Insert(onConflict = OnConflictStrategy.REPLACE)
 //    void insertEducation(EducationDetails education);
 
-    @Query("SELECT * FROM education_ug")
-    GraduationDetails getGraduationDetailsByUserId();
-
-    @Query("SELECT * FROM education_12th")
-    Class12Details getClass12Details();
-
-    @Query("SELECT * FROM education_10th")
-    Class10Details getClass10Details();
+//    @Query("SELECT * FROM education_ug")
+//    GraduationDetails getGraduationDetailsByUserId();
+//
+//    @Query("SELECT * FROM education_12th")
+//    Class12Details getClass12Details();
+//
+//    @Query("SELECT * FROM education_10th")
+//    Class10Details getClass10Details();
 
     //save courses to database
     @Insert(onConflict = OnConflictStrategy.REPLACE)

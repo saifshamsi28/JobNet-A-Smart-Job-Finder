@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-@Entity(tableName = "education_ug")
+//@Entity(tableName = "education_ug")
 @TypeConverters(GraduationTypeConverter.class)
 public class GraduationDetails {
 
@@ -16,8 +16,8 @@ public class GraduationDetails {
     private String gpaScale;
     private String cgpaObtained;
     private String enrollmentYear;
-    @PrimaryKey
-    @NonNull
+//    @PrimaryKey
+//    @NonNull
     private String passingYear;
 
     // Default constructor
