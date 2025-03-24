@@ -217,51 +217,55 @@ public class AddEducationActivity extends AppCompatActivity {
     private void setEducationDetails(String educationSection) {
         switch (educationSection) {
             case "Graduation/Diploma":
-//                if () {
+                if (user.getGraduationDetails() != null) {
 //                    setGraduationDetails((GraduationDetails) educationDetails);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            GraduationDetails graduationDetails=db.jobDao().getGraduationDetailsByUserId();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setGraduationDetails(graduationDetails);
-                                }
-                            });
-                        }
-                    }).start();
-//                }
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            GraduationDetails graduationDetails=db.jobDao().getGraduationDetailsByUserId();
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    setGraduationDetails(graduationDetails);
+//                                }
+//                            });
+//                        }
+//                    }).start();
+                    setGraduationDetails(user.getGraduationDetails());
+                }
                 break;
             case "Class XII":
-//                if (educationDetails instanceof Class12Details) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Class12Details class12Details=db.jobDao().getClass12Details();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setClass12Details(class12Details);
-                            }
-                        });
-                    }
-                }).start();
-//                }
+                if (user.getClass12Details() != null) {
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Class12Details class12Details=db.jobDao().getClass12Details();
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+                                setClass12Details(user.getClass12Details());
+//                            }
+//                        });
+//                    }
+//                }).start();
+                }
                 break;
             case "Class X":
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Class10Details class10Details=db.jobDao().getClass10Details();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                setClass10Details(class10Details);
-                            }
-                        });
-                    }
-                }).start();
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Class10Details class10Details=db.jobDao().getClass10Details();
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                setClass10Details(class10Details);
+//                            }
+//                        });
+//                    }
+//                }).start();
+                if (user.getClass10Details() != null) {
+                    setClass10Details(user.getClass10Details());
+                }
                 break;
         }
     }
@@ -475,7 +479,7 @@ public class AddEducationActivity extends AppCompatActivity {
 
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
-            db.jobDao().insertEducation(class12Details);
+//            db.jobDao().insertEducation(class12Details);
             saveUserToBackend("class12thDetails");
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Class 12 added!", Toast.LENGTH_SHORT).show();
@@ -539,10 +543,12 @@ public class AddEducationActivity extends AppCompatActivity {
             binding.graduationCourseName.setError("Please select a course");
             return;
         }
+
         if (binding.courseSpecialization.getText()==null || binding.courseSpecialization.getText().toString().isEmpty()) {
             binding.courseSpecialization.setError("Please select a specialization");
             return;
         }
+
         if (binding.graduationCollegeName.getText()==null || binding.graduationCollegeName.getText().toString().isEmpty()) {
             binding.graduationCollegeName.setError("Please enter a college name");
             return;
@@ -559,6 +565,7 @@ public class AddEducationActivity extends AppCompatActivity {
             binding.graduationStartYear.setError("Please enter start year");
             return;
         }
+
         if(binding.graduationEndYear.getText()==null || binding.graduationEndYear.getText().toString().isEmpty()) {
             binding.graduationEndYear.setError("Please enter end year");
             return;
@@ -573,7 +580,7 @@ public class AddEducationActivity extends AppCompatActivity {
         progressDialog.setMessage("saving details...");
         progressDialog.show();
 
-        String courseLevel=courseLevelSelectedRadioButton.getText().toString();
+//        String courseLevel=courseLevelSelectedRadioButton.getText().toString();
         String course=binding.graduationCourseName.getText().toString().trim();
         String specialization=binding.courseSpecialization.getText().toString().trim();
         String collegeName=binding.graduationCollegeName.getText().toString().trim();
@@ -607,7 +614,7 @@ public class AddEducationActivity extends AppCompatActivity {
         System.out.println("saving to database");
         new Thread(() -> {
             db.jobDao().insertOrUpdateUser(user);
-            db.jobDao().insertEducation(graduationDetails);
+//            db.jobDao().insertEducation(graduationDetails);
             saveUserToBackend("graduationDetails");
             runOnUiThread(() -> {
                 Toast.makeText(AddEducationActivity.this, "Graduation added!", Toast.LENGTH_SHORT).show();
