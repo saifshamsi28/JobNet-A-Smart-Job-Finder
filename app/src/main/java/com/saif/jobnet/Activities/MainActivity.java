@@ -382,12 +382,6 @@ public class MainActivity extends AppCompatActivity {
                         ;
                         endTime = System.currentTimeMillis();
                         Log.d("API Response", "Time taken: " + TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) + " seconds");
-//                        for(Job job:jobs){
-//                            //printing all the details of jobs
-//                            System.out.println("job id: "+job.getJobId()+" , \njob title: "+job.getTitle()+" , " +
-//                                    "\njob company: "+job.getCompany()+"\nlocation: "+job.getLocation()+"\nsalary: "+job.getSalary()
-//                            +"\n min salary: "+job.getMinSalary()+"\n max salary: "+job.getMaxSalary()+"\n");
-//                        }
                         populateTableWithJobs(jobs, query);
                     } else
                         Log.d("API Response", "No jobs found");
@@ -407,20 +401,20 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
-        int i=0;
-        for(Job job:jobs){
-            if(i<10){
-                //print each field of job
-                System.out.println(job);
-                i++;
-            }else {
-                break;
-            }
-        }
+//        int i=0;
+//        for(Job job:jobs){
+//            if(i<10){
+//                //print each field of job
+//                System.out.println(job);
+//                i++;
+//            }else {
+//                break;
+//            }
+//        }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
         binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
         binding.recyclerViewSuggestedJobs.setAdapter(jobsAdapter);
-//        binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
+//      binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerViewRecentJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 

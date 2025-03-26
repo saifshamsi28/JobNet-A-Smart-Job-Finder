@@ -318,6 +318,7 @@ public class AddEducationActivity extends AppCompatActivity {
 
     private void savedEducationDetails() {
         if(courseLevelSelectedRadioButton!=null){
+//            Toast.makeText(this, "saving details for "+courseLevelSelectedRadioButton.getText().toString(), Toast.LENGTH_SHORT).show();
             switch (courseLevelSelectedRadioButton.getText().toString()){
                 case "Graduation/Diploma":
                     saveGraduationDetails();
