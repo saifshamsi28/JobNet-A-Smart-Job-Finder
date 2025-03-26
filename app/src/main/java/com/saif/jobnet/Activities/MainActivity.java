@@ -120,24 +120,6 @@ public class MainActivity extends AppCompatActivity {
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
 
-        //to check database has any item or not
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                boolean isEmpty = jobDao.getAllJobs().isEmpty();
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (isEmpty) {
-//                            binding.viewHistory.setVisibility(View.GONE);
-//                        } else {
-//                            binding.viewHistory.setVisibility(View.VISIBLE);
-//                        }
-//                    }
-//                });
-//            }
-//        }).start();
-
         // Start showing titles
         displayJobTitles();
         progressDialog = new ProgressDialog(this);

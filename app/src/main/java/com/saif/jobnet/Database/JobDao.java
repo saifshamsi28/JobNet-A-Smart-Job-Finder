@@ -50,33 +50,9 @@ public interface JobDao {
     @Query("SELECT * FROM user where id=:id")
     User getCurrentUser(String id);
 
-    //insert graduationDetails
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertEducation(GraduationDetails graduationDetails);
-
-    //insert class12Details
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertEducation(Class12Details class12Details);
-
-    //insert class10Details
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertEducation(Class10Details class10Details);
-
     // Clear all user data (e.g., during logout)
     @Query("DELETE FROM user")
     void clearUser();
-
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    void insertEducation(EducationDetails education);
-
-//    @Query("SELECT * FROM education_ug")
-//    GraduationDetails getGraduationDetailsByUserId();
-//
-//    @Query("SELECT * FROM education_12th")
-//    Class12Details getClass12Details();
-//
-//    @Query("SELECT * FROM education_10th")
-//    Class10Details getClass10Details();
 
     //save courses to database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -86,6 +62,4 @@ public interface JobDao {
     @Query("SELECT * FROM courses")
     List<Course> getAllCourses();
 
-//    @Query("SELECT * FROM courses WHERE id=id")
-//    Course getCourseById(String id);
 }
