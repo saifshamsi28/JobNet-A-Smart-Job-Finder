@@ -65,8 +65,8 @@ import com.saif.jobnet.JobNetPermissions;
 import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.JobNetResponse;
-import com.saif.jobnet.Models.Resume;
-import com.saif.jobnet.Models.ResumeResponseEntity;
+import com.saif.jobnet.Models.Resume.Resume;
+import com.saif.jobnet.Models.Resume.ResumeResponseEntity;
 import com.saif.jobnet.Models.UserUpdateDTO;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
@@ -719,11 +719,11 @@ public class ProfileActivity extends AppCompatActivity {
             // Store the resume URL from response
             resumeUrl = resume.getResumeUrl();
 
-            user.setResumeUploaded(true);
-            user.setResumeName(resume.getResumeName());
-            user.setResumeUrl(resume.getResumeUrl());
-            user.setResumeUploadDate(resume.getResumeUploadDate());
-            user.setResumeSize(resume.getResumeSize());
+//            user.setResumeUploaded(true);
+//            user.setResumeName(resume.getResumeName());
+//            user.setResumeUrl(resume.getResumeUrl());
+//            user.setResumeUploadDate(resume.getResumeUploadDate());
+//            user.setResumeSize(resume.getResumeSize());
 
             new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
 
@@ -1086,11 +1086,11 @@ public class ProfileActivity extends AppCompatActivity {
                         System.out.println("Password: " + user1.getPassword());
                         System.out.println("Phone number: " + user1.getPhoneNumber());
                         System.out.println("saved jobs: " + user1.getSavedJobs());
-                        System.out.println("Resume uploaded: " + user1.isResumeUploaded());
-                        System.out.println("Resume url: " + user1.getResumeUrl());
-                        System.out.println("Resume name: " + user1.getResumeName());
-                        System.out.println("Resume upload date: " + user1.getResumeUploadDate());
-                        System.out.println("Resume size: " + user1.getResumeSize());
+//                        System.out.println("Resume uploaded: " + user1.isResumeUploaded());
+//                        System.out.println("Resume url: " + user1.getResumeUrl());
+//                        System.out.println("Resume name: " + user1.getResumeName());
+//                        System.out.println("Resume upload date: " + user1.getResumeUploadDate());
+//                        System.out.println("Resume size: " + user1.getResumeSize());
 
                         //update the user in local database
                         progressDialog.dismiss();
@@ -1170,16 +1170,16 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //set resume details
-        if (user.isResumeUploaded() || user.getResumeUrl()!=null || !user.getResumeUrl().isEmpty()) {
+        if (user.getResume()!=null) {
 
-            sharedPreferences.edit().putString("resumeUrl",user.getResumeUrl()).apply();
+            sharedPreferences.edit().putString("resumeUrl",user.getResume().getResumeUrl()).apply();
             binding.uploadResumeButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(VISIBLE);
 
-            binding.resumeName.setText(user.getResumeName());
-            binding.resumeSize.setText(formatResumeSize(user.getResumeSize()));
-            binding.resumeUploadDate.setText(user.getResumeUploadDate());
+            binding.resumeName.setText(user.getResume().getResumeName());
+            binding.resumeSize.setText(formatResumeSize(user.getResume().getResumeSize()));
+            binding.resumeUploadDate.setText(user.getResume().getResumeUploadDate());
         }else {
             System.out.println("resume name is null or empty");
             binding.uploadResumeButton.setVisibility(VISIBLE);
@@ -1187,6 +1187,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.resumeLayout.setVisibility(GONE);
 //                binding.btnUploadResume.setText("Upload Resume");
         }
+
         if(!user.getSavedJobs().isEmpty()){
             binding.savedJobsNumber.setText(user.getSavedJobs().size()+"");
             binding.savedJobsLayout.setVisibility(VISIBLE);
