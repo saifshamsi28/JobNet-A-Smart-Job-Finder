@@ -1,8 +1,6 @@
-package com.saif.jobnet.Models;
+package com.saif.jobnet.Models.Resume;
 
 import androidx.annotation.NonNull;
-
-import okhttp3.MultipartBody;
 
 public class Resume {
     private String userId;

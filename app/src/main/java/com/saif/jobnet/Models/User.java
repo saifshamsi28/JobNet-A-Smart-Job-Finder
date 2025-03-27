@@ -14,6 +14,7 @@ import com.saif.jobnet.Models.Education.Class12Details;
 import com.saif.jobnet.Models.Education.Class12TypeConverter;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Education.GraduationTypeConverter;
+import com.saif.jobnet.Models.Resume.Resume;
 import com.saif.jobnet.Utils.Converters;
 
 import java.util.ArrayList;
@@ -32,11 +33,13 @@ public class User {
     private String password;
     private String profileImage;
     private String phoneNumber;
-    private boolean isResumeUploaded;
-    private String resumeUrl;
-    private String resumeName;
-    private String resumeUploadDate;
-    private String resumeSize;
+//    private boolean isResumeUploaded;
+//    private String resumeUrl;
+//    private String resumeName;
+//    private String resumeUploadDate;
+//    private String resumeSize;
+
+    private Resume resume;
 
     @TypeConverters(Converters.class) // Convert List<Job> to a storable format
     private List<Job> savedJobs = new ArrayList<>();
@@ -64,11 +67,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.isResumeUploaded = isResumeUploaded;
-        this.resumeUrl = resumeUrl;
-        this.resumeUploadDate = resumeUploadDate;
-        this.resumeName = resumeName;
-        this.resumeSize = resumeSize;
+//        this.isResumeUploaded = isResumeUploaded;
+//        this.resumeUrl = resumeUrl;
+//        this.resumeUploadDate = resumeUploadDate;
+//        this.resumeName = resumeName;
+//        this.resumeSize = resumeSize;
     }
 
     // Constructor for new users (e.g., registration)
@@ -79,11 +82,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.isResumeUploaded = false;
-        this.resumeUrl = "";
-        this.resumeUploadDate="";
-        this.resumeName="";
-        this.resumeSize="";
+//        this.isResumeUploaded = false;
+//        this.resumeUrl = "";
+//        this.resumeUploadDate="";
+//        this.resumeName="";
+//        this.resumeSize="";
     }
 
     // Getters and Setters
@@ -152,45 +155,53 @@ public class User {
         this.savedJobs = savedJobs;
     }
 
-    public boolean isResumeUploaded() {
-        return isResumeUploaded;
+    public Resume getResume() {
+        return resume;
     }
 
-    public void setResumeUploaded(boolean resumeUploaded) {
-        isResumeUploaded = resumeUploaded;
+    public void setResume(Resume resume) {
+        this.resume = resume;
     }
 
-    public String getResumeUrl() {
-        return resumeUrl;
-    }
-
-    public void setResumeUrl(String resumeUrl) {
-        this.resumeUrl = resumeUrl;
-    }
-
-    public String getResumeUploadDate() {
-        return resumeUploadDate;
-    }
-
-    public void setResumeUploadDate(String resumeUploadDate) {
-        this.resumeUploadDate = resumeUploadDate;
-    }
-
-    public String getResumeName() {
-        return resumeName;
-    }
-
-    public void setResumeName(String resumeName) {
-        this.resumeName = resumeName;
-    }
-
-    public String getResumeSize() {
-        return resumeSize;
-    }
-
-    public void setResumeSize(String resumeSize) {
-        this.resumeSize = resumeSize;
-    }
+//    public boolean isResumeUploaded() {
+//        return isResumeUploaded;
+//    }
+//
+//    public void setResumeUploaded(boolean resumeUploaded) {
+//        isResumeUploaded = resumeUploaded;
+//    }
+//
+//    public String getResumeUrl() {
+//        return resumeUrl;
+//    }
+//
+//    public void setResumeUrl(String resumeUrl) {
+//        this.resumeUrl = resumeUrl;
+//    }
+//
+//    public String getResumeUploadDate() {
+//        return resumeUploadDate;
+//    }
+//
+//    public void setResumeUploadDate(String resumeUploadDate) {
+//        this.resumeUploadDate = resumeUploadDate;
+//    }
+//
+//    public String getResumeName() {
+//        return resumeName;
+//    }
+//
+//    public void setResumeName(String resumeName) {
+//        this.resumeName = resumeName;
+//    }
+//
+//    public String getResumeSize() {
+//        return resumeSize;
+//    }
+//
+//    public void setResumeSize(String resumeSize) {
+//        this.resumeSize = resumeSize;
+//    }
 
     public BasicDetails getBasicDetails() {
         return basicDetails;
@@ -234,11 +245,12 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", isResumeUploaded=" + isResumeUploaded +
-                ", resumeUrl='" + resumeUrl + '\'' +
-                ", resumeName='" + resumeName + '\'' +
-                ", resumeUploadDate='" + resumeUploadDate + '\'' +
-                ", resumeSize='" + resumeSize + '\'' +
+//                ", isResumeUploaded=" + isResumeUploaded +
+//                ", resumeUrl='" + resumeUrl + '\'' +
+//                ", resumeName='" + resumeName + '\'' +
+//                ", resumeUploadDate='" + resumeUploadDate + '\'' +
+//                ", resumeSize='" + resumeSize + '\'' +
+                "resume=" + resume +
                 ", basicDetails=" + basicDetails +
                 ", graduationDetails=" + graduationDetails +
                 ", class12Details=" + class12Details +
