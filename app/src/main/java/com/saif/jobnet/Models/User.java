@@ -15,13 +15,14 @@ import com.saif.jobnet.Models.Education.Class12TypeConverter;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Education.GraduationTypeConverter;
 import com.saif.jobnet.Models.Resume.Resume;
+import com.saif.jobnet.Models.Resume.ResumeConverter;
 import com.saif.jobnet.Utils.Converters;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "user")
-@TypeConverters({GraduationTypeConverter.class, Class10TypeConverter.class, Class12TypeConverter.class,Converters.class})
+@TypeConverters({ResumeConverter.class,GraduationTypeConverter.class, Class10TypeConverter.class, Class12TypeConverter.class,Converters.class})
 public class User {
     @PrimaryKey
     @NonNull
@@ -33,12 +34,8 @@ public class User {
     private String password;
     private String profileImage;
     private String phoneNumber;
-//    private boolean isResumeUploaded;
-//    private String resumeUrl;
-//    private String resumeName;
-//    private String resumeUploadDate;
-//    private String resumeSize;
 
+    @TypeConverters(ResumeConverter.class)
     private Resume resume;
 
     @TypeConverters(Converters.class) // Convert List<Job> to a storable format
@@ -58,20 +55,13 @@ public class User {
 
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
-                String password, String phoneNumber,
-                boolean isResumeUploaded, String resumeUrl, String resumeUploadDate,
-                String resumeName, String resumeSize) {
+                String password, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-//        this.isResumeUploaded = isResumeUploaded;
-//        this.resumeUrl = resumeUrl;
-//        this.resumeUploadDate = resumeUploadDate;
-//        this.resumeName = resumeName;
-//        this.resumeSize = resumeSize;
     }
 
     // Constructor for new users (e.g., registration)
@@ -82,11 +72,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
-//        this.isResumeUploaded = false;
-//        this.resumeUrl = "";
-//        this.resumeUploadDate="";
-//        this.resumeName="";
-//        this.resumeSize="";
     }
 
     // Getters and Setters
