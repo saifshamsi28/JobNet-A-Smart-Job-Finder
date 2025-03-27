@@ -401,20 +401,9 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
-//        int i=0;
-//        for(Job job:jobs){
-//            if(i<10){
-//                //print each field of job
-//                System.out.println(job);
-//                i++;
-//            }else {
-//                break;
-//            }
-//        }
         JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
         binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
         binding.recyclerViewSuggestedJobs.setAdapter(jobsAdapter);
-//      binding.recyclerViewJobs.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerViewRecentJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
