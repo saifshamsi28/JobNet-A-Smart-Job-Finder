@@ -330,7 +330,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     User user1=response.body();
                     if(user1!=null && user!=null){
-                        System.out.println("previous user basic details: "+user.getBasicDetails());
+                        System.out.println("previous user basic details: "+user);
                         user=user1;
                         //save to local database
                         new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
@@ -719,11 +719,7 @@ public class ProfileActivity extends AppCompatActivity {
             // Store the resume URL from response
             resumeUrl = resume.getResumeUrl();
 
-//            user.setResumeUploaded(true);
-//            user.setResumeName(resume.getResumeName());
-//            user.setResumeUrl(resume.getResumeUrl());
-//            user.setResumeUploadDate(resume.getResumeUploadDate());
-//            user.setResumeSize(resume.getResumeSize());
+            user.setResume(resume);
 
             new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
 
@@ -905,13 +901,16 @@ public class ProfileActivity extends AppCompatActivity {
             binding.profileName.setError("Please enter your name");
             return;
         }
+
         if(email.isEmpty()){
             binding.userEmail.setError("Please enter your email");
             return;
         }
+
         if (!isValidPhoneNumber(phoneNumber)) {
             return;
         }
+
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.userEmail.setError("Invalid email address");
         }else {
@@ -1079,19 +1078,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
                         //print user details received in response
                         System.out.println("User Updated Successfully");
-                        System.out.println("Name: " + user1.getName());
-                        System.out.println("user name: " + user1.getUserName());
-                        System.out.println("Email: " + user1.getEmail());
-                        System.out.println("User id: " + user1.getId());
-                        System.out.println("Password: " + user1.getPassword());
-                        System.out.println("Phone number: " + user1.getPhoneNumber());
-                        System.out.println("saved jobs: " + user1.getSavedJobs());
-//                        System.out.println("Resume uploaded: " + user1.isResumeUploaded());
-//                        System.out.println("Resume url: " + user1.getResumeUrl());
-//                        System.out.println("Resume name: " + user1.getResumeName());
-//                        System.out.println("Resume upload date: " + user1.getResumeUploadDate());
-//                        System.out.println("Resume size: " + user1.getResumeSize());
-
+                        System.out.println("updated user: "+user1);
                         //update the user in local database
                         progressDialog.dismiss();
                         new Thread(() -> jobDao.insertOrUpdateUser(user1)).start();

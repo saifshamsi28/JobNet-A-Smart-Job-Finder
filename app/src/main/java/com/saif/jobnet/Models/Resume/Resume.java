@@ -3,7 +3,6 @@ package com.saif.jobnet.Models.Resume;
 import androidx.annotation.NonNull;
 
 public class Resume {
-    private String userId;
     private String resumeName;
     private String resumeUrl="";
     private String resumeUploadDate;
@@ -12,24 +11,11 @@ public class Resume {
     public Resume() {
     }
 
-    public Resume(String userId) {
-        this.userId = userId;
-    }
-
-    public Resume(String userId, String resumeName, String resumeUrl, String resumeUploadDate, String resumeSize) {
-        this.userId = userId;
+    public Resume(String resumeName, String resumeUrl, String resumeUploadDate, String resumeSize) {
         this.resumeName = resumeName;
         this.resumeUrl = resumeUrl;
         this.resumeUploadDate = resumeUploadDate;
         this.resumeSize = resumeSize;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getResumeName() {
@@ -69,8 +55,7 @@ public class Resume {
     public String toString() {
         // Convert the Resume object to a string representation
         return "Resume{" +
-                "userId='" + userId + '\'' +
-                ", resumeName='" + resumeName + '\'' +
+                " resumeName='" + resumeName + '\'' +
                 ", resumeUrl='" + resumeUrl + '\'' +
                 ", resumeUploadDate='" + resumeUploadDate + '\'' +
                 ", resumeSize='" + resumeSize + '\'' +
