@@ -52,12 +52,6 @@ public class CropImageActivity extends AppCompatActivity {
             cropImage();
         });
 
-//        cropImageView.setOnSetCropOverlayMovedListener(rect -> updateImageSize());
-        cropImageView.setOnCropWindowChangedListener(this::updateImageSize);
-
-
-        String fileSize=getFileSize(imageUri);
-
         binding.cropImageView.setOnCropWindowChangedListener(new CropImageView.OnSetCropWindowChangeListener() {
             @Override
             public void onCropWindowChanged() {
@@ -131,65 +125,5 @@ public class CropImageActivity extends AppCompatActivity {
     }
     private void rotateImageRight() {
         cropImageView.rotateImage(-90);
-    }
-
-    private void updateImageSize() {
-        Bitmap croppedBitmap = cropImageView.getCroppedImage();
-
-        if (croppedBitmap != null) {
-            // Convert bitmap to byte array
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-
-            // Calculate image size
-            double sizeMB = byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
-            double sizeKB = byteArray.length / 1024.0; // Convert bytes to KB
-
-            // Format size for display
-            String formattedSize = sizeMB >= 1 ? String.format("%.2f MB", sizeMB) : String.format("%.2f KB", sizeKB);
-
-            // Update text color based on size limit
-            if (sizeMB > 5) {
-                binding.imageSizeText.setTextColor(Color.RED);
-                binding.saveBtn.setEnabled(false);
-            } else {
-                binding.imageSizeText.setTextColor(Color.BLUE);
-                binding.saveBtn.setEnabled(true);
-            }
-
-            // Set size text
-            binding.imageSizeText.setText(formattedSize);
-        }else {
-            Toast.makeText(this, "cropped image is null", Toast.LENGTH_SHORT).show();
-            Log.e("Crop image activity","crop image is null");
-        }
-        }
-
-
-
-    private double getBitmapSizeInMB(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-        return byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
-    }
-
-    // Method to get file size
-    private String getFileSize(Uri uri) {
-        try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
-            if (inputStream != null) {
-                int available = inputStream.available();
-
-                inputStream.close();
-                //convert the image size to MB
-                double fileSizeInMB = available / (1024.0 * 1024.0);
-                return String.valueOf(fileSizeInMB);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }
