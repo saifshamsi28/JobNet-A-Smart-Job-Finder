@@ -15,6 +15,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/imageSizeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Size: 0 MB"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/cropImageView"
+        app:layout_constraintEnd_toStartOf="@+id/reset_button"
+        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+
     <ImageView
         android:id="@+id/reset_button"
         android:layout_width="wrap_content"
@@ -24,6 +39,7 @@
         android:src="@drawable/reset_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/edit_buttons_layout"
         android:layout_width="match_parent"
@@ -81,10 +97,11 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
         app:cropShape="rectangle"
-        app:layout_constraintBottom_toTopOf="@id/edit_buttons_layout"
+        app:layout_constraintBottom_toTopOf="@+id/edit_buttons_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/backBtn"
+        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
