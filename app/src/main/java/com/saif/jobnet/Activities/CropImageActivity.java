@@ -1,14 +1,22 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import static java.lang.String.*;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -17,10 +25,15 @@ import com.canhub.cropper.CropImageView;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityCropImageBinding;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class CropImageActivity extends AppCompatActivity {
 
     ActivityCropImageBinding binding;
     private CropImageView cropImageView;
+    private static final double MAX_SIZE_MB = 5.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +50,20 @@ public class CropImageActivity extends AppCompatActivity {
 
         binding.saveBtn.setOnClickListener(v -> {
             cropImage();
+        });
+
+//        cropImageView.setOnSetCropOverlayMovedListener(rect -> updateImageSize());
+        cropImageView.setOnCropWindowChangedListener(this::updateImageSize);
+
+
+        String fileSize=getFileSize(imageUri);
+
+        binding.cropImageView.setOnCropWindowChangedListener(new CropImageView.OnSetCropWindowChangeListener() {
+            @Override
+            public void onCropWindowChanged() {
+                binding.imageSizeText.setTextColor(ContextCompat.getColor(CropImageActivity.this, R.color.black));
+                binding.imageSizeText.setVisibility(GONE);
+            }
         });
         binding.rotateLeft.setOnClickListener(v -> rotateImageLeft());
         binding.rotateRight.setOnClickListener(v -> rotateImageRight());
@@ -61,6 +88,17 @@ public class CropImageActivity extends AppCompatActivity {
                 if (croppedImageUri != null) {
 //                    Toast.makeText(this, "image is cropped and sent", Toast.LENGTH_SHORT).show();
 //                    Log.e("cropped image", "img uri : " + croppedImageUri);
+
+//                    long fileSizeInBytes = getFileSize(croppedImageUri);
+//                    double fileSizeInMB = fileSizeInBytes / (1024.0 * 1024.0);
+//                    binding.imageSizeText.setText(String.format("Size: %.2f MB", fileSizeInMB));
+//                    binding.imageSizeText.setVisibility(VISIBLE);
+
+//                    if (fileSizeInMB > 5) {
+//                        Toast.makeText(this, "Image size exceeds 5MB limit!", Toast.LENGTH_SHORT).show();
+//                        binding.imageSizeText.setTextColor(ContextCompat.getColor(this, R.color.red));
+//                        return;
+//                    }
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("croppedImageUri", croppedImageUri.toString());
                     resultIntent.setData(croppedImageUri);
@@ -93,5 +131,65 @@ public class CropImageActivity extends AppCompatActivity {
     }
     private void rotateImageRight() {
         cropImageView.rotateImage(-90);
+    }
+
+    private void updateImageSize() {
+        Bitmap croppedBitmap = cropImageView.getCroppedImage();
+
+        if (croppedBitmap != null) {
+            // Convert bitmap to byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            // Calculate image size
+            double sizeMB = byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
+            double sizeKB = byteArray.length / 1024.0; // Convert bytes to KB
+
+            // Format size for display
+            String formattedSize = sizeMB >= 1 ? String.format("%.2f MB", sizeMB) : String.format("%.2f KB", sizeKB);
+
+            // Update text color based on size limit
+            if (sizeMB > 5) {
+                binding.imageSizeText.setTextColor(Color.RED);
+                binding.saveBtn.setEnabled(false);
+            } else {
+                binding.imageSizeText.setTextColor(Color.BLUE);
+                binding.saveBtn.setEnabled(true);
+            }
+
+            // Set size text
+            binding.imageSizeText.setText(formattedSize);
+        }else {
+            Toast.makeText(this, "cropped image is null", Toast.LENGTH_SHORT).show();
+            Log.e("Crop image activity","crop image is null");
+        }
+        }
+
+
+
+    private double getBitmapSizeInMB(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        return byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
+    }
+
+    // Method to get file size
+    private String getFileSize(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream != null) {
+                int available = inputStream.available();
+
+                inputStream.close();
+                //convert the image size to MB
+                double fileSizeInMB = available / (1024.0 * 1024.0);
+                return String.valueOf(fileSizeInMB);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
