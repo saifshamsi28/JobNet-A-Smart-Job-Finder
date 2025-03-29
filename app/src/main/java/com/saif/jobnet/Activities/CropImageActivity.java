@@ -52,6 +52,9 @@ public class CropImageActivity extends AppCompatActivity {
             cropImage();
         });
 
+        cropImageView.setOnCropWindowChangedListener(() -> updateImageSize());
+
+
         binding.cropImageView.setOnCropWindowChangedListener(new CropImageView.OnSetCropWindowChangeListener() {
             @Override
             public void onCropWindowChanged() {
@@ -126,4 +129,37 @@ public class CropImageActivity extends AppCompatActivity {
     private void rotateImageRight() {
         cropImageView.rotateImage(-90);
     }
+
+    private void updateImageSize() {
+        Bitmap croppedBitmap = cropImageView.getCroppedImage();
+
+        if (croppedBitmap != null) {
+            // Convert bitmap to byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            // Calculate image size
+            double sizeMB = byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
+            double sizeKB = byteArray.length / 1024.0; // Convert bytes to KB
+
+            // Format size for display
+            String formattedSize = sizeMB >= 1 ? String.format("%.2f MB", sizeMB) : String.format("%.2f KB", sizeKB);
+
+            // Update text color based on size limit
+            if (sizeMB > 5) {
+                binding.imageSizeText.setTextColor(Color.RED);
+                binding.saveBtn.setEnabled(false);
+            } else {
+                binding.imageSizeText.setTextColor(Color.BLUE);
+                binding.saveBtn.setEnabled(true);
+            }
+
+            // Set size text
+            binding.imageSizeText.setText(formattedSize);
+        }else {
+            Log.e("cropped image", "croppedBitmap is null");
+        }
+    }
+
 }

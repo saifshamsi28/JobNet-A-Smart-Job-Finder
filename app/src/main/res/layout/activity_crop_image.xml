@@ -19,16 +19,17 @@
         android:id="@+id/imageSizeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Size: 0 MB"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="0 MB"
+        android:textColor="@color/blue"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/cropImageView"
-        app:layout_constraintEnd_toStartOf="@+id/reset_button"
-        app:layout_constraintStart_toEndOf="@+id/backBtn"
+        app:layout_constraintEnd_toStartOf="@id/reset_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/backBtn"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5" />
-
 
     <ImageView
         android:id="@+id/reset_button"
