@@ -160,57 +160,13 @@ public class CropImageActivity extends AppCompatActivity {
         cropImageView.rotateImage(-90);
     }
 
-    private void updateImageSize() {
-
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap croppedBitmap = cropImageView.getCroppedImage();
-
-                if (croppedBitmap != null) {
-                    // Convert bitmap to byte array
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-                    // Calculate image size
-                    double sizeMB = byteArray.length / (1024.0 * 1024.0); // Convert bytes to MB
-                    double sizeKB = byteArray.length / 1024.0; // Convert bytes to KB
-
-                    // Format size for display
-                    String formattedSize = sizeMB >= 1 ? String.format("%.2f MB", sizeMB) : String.format("%.2f KB", sizeKB);
-
-                    Log.d("cropped image", "Image size: " + formattedSize + " MB");
-                    // Update text color based on size limit
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (sizeMB > 5) {
-                                binding.imageSizeText.setTextColor(Color.RED);
-                                binding.saveBtn.setEnabled(false);
-                            } else {
-                                binding.imageSizeText.setTextColor(Color.BLUE);
-                                binding.saveBtn.setEnabled(true);
-                            }
-
-                            // Set size text
-                            binding.imageSizeText.setText(formattedSize);
-                        }
-                    });
-                }else {
-                    Log.e("cropped image", "croppedBitmap is null");
-                }
-            }
-        });
-    }
-
     private void updateCroppedImageSize(final Bitmap bitmap) {
         executorService.execute(() -> {
             try {
                 // Save image to cache
                 File file = new File(getCacheDir(), "temp_image.jpg");
                 FileOutputStream fos = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos); // No compression for exact size
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos); // No compression for exact size
                 fos.flush();
                 fos.close();
 
