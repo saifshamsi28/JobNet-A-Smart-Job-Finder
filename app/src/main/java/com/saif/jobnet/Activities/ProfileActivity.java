@@ -135,13 +135,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Check if user is logged in
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
-        System.out.println("ProfileActivity " +isLoggedIn);
+//        System.out.println("ProfileActivity " +isLoggedIn);
         if (!isLoggedIn) {
             // Redirect to LoginActivity
             Toast.makeText(this, "Redirected to login", Toast.LENGTH_SHORT).show();
             redirectToLogin();
         }else{
-            System.out.println("ProfileActivity ,");
+//            System.out.println("ProfileActivity ,");
             loadUserProfile();
         }
 
@@ -330,12 +330,12 @@ public class ProfileActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     User user1=response.body();
                     if(user1!=null && user!=null){
-                        System.out.println("previous user basic details: "+user);
+//                        System.out.println("previous user basic details: "+user);
                         user=user1;
                         //save to local database
                         new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
                         setUpProfile(user);
-                        System.out.println("updated user basic details: "+user.getBasicDetails());
+//                        System.out.println("updated user basic details: "+user.getBasicDetails());
 //                        Toast.makeText(ProfileActivity.this, "Profile synchronised Successfully", Toast.LENGTH_SHORT).show();
                     }
                 }else {
@@ -453,7 +453,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri fileUri = data.getData();
             if (fileUri != null) {
-                System.out.println("storing local uri: "+ fileUri);
+//                System.out.println("storing local uri: "+ fileUri);
                 Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
                 uploadResumeInChunks(fileUri);
             }else {
@@ -478,6 +478,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             //if image size is greater than 5mb then return
             if (totalChunks > 10) {
+                System.out.println("in ProfileActivity file size: "+fileSize/(1024.0 * 1024.0));
                 Toast.makeText(this, "Please upload file less than 5mb", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -531,7 +532,7 @@ public class ProfileActivity extends AppCompatActivity {
                         JobNetResponse jobNetResponse = response.body();
                         Log.d("UploadChunk", "Response: " + jobNetResponse);;
                         user.setProfileImage(jobNetResponse.getMessage());
-                        System.out.println("Updated profile image URL: " + jobNetResponse.getMessage());
+//                        System.out.println("Updated profile image URL: " + jobNetResponse.getMessage());
 
                         new Handler(Looper.getMainLooper()).postDelayed(() -> {
                             if (user.getProfileImage() != null) {
@@ -1078,7 +1079,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
                         //print user details received in response
                         System.out.println("User Updated Successfully");
-                        System.out.println("updated user: "+user1);
+//                        System.out.println("updated user: "+user1);
                         //update the user in local database
                         progressDialog.dismiss();
                         new Thread(() -> jobDao.insertOrUpdateUser(user1)).start();
@@ -1110,14 +1111,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserProfile() {
-        System.out.println("user id received: "+userId);
+//        System.out.println("user id received: "+userId);
         //fetch user from local database
         new Thread(new Runnable() {
             @Override
             public void run() {
                 user= jobDao.getCurrentUser(userId);
                 runOnUiThread(() -> {
-                    System.out.println("user got in database: "+user);
+//                    System.out.println("user got in database: "+user);
                     setUpProfile(user);
                     //synchronise user details from server
                     synchronizeUserDetails(userId);
@@ -1168,7 +1169,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.resumeSize.setText(formatResumeSize(user.getResume().getResumeSize()));
             binding.resumeUploadDate.setText(user.getResume().getResumeUploadDate());
         }else {
-            System.out.println("resume name is null or empty");
+//            System.out.println("resume name is null or empty");
             binding.uploadResumeButton.setVisibility(VISIBLE);
             binding.resumeUpdateButton.setVisibility(GONE);
             binding.resumeLayout.setVisibility(GONE);
@@ -1202,7 +1203,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setEducationDetails() {
         if (user.getGraduationDetails() != null) {
-            System.out.println("Graduation Details: " + user.getGraduationDetails());
+//            System.out.println("Graduation Details: " + user.getGraduationDetails());
             binding.graduationEduSection.setVisibility(View.VISIBLE);
             binding.graduationCourseTitle.setText(user.getGraduationDetails().getCourse());
             binding.graduationCollegeName.setText(user.getGraduationDetails().getCollege());
@@ -1404,7 +1405,7 @@ public class ProfileActivity extends AppCompatActivity {
                 passwordUpdateDialog.getWindow().setBackgroundDrawable(AppCompatResources.getDrawable(this,R.drawable.custom_update_bg));
             }
             EditText editText=passwordUpdateDialog.findViewById(R.id.old_password);
-            System.out.println("old pass: "+editText.getText().toString());
+//            System.out.println("old pass: "+editText.getText().toString());
 
             updatePassword();
             passwordUpdateDialog.show();
@@ -1430,7 +1431,7 @@ public class ProfileActivity extends AppCompatActivity {
         passwordVerifyButton.setOnClickListener(v -> {
             // Dynamically fetch the entered old password
             String oldPassword = oldPasswordEdittext.getText().toString().trim();
-            System.out.println("old pass: "+oldPassword+" , stored pass: "+storedPassword+"inside updatePassword() method");
+//            System.out.println("old pass: "+oldPassword+" , stored pass: "+storedPassword+"inside updatePassword() method");
 
             if (oldPassword.isEmpty()) {
                 oldPasswordEdittext.setError("Please enter your old password");
