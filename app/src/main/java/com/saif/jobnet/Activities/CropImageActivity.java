@@ -144,7 +144,7 @@ public class CropImageActivity extends AppCompatActivity {
 
         // This should start the crop operation and trigger the listener
         cropImageView.croppedImageAsync(
-                Bitmap.CompressFormat.PNG,   // You can use other formats like JPEG or WEBP
+                Bitmap.CompressFormat.JPEG,   // You can use other formats like JPEG or WEBP
                 90,                          // Quality of the compressed image
                 0,                           // Width for resizing, 0 means no resizing
                 0,                           // Height for resizing, 0 means no resizing
@@ -174,18 +174,20 @@ public class CropImageActivity extends AppCompatActivity {
                 double fileSizeMB = file.length() / (1024.0 * 1024.0);
 
                 // Switch back to UI thread to update TextView
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    binding.imageSizeText.setText(String.format("Size: %.2f MB", fileSizeMB));
-                    System.out.println("in Cropped Image Activity file size: "+fileSizeMB);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.imageSizeText.setText(String.format("Size: %.2f MB", fileSizeMB));
+                        System.out.println("in Cropped Image Activity file size: "+fileSizeMB);
 
-                    // Change text color based on file size
-                    if (fileSizeMB > 5.0) {
-                        binding.imageSizeText.setTextColor(Color.RED);
-                    } else {
-                        binding.imageSizeText.setTextColor(Color.BLUE);
+                        // Change text color based on file size
+                        if (fileSizeMB > 5.0) {
+                            binding.imageSizeText.setTextColor(Color.RED);
+                        } else {
+                            binding.imageSizeText.setTextColor(Color.BLUE);
+                        }
                     }
                 });
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
