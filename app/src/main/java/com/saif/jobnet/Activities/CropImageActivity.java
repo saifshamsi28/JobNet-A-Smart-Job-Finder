@@ -166,7 +166,7 @@ public class CropImageActivity extends AppCompatActivity {
                 // Save image to cache
                 File file = new File(getCacheDir(), "temp_image.jpg");
                 FileOutputStream fos = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos); // No compression for exact size
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos);
                 fos.flush();
                 fos.close();
 
