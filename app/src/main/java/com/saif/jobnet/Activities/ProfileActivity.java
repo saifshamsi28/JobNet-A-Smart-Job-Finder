@@ -454,7 +454,7 @@ public class ProfileActivity extends AppCompatActivity {
             Uri fileUri = data.getData();
             if (fileUri != null) {
 //                System.out.println("storing local uri: "+ fileUri);
-                Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
+//                Log.d("Resume Upload", "Selected File URI: " + fileUri.toString());
                 uploadResumeInChunks(fileUri);
             }else {
                 Log.d("Resume Upload", "file uri is null");

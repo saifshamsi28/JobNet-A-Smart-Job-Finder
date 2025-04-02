@@ -1,19 +1,13 @@
 package com.saif.jobnet.Models.Education;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
-
-//@Entity(tableName = "education_10th")
 @TypeConverters(Class10TypeConverter.class)
 public class Class10Details {
     private String board;
     private String schoolName10th;
     private String medium;
     private String marks;
-//    @PrimaryKey
-//    @NonNull
     private String passingYear;
 
     public Class10Details() {

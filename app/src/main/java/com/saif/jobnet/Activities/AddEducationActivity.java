@@ -59,7 +59,6 @@ public class AddEducationActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ArrayList<String> coursesList = new ArrayList<>();
     private List<Course> courses=new ArrayList<>();
-    private Course selectedCourse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +78,7 @@ public class AddEducationActivity extends AppCompatActivity {
                 user=db.jobDao().getCurrentUser(userId);
                 courses=db.jobDao().getAllCourses();
 
-                //if there exists education details then set the visibility of education section
+                //set the education details to views based on selected education section if user has data
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -318,7 +317,6 @@ public class AddEducationActivity extends AppCompatActivity {
 
     private void savedEducationDetails() {
         if(courseLevelSelectedRadioButton!=null){
-//            Toast.makeText(this, "saving details for "+courseLevelSelectedRadioButton.getText().toString(), Toast.LENGTH_SHORT).show();
             switch (courseLevelSelectedRadioButton.getText().toString()){
                 case "Graduation/Diploma":
                     saveGraduationDetails();
@@ -409,7 +407,7 @@ public class AddEducationActivity extends AppCompatActivity {
             return;
         }
         if(binding.englishMarks12th.getText()==null || binding.englishMarks12th.getText().toString().isEmpty()){
-            binding.englishMarks12th.setError("Please enter elglish");
+            binding.englishMarks12th.setError("Please enter english marks");
             return;
         }
         if(binding.mathsMarks12th.getText()==null || binding.mathsMarks12th.getText().toString().isEmpty()){
@@ -541,7 +539,6 @@ public class AddEducationActivity extends AppCompatActivity {
         progressDialog.setMessage("saving details...");
         progressDialog.show();
 
-//        String courseLevel=courseLevelSelectedRadioButton.getText().toString();
         String course=binding.graduationCourseName.getText().toString().trim();
         String specialization=binding.courseSpecialization.getText().toString().trim();
         String collegeName=binding.graduationCollegeName.getText().toString().trim();
@@ -693,7 +690,6 @@ public class AddEducationActivity extends AppCompatActivity {
                     radioButton.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
                     radioButton.setVisibility(VISIBLE);
                     if (radioButtonCategory.getId()==binding.courseLevel.getId()) {
-//                        System.out.println("selected radio button category: "+radioButtonCategory.getChildAt(0));
                         showEducationSection(radioButton);
                     } else if (radioButtonCategory.getId()==binding.gradingSystemFlexLayout.getId()) {
 //                        System.out.println("called grading flex");
