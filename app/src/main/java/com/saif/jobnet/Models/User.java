@@ -53,6 +53,9 @@ public class User {
     @TypeConverters(Class10TypeConverter.class)
     private Class10Details class10Details;
 
+    @TypeConverters(SkillConverter.class)
+    private List<String> skills=new ArrayList<>();
+
     // Constructor for Room
     public User(@NonNull String id, String name, String userName, String email,
                 String password, String phoneNumber) {
@@ -220,6 +223,14 @@ public class User {
         this.class10Details = class10Details;
     }
 
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -240,6 +251,7 @@ public class User {
                 ", graduationDetails=" + graduationDetails +
                 ", class12Details=" + class12Details +
                 ", class10Details=" + class10Details +
+                ", skills=" + skills +
                 '}';
     }
 }
