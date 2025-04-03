@@ -60,7 +60,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
                 //get user id from shared preferences
                 SharedPreferences sharedPreferences=context.getSharedPreferences("JobNetPrefs", Context.MODE_PRIVATE);
                 String userId= sharedPreferences.getString("userId",null);
-                currentUser = jobDao.getCurrentUser(userId);
+                currentUser = jobDao.getCurrentUser();
             }
         }).start();
     }

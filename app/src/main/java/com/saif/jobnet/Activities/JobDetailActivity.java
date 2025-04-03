@@ -82,7 +82,7 @@ public class JobDetailActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                currentUser=jobDao.getCurrentUser(userId);
+                currentUser=jobDao.getCurrentUser();
 //                currentJob=jobDao.getJobByUrl(url);
             }
         }).start();

@@ -24,10 +24,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.AddEducationActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.JobNet.NoActionBar"
+            android:name=".Activities.AddSkillsActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activities.AddEducationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.JobNet.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Activities.CropImageActivity"
             android:exported="false" />

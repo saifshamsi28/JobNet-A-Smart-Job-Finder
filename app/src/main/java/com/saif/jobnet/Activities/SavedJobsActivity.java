@@ -52,7 +52,7 @@ public class SavedJobsActivity extends AppCompatActivity {
                     });
                 }else{
                     System.out.println("saved jobs activity: userId: "+userId);
-                    currentUser=jobDao.getCurrentUser(userId);
+                    currentUser=jobDao.getCurrentUser();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

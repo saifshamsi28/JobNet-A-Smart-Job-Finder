@@ -75,7 +75,7 @@ public class AddEducationActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user=db.jobDao().getCurrentUser(userId);
+                user=db.jobDao().getCurrentUser();
                 courses=db.jobDao().getAllCourses();
 
                 //set the education details to views based on selected education section if user has data

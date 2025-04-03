@@ -42,6 +42,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.saif.jobnet.Database.DatabaseClient;
@@ -305,6 +307,14 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intent=new Intent(ProfileActivity.this,AddEducationActivity.class);
                 intent.putExtra("userId",user.getId());
                 intent.putExtra("educationSection","Class X");
+                startActivity(intent);
+            }
+        });
+
+        binding.btnAddSkills.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,AddSkillsActivity.class);
                 startActivity(intent);
             }
         });
@@ -1116,12 +1126,12 @@ public class ProfileActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user= jobDao.getCurrentUser(userId);
+                user= jobDao.getCurrentUser();
                 runOnUiThread(() -> {
 //                    System.out.println("user got in database: "+user);
                     setUpProfile(user);
                     //synchronise user details from server
-                    synchronizeUserDetails(userId);
+//                    synchronizeUserDetails(userId);
                 });
             }
         }).start();
@@ -1196,6 +1206,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         //set education details
             setEducationDetails();
+
+        //set skills
+        displaySkills();
 
         //enable/disable the editing of fields
         userFieldsAccessibility(false);
@@ -1301,6 +1314,30 @@ public class ProfileActivity extends AppCompatActivity {
 //            }
 //        }
     }
+
+    private void displaySkills() {
+        FlexboxLayout skillsLayout = findViewById(R.id.skills_flex_layout);
+        skillsLayout.removeAllViews(); // Clear previous views
+
+        if (user.getSkills() == null || user.getSkills().isEmpty()) {
+            findViewById(R.id.skills_flex_layout).setVisibility(View.GONE); // Hide if no skills
+            return;
+        }
+
+        findViewById(R.id.skills_cardview).setVisibility(View.VISIBLE); // Show skills section
+
+        for (String skill : user.getSkills()) {
+            RadioButton skillButton = new RadioButton(this);
+            skillButton.setText(skill);
+            skillButton.setTextSize(12);
+            skillButton.setTextColor(ContextCompat.getColor(this, R.color.black));
+            skillButton.setPadding(18, 8, 18, 8);
+            skillButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_selected));
+            skillButton.setButtonDrawable(null); // Remove default radio circle
+            skillsLayout.addView(skillButton);
+        }
+    }
+
 
     private String formatDate(String inputDate) {
         try {

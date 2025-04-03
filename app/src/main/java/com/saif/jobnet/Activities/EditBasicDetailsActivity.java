@@ -60,7 +60,7 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                user = db.jobDao().getCurrentUser(userId);
+                user = db.jobDao().getCurrentUser();
 
                 if (user != null) {
                     runOnUiThread(new Runnable() {
