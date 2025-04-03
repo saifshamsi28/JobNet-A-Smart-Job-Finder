@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/tvSkillName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skill Name"
+        android:visibility="gone"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:padding="8dp"/>
+
+    <RadioButton
+        android:id="@+id/skillRadioButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@null"
+        android:drawablePadding="8dp"
+        android:visibility="gone"
+        android:background="@drawable/gender_selector_bg"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"/>
+</LinearLayout>
