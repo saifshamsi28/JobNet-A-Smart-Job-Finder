@@ -39,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -1331,12 +1332,22 @@ public class ProfileActivity extends AppCompatActivity {
             skillButton.setText(skill);
             skillButton.setTextSize(12);
             skillButton.setTextColor(ContextCompat.getColor(this, R.color.black));
-            skillButton.setPadding(18, 8, 18, 8);
-            skillButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_selected));
+            skillButton.setPadding(12, 5, 5, 5);
             skillButton.setButtonDrawable(null); // Remove default radio circle
+            skillButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_selected));
+
+            // Set margins between skill buttons
+            FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 8, 8, 8); // Set margin (left, top, right, bottom)
+            skillButton.setLayoutParams(params);
+
             skillsLayout.addView(skillButton);
         }
     }
+
 
 
     private String formatDate(String inputDate) {

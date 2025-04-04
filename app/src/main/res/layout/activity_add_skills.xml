@@ -1,46 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".Activities.AddSkillsActivity">
 
+    <!-- Search Input -->
     <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_skills"
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:queryHint="Search skills..."
+        app:queryHint="Search your desired skill"
+        android:padding="12dp"
         app:iconifiedByDefault="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/searchview_background"
+        />
 
+    <!-- Suggested Skills RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/skills_recycler_view"
+        android:id="@+id/suggestions_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/search_skills"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/save_skills"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="skills save button"
-        android:src="@drawable/check_save_icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"
-        app:tint="@color/white"
-        android:backgroundTint="@color/colorActionBarBackground"
+        android:layout_marginTop="8dp"
         />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Selected Skills Container -->
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexbox_selected_skills"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        app:flexWrap="wrap"
+        app:alignItems="center"/>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:id="@+id/linearLayout_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12sp"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="12sp"
+            android:layout_marginEnd="12sp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:text="Cancel"
+            android:textColor="@color/colorActionBarBackground" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="12sp"
+            android:layout_marginEnd="12sp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorActionBarBackground"
+            android:text="Save"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</LinearLayout>
