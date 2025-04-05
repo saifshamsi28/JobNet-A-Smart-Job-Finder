@@ -12,20 +12,18 @@
         android:layout_height="wrap_content"
         android:text="Skill Name"
         android:visibility="gone"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textColor="@color/black"
-        android:padding="8dp"/>
+        android:padding="5dp"/>
 
     <RadioButton
         android:id="@+id/skillRadioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:button="@null"
-        android:drawablePadding="8dp"
-        android:visibility="gone"
+        android:drawablePadding="5dp"
         android:background="@drawable/gender_selector_bg"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"/>
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:textColor="@color/black"/>
 </LinearLayout>
