@@ -61,19 +61,36 @@
             android:id="@+id/skills_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:cardCornerRadius="8sp"
             app:cardElevation="16sp"
-
+            android:visibility="gone"
+            android:layout_marginStart="8sp"
+            android:layout_marginEnd="8sp"
             >
-            <!-- Suggested Skills RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_recycler_view"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                tools:listitem="@layout/skill_item" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <!-- Suggested Skills RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/suggestions_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/skill_item" />
 
+                <!-- set a progressbar-->
+                <ProgressBar
+                    android:id="@+id/progressbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    android:indeterminateTint="@color/colorActionBarBackground"
+                    />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
 
