@@ -10,6 +10,7 @@ import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.Skill;
 import com.saif.jobnet.Models.User;
 
 import java.util.List;
@@ -61,5 +62,11 @@ public interface JobDao {
     //get courses from database
     @Query("SELECT * FROM courses")
     List<Course> getAllCourses();
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE) // Ignore duplicates
+    void insertSkills(List<Skill> skills);
+
+    @Query("SELECT * FROM skills")
+    List<Skill> getAllSkills();
 
 }
