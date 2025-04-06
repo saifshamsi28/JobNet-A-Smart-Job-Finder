@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -27,24 +28,33 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.saif.jobnet.Adapters.SkillsAdapter;
+import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.Api.SkillFetcher;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
+import com.saif.jobnet.Models.JobNetResponse;
 import com.saif.jobnet.Models.Skill;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.R;
+import com.saif.jobnet.Utils.Config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class AddSkillsActivity extends AppCompatActivity {
 
     private RecyclerView suggestionsRecyclerView;
     private FlexboxLayout selectedSkillsContainer;
     private TextInputEditText searchView;
     private Button btnSave, btnCancel;
-//    private List<String> allSkills = Arrays.asList("Java","Javascript",".Net","Web developer","Data scientist","Data analyst", "Kotlin", "Python", "C++", "SQL", "Android", "Spring Boot");
-    List<String> allSkills = new ArrayList<>();
+    private List<String> allSkills = new ArrayList<>();
     private List<String> selectedSkills = new ArrayList<>();
     private SkillsAdapter skillsAdapter;
     private CardView skillsCardView;
@@ -53,6 +63,7 @@ public class AddSkillsActivity extends AppCompatActivity {
     private Drawable closeIcon;
     private ImageView backButton;
     private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +80,7 @@ public class AddSkillsActivity extends AppCompatActivity {
         btnCancel = findViewById(R.id.cancel_button);
         backButton = findViewById(R.id.back_button);
         progressBar = findViewById(R.id.progressbar);
+        progressDialog=new ProgressDialog(this);
 
         closeIcon = ContextCompat.getDrawable(this, R.drawable.cancel_icon);
         appDatabase=DatabaseClient.getInstance(this).getAppDatabase();
@@ -101,6 +113,7 @@ public class AddSkillsActivity extends AppCompatActivity {
                     for (String skill : selectedSkills) {
                         createSkillRadioButton(skill);
                     }
+
                     skillsAdapter.notifyDataSetChanged();
                 });
 
@@ -108,7 +121,7 @@ public class AddSkillsActivity extends AppCompatActivity {
             } else {
                 System.out.println("fetching from api");
                 // No skills in Room then Fetch from API
-                runOnUiThread(() -> fetchSkillsForAllTypes());
+                runOnUiThread(this::fetchSkillsForAllTypes);
             }
         }).start();
 
@@ -130,7 +143,7 @@ public class AddSkillsActivity extends AppCompatActivity {
                     suggestionsRecyclerView.setVisibility(View.VISIBLE); // Ensure RecyclerView is visible
                     skillsAdapter.filter(charSequence.toString());
 
-                    // NEW: If no match found, fetch from API
+                    //If no match found, fetch from API
                     if (skillsAdapter.getItemCount() == 0) {
                         fetchRelatedSkillsFromApi(charSequence.toString());
                     }
@@ -143,20 +156,15 @@ public class AddSkillsActivity extends AppCompatActivity {
         });
 
         btnSave.setOnClickListener(view -> {
-//            Toast.makeText(this, "Skills saved: " + selectedSkills, Toast.LENGTH_SHORT).show();
             user.setSkills(selectedSkills);
+            progressDialog.setMessage("Saving skills...");
+            progressDialog.show();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     appDatabase.jobDao().insertOrUpdateUser(user);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(AddSkillsActivity.this, "Skills saved successfully", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
+                    //save skills to backend
+                    saveSkillsOnBackend(user.getId(), selectedSkills);
                 }
             }).start();
         });
@@ -165,44 +173,42 @@ public class AddSkillsActivity extends AppCompatActivity {
         backButton.setOnClickListener(view -> finish());
     }
 
-//    private void fetchSkillsFromApi() {
-//        SkillFetcher.fetchSkills(new SkillFetcher.SkillCallback() {
-//            @Override
-//            public void onSkillsFetched(List<String> skills) {
-//                new Thread(() -> {
-//                    // Convert List<String> to List<Skill> for Room
-//                    List<Skill> skillEntities = new ArrayList<>();
-//                    for (String skill : skills) {
-//                        skillEntities.add(new Skill(skill));
-//                    }
-//
-//                    // Save to Room
-//                    appDatabase.jobDao().insertSkills(skillEntities);
-//
-//                    // Update local list and UI
-//                    allSkills.clear();
-//                    allSkills.addAll(skills);
-//
-//                    runOnUiThread(() -> {
-//                        skillsAdapter = new SkillsAdapter(AddSkillsActivity.this, allSkills, AddSkillsActivity.this::addSelectedSkill);
-//                        suggestionsRecyclerView.setLayoutManager(new LinearLayoutManager(AddSkillsActivity.this));
-//                        suggestionsRecyclerView.setAdapter(skillsAdapter);
-//
-//                        for (String skill : selectedSkills) {
-//                            createSkillRadioButton(skill);
-//                        }
-//                        skillsAdapter.notifyDataSetChanged();
-//                    });
-//
-//                }).start();
-//            }
-//
-//            @Override
-//            public void onError(String error) {
-//                runOnUiThread(() -> Toast.makeText(AddSkillsActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show());
-//            }
-//        });
-//    }
+    private void saveSkillsOnBackend(String id, List<String> selectedSkills) {
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Config.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+
+        apiService.saveSkills(id,selectedSkills)
+                .enqueue(new Callback<JobNetResponse>() {
+                    @Override
+                    public void onResponse(Call<JobNetResponse> call, Response<JobNetResponse> response) {
+                        progressDialog.dismiss();
+                        if(response.isSuccessful()){
+                            JobNetResponse jobNetResponse=response.body();
+                            Log.d("AddSkillsActivity","response: "+jobNetResponse);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(AddSkillsActivity.this, "Skills saved successfully", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JobNetResponse> call, Throwable throwable) {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddSkillsActivity.this, "Error while saving skills", Toast.LENGTH_SHORT).show();
+                        Log.d("AddSkillsActivity","error: "+throwable.getMessage());
+                    }
+                });
+
+
+    }
 
     private void fetchSkillsForAllTypes() {
         String[] types = {"ST1", "ST2", "ST3"}; // Specialized, Common, Certification
