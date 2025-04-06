@@ -541,7 +541,7 @@ public class ProfileActivity extends AppCompatActivity {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         JobNetResponse jobNetResponse = response.body();
-                        Log.d("UploadChunk", "Response: " + jobNetResponse);;
+                        Log.d("UploadChunk", "Response: " + jobNetResponse);
                         user.setProfileImage(jobNetResponse.getMessage());
 //                        System.out.println("Updated profile image URL: " + jobNetResponse.getMessage());
 
@@ -1132,7 +1132,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                    System.out.println("user got in database: "+user);
                     setUpProfile(user);
                     //synchronise user details from server
-//                    synchronizeUserDetails(userId);
+                    synchronizeUserDetails(userId);
                 });
             }
         }).start();
@@ -1217,7 +1217,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setEducationDetails() {
         if (user.getGraduationDetails() != null) {
-//            System.out.println("Graduation Details: " + user.getGraduationDetails());
             binding.graduationEduSection.setVisibility(View.VISIBLE);
             binding.graduationCourseTitle.setText(user.getGraduationDetails().getCourse());
             binding.graduationCollegeName.setText(user.getGraduationDetails().getCollege());
@@ -1240,80 +1239,6 @@ public class ProfileActivity extends AppCompatActivity {
             binding.matriculationYear.setText("Scored " +
                     user.getClass10Details().getMarks()+"%, Passed out in "+user.getClass10Details().getPassingYear());
         }
-
-//        for (EducationDetails edu : user.getGraduationDetails()) {
-//            if (edu == null) continue; // Skip null objects
-//
-//            String level = edu.getEducationLevel();
-//            String passingYear = edu.getPassingYear();
-//            String educationType = edu.getEducationType(); // UG, PG, 12th, 10th
-//
-//            // Handle Graduation (UG & PG separately)
-//            if (educationType.contains("Graduation") || "PG".equalsIgnoreCase(educationType)) {
-//
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        GraduationDetails grad = jobDao.getGraduationDetailsByUserId(user.getId());
-//                        if (grad != null) {
-//                            System.out.println("Graduation/Post-Graduation Details in db: " + grad);
-//                            binding.graduationEduSection.setVisibility(View.VISIBLE);
-//                            binding.graduationCourseTitle.setText(grad.getCourse() != null ? grad.getCourse() : "N/A");
-//                            binding.graduationCollegeName.setText(grad.getCollege() != null ? grad.getCollege() : "N/A");
-//                            binding.graduationYear.setText((passingYear != null ? passingYear : "N/A") +
-//                                    ", " + (grad.getCourseType() != null ? grad.getCourseType() : "N/A"));
-//                        }
-//                    }
-//                }).start();
-//                System.out.println("setting graduation details");
-//                if (edu instanceof GraduationDetails) {
-//                    GraduationDetails grad = (GraduationDetails) edu;
-//
-//                    System.out.println("Graduation/Post-Graduation Details: " + grad);
-//
-//                    binding.graduationEduSection.setVisibility(View.VISIBLE);
-//                    binding.graduationCourseTitle.setText(grad.getCourse() != null ? grad.getCourse() : "N/A");
-//                    binding.graduationCollegeName.setText(grad.getCollege() != null ? grad.getCollege() : "N/A");
-//                    binding.graduationYear.setText((passingYear != null ? passingYear : "N/A") +
-//                            ", " + (grad.getCourseType() != null ? grad.getCourseType() : "N/A"));
-//
-//                    // You can further differentiate PG courses if required.
-//                    if ("PG".equalsIgnoreCase(educationType)) {
-//                        binding.graduationCourseTitle.setText("Post Graduation - " + grad.getCourse());
-//                    }
-//                }
-//            }
-//            // Handle Intermediate (12th)
-//            else if (educationType.contains("Class12Details")) {
-//                if (edu instanceof Class12Details) {
-//                    Class12Details inter = (Class12Details) edu;
-//
-//                    System.out.println("Intermediate (12th) Details: " + inter);
-//
-//                    binding.intermediateEduSection.setVisibility(View.VISIBLE);
-//                    binding.intermediateCourseTitle.setText("Class XII");
-//                    binding.intermediateCollegeName.setText(inter.getSchoolName() != null ? inter.getSchoolName() : "N/A");
-//                    binding.intermediateYear.setText("Scored " +
-//                            (inter.getTotalMarks() != null ? inter.getTotalMarks() : "N/A") +
-//                            "%, Passed out in " + (passingYear != null ? passingYear : "N/A"));
-//                }
-//            }
-//            // Handle Matriculation (10th)
-//            else if (educationType.contains("Class10Details")) {
-//                if (edu instanceof Class10Details) {
-//                    Class10Details matric = (Class10Details) edu;
-//
-//                    System.out.println("Matriculation (10th) Details: " + matric);
-//
-//                    binding.matriculationEduSection.setVisibility(View.VISIBLE);
-//                    binding.matriculationCourseTitle.setText("Class X");
-//                    binding.matriculationCollegeName.setText(matric.getSchoolName() != null ? matric.getSchoolName() : "N/A");
-//                    binding.matriculationYear.setText("Scored " +
-//                            (matric.getMarks() != null ? matric.getMarks() : "N/A") +
-//                            "%, Passed out in " + (passingYear != null ? passingYear : "N/A"));
-//                }
-//            }
-//        }
     }
 
     private void displaySkills() {
@@ -1341,7 +1266,7 @@ public class ProfileActivity extends AppCompatActivity {
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(8, 8, 8, 8); // Set margin (left, top, right, bottom)
+            params.setMargins(8, 12, 8, 8); // Set margin (left, top, right, bottom)
             skillButton.setLayoutParams(params);
 
             skillsLayout.addView(skillButton);
