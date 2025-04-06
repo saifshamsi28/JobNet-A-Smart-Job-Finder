@@ -344,7 +344,7 @@
                             android:layout_height="wrap_content"
                             android:text="Maulana Azad National Urdu University, Hyderabad"
                             android:textSize="12sp"
-                            android:textColor="#757575" />
+                            android:textColor="#535151" />
 
                         <!-- Graduation Year -->
                         <TextView
@@ -353,7 +353,7 @@
                             android:layout_height="wrap_content"
                             android:text="Graduating in 2025, Full Time"
                             android:textSize="12sp"
-                            android:textColor="#9E9E9E"/>
+                            android:textColor="#858585"/>
                     </LinearLayout>
 
                     <ImageView
@@ -399,7 +399,7 @@
                             android:layout_height="wrap_content"
                             android:text="Bihar, Hindi"
                             android:textSize="12sp"
-                            android:textColor="#757575" />
+                            android:textColor="#535151" />
 
                         <!-- Graduation Year -->
                         <TextView
@@ -408,7 +408,7 @@
                             android:layout_height="wrap_content"
                             android:text="Scored 81.8%, Passed out in 2021"
                             android:textSize="10sp"
-                            android:textColor="#9E9E9E"/>
+                            android:textColor="#858585"/>
                     </LinearLayout>
 
                     <ImageView
@@ -451,7 +451,7 @@
                             android:layout_height="wrap_content"
                             android:text="Bihar, Hindi"
                             android:textSize="12sp"
-                            android:textColor="#757575" />
+                            android:textColor="#535151" />
 
                         <!-- Graduation Year -->
                         <TextView
@@ -460,7 +460,7 @@
                             android:layout_height="wrap_content"
                             android:text="Scored 87%, Passed out in 2019"
                             android:textSize="10sp"
-                            android:textColor="#9E9E9E"/>
+                            android:textColor="#858585"/>
                     </LinearLayout>
 
                     <ImageView
