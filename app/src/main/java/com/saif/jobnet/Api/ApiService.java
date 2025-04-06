@@ -120,4 +120,7 @@ public interface ApiService {
             "&format=json" +
             "&limit=500")
     Call<ApiResponse> getCourses();
+
+    @PATCH("user/id/{id}/update-skills")
+    Call<JobNetResponse> saveSkills(@Path("id") String id, @Body List<String> skills);
 }
