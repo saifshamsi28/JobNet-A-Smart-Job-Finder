@@ -10,18 +10,17 @@ import com.saif.jobnet.Models.Education.Class10Details;
 import com.saif.jobnet.Models.Education.Class12Details;
 import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.RecentSearch;
 import com.saif.jobnet.Models.Skill;
 import com.saif.jobnet.Models.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Dao
 public interface JobDao {
     @Query("SELECT * FROM jobs")
     List<Job> getAllJobs();
-
-    @Query("SELECT * FROM jobs WHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'")
-    List<Job> getJobsByTitle(String query);
 
     @Query("SELECT * FROM jobs WHERE url = :url")
     Job getJobByUrl(String url);
@@ -68,5 +67,18 @@ public interface JobDao {
 
     @Query("SELECT * FROM skills")
     List<Skill> getAllSkills();
+
+//    @Query("SELECT * FROM jobs WHERE dateTime > :fromDate ORDER BY postDate DESC")
+//    List<Job> getNewJobs(LocalDateTime fromDate);
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertSearch(RecentSearch recentSearch);
+
+    @Query("SELECT * FROM recent_searches ORDER BY searchedAt DESC LIMIT 10")
+    List<RecentSearch> getRecentSearches();
+
+    @Query("SELECT * FROM jobs WHERE LOWER(title) LIKE '%' || LOWER(:title) || '%' ORDER BY dateTime DESC")
+    List<Job> getJobsByTitle(String title);
 
 }
