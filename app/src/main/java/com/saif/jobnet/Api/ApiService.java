@@ -32,6 +32,9 @@ public interface ApiService {
     @GET("home")
     Call<List<Job>> showJobs();
 
+    @GET("home/jobs/new")
+    Call<List<Job>> getNewJobs();
+
     @GET("jobs")
     Call<List<Job>> searchJobs(@Query("job_title") String stringTitle);
 

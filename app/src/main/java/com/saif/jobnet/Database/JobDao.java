@@ -78,7 +78,7 @@ public interface JobDao {
     @Query("SELECT * FROM recent_searches ORDER BY searchedAt DESC LIMIT 10")
     List<RecentSearch> getRecentSearches();
 
-    @Query("SELECT * FROM jobs WHERE LOWER(title) LIKE '%' || LOWER(:title) || '%' ORDER BY dateTime DESC")
-    List<Job> getJobsByTitle(String title);
+    @Query("SELECT * FROM jobs WHERE LOWER(title) LIKE '%' || LOWER(:title) || '%' ORDER BY dateTime DESC LIMIT :limit")
+    List<Job> getJobsByTitle(String title, int limit);
 
 }
