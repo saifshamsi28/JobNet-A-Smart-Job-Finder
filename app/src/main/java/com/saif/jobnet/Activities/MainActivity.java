@@ -1,18 +1,25 @@
 package com.saif.jobnet.Activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +32,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.saif.jobnet.Models.Job;
+import com.saif.jobnet.Models.RecentSearch;
+import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
@@ -41,6 +51,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -61,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
     private AppDatabase appDatabase;
     private JobDao jobDao;
     private List<Job> savedJobs =new ArrayList<>();
+    private User user;
+    private TextView drawerUserName;
+    private TextView drawerUserEmail;
+    private ImageView drawerProfileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +89,15 @@ public class MainActivity extends AppCompatActivity {
         TextView jobTitlesTextView = findViewById(R.id.job_title);
         searchView = findViewById(R.id.search_view);
 
-        binding.recyclerViewSuggestedJobs.setVisibility(View.GONE);
-        binding.recyclerViewRecentJobs.setVisibility(View.GONE);
+        binding.recyclerViewSuggestedJobs.setVisibility(GONE);
+        binding.recyclerViewRecentJobs.setVisibility(GONE);
+
+        appDatabase=DatabaseClient.getInstance(this).getAppDatabase();
+        jobDao=appDatabase.jobDao();
+
+        binding.viewAllNewJobs.setText(Html.fromHtml("<u>View all</u>", Html.FROM_HTML_MODE_LEGACY));
+        binding.viewAllNewJobs.setText(Html.fromHtml("<u>View all</u>", Html.FROM_HTML_MODE_LEGACY));
+        binding.viewAllNewJobs.setText(Html.fromHtml("<u>View all</u>", Html.FROM_HTML_MODE_LEGACY));
 
         //to set navigation drawer
         setNavigationDrawer();
@@ -100,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         binding.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.white));
                 binding.drawerLayout.openDrawer(GravityCompat.START);
             }
         });
@@ -111,11 +135,38 @@ public class MainActivity extends AppCompatActivity {
 
 
         //to select random title from list
-        Random random = new Random();
-        int randomIndex = random.nextInt(stringTitles.size());
-        Log.d("MainActivity", "Title selected: " + stringTitles.get(randomIndex));
-        System.out.println("fetching this job for home: "+ stringTitles.get(randomIndex));
-        fetchJobs(stringTitles.get(randomIndex), "home");
+//        Random random = new Random();
+//        int randomIndex = random.nextInt(stringTitles.size());
+//        Log.d("MainActivity", "Title selected: " + stringTitles.get(randomIndex));
+//        System.out.println("fetching this job for home: "+ stringTitles.get(randomIndex));
+//        fetchJobs(stringTitles.get(randomIndex), "home");
+
+        //show the jobs for different sections
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                user = appDatabase.jobDao().getCurrentUser();
+                showSuggestedJobs();
+                showRecentJobs();
+                showNewJobs();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setShimmerEffect();
+                        if(user.getProfileImage()!=null && !user.getProfileImage().isEmpty()){
+                            Uri profileImageUri = Uri.parse(user.getProfileImage());
+                            Glide.with(MainActivity.this)
+                                    .load(profileImageUri)
+                                    .circleCrop()
+                                    .into(drawerProfileImage);
+                            drawerUserName.setText(user.getName());
+                            drawerUserEmail.setText(user.getEmail());
+                        }
+                    }
+                });
+            }
+        }).start();
+
         // Initialize the database
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = appDatabase.jobDao();
@@ -124,30 +175,23 @@ public class MainActivity extends AppCompatActivity {
         displayJobTitles();
         progressDialog = new ProgressDialog(this);
 
-        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                // Start shimmer animation
-                setShimmerEffect();
-                //first fetch from local database if not found then send api request
-                new Thread(() -> {
-                    List<Job> jobs = jobDao.getJobsByTitle(query.trim());
-                    Log.d("MainActivity", "Jobs found in database: " + jobs.size());
-                    if (jobs.isEmpty()) {
-                        fetchJobs(query, "search bar");
-                    } else {
-                        runOnUiThread(() -> populateTableWithJobs(jobs, query));
-                    }
-                }).start();
+        // Disable focus and keyboard from triggering in this activity
+        binding.searchView.setFocusable(false);
+        binding.searchView.setClickable(true);
 
-                fetchJobs(query,"search bar");
-                return false;
+        binding.searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
             }
+        });
 
+        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public boolean onQueryTextChange(String newText) {
-
-                return false;
+            public void onFocusChange(View view, boolean b) {
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -180,6 +224,33 @@ public class MainActivity extends AppCompatActivity {
                 }
             return false;
         });
+
+        binding.viewAllSuggestedJobs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ViewAllJobsActivity.class);
+                intent.putExtra("source", "suggested");
+                startActivity(intent);
+            }
+        });
+
+        binding.viewAllRecentJobs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ViewAllJobsActivity.class);
+                intent.putExtra("source", "recent");
+                startActivity(intent);
+            }
+        });
+
+        binding.viewAllNewJobs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ViewAllJobsActivity.class);
+                intent.putExtra("source", "new openings");
+                startActivity(intent);
+            }
+        });
     }
 
     private void setNavigationDrawer() {
@@ -197,8 +268,17 @@ public class MainActivity extends AppCompatActivity {
         MenuItem logoutItem = menu.findItem(R.id.logout);
         MenuItem profileItem = menu.findItem(R.id.profile);
         View headerView = binding.navigationView.getHeaderView(0);
-        TextView usernameTextView = headerView.findViewById(R.id.user_name);
-        TextView userEmailTextView = headerView.findViewById(R.id.user_email);
+        drawerUserName = headerView.findViewById(R.id.user_name);
+        drawerUserEmail = headerView.findViewById(R.id.user_email);
+        drawerProfileImage = headerView.findViewById(R.id.app_logo);
+
+        drawerUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (isLoggedIn) {
             loginItem.setVisible(false); // Hide Login
@@ -206,15 +286,15 @@ public class MainActivity extends AppCompatActivity {
             logoutItem.setVisible(true);
             String name = sharedPreferences.getString("name", "");
             String userEmail = sharedPreferences.getString("userEmail", "");
-            usernameTextView.setText(name);
-            userEmailTextView.setText(userEmail);
+            drawerUserName.setText(name);
+            drawerUserEmail.setText(userEmail);
         } else {
             loginItem.setVisible(true);
             logoutItem.setVisible(false);
             profileItem.setVisible(false);
-            usernameTextView.setText("JobNet");
-            userEmailTextView.setText("A Smart Job Finder");
-
+            drawerUserName.setText("JobNet");
+            drawerUserEmail.setText("A Smart Job Finder");
+            drawerProfileImage.setImageResource(R.drawable.account_img);
         }
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -227,9 +307,10 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("source", "navigation drawer");
                     startActivity(intent);
                 }else if(item.getItemId() == R.id.new_openings){
-//                    Intent intent = new Intent(MainActivity.this, NewOpeningsActivity.class);
-//                    startActivity(intent);
-                    Toast.makeText(MainActivity.this, "New Openings Coming Soon", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, ViewAllJobsActivity.class);
+                    intent.putExtra("source", "new openings");
+                    startActivity(intent);
+//                    Toast.makeText(MainActivity.this, "New Openings Coming Soon", Toast.LENGTH_SHORT).show();
                 }else if(item.getItemId() == R.id.login){
                     Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent);
@@ -259,6 +340,19 @@ public class MainActivity extends AppCompatActivity {
                 final float xTranslation = xOffset - xOffsetDiff;
                 binding.homeContent.setTranslationX(xTranslation);
             }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Handle drawer opened event
+                getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.white));
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Handle drawer closed event
+                getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.colorActionBarBackground));
+                binding.navigationView.setCheckedItem(R.id.home);
+            }
         });
     }
 
@@ -267,17 +361,21 @@ public class MainActivity extends AppCompatActivity {
         if (binding.shimmerViewContainerSuggested.isShimmerStarted()) {
             binding.shimmerViewContainerSuggested.stopShimmer();
             binding.shimmerViewContainerRecent.stopShimmer();
-            binding.shimmerViewContainerSuggested.setVisibility(View.GONE);
-            binding.shimmerViewContainerRecent.setVisibility(View.GONE);
-            binding.recyclerViewSuggestedJobs.setVisibility(View.VISIBLE);
-            binding.recyclerViewRecentJobs.setVisibility(View.VISIBLE);
+            binding.shimmerViewContainerSuggested.setVisibility(GONE);
+            binding.shimmerViewContainerRecent.setVisibility(GONE);
+            binding.recyclerViewSuggestedJobs.setVisibility(VISIBLE);
+            binding.recyclerViewRecentJobs.setVisibility(VISIBLE);
+            binding.shimmerViewContainerNew.setVisibility(GONE);
+            binding.recyclerViewNewJobs.setVisibility(VISIBLE);
         } else {
-            binding.shimmerViewContainerSuggested.setVisibility(View.VISIBLE);
-            binding.shimmerViewContainerRecent.setVisibility(View.VISIBLE);
-            binding.recyclerViewRecentJobs.setVisibility(View.GONE);
-            binding.recyclerViewSuggestedJobs.setVisibility(View.GONE);
+            binding.shimmerViewContainerSuggested.setVisibility(VISIBLE);
+            binding.shimmerViewContainerRecent.setVisibility(VISIBLE);
+            binding.recyclerViewRecentJobs.setVisibility(GONE);
+            binding.recyclerViewSuggestedJobs.setVisibility(GONE);
+            binding.recyclerViewNewJobs.setVisibility(GONE);
             binding.shimmerViewContainerSuggested.startShimmer();
             binding.shimmerViewContainerRecent.startShimmer();
+            binding.shimmerViewContainerNew.startShimmer();
         }
     }
 
@@ -401,11 +499,38 @@ public class MainActivity extends AppCompatActivity {
     //    // Function to dynamically add rows to the TableLayout
     private void populateTableWithJobs(List<Job> jobs, String query) {
         setShimmerEffect();
-        JobsAdapter jobsAdapter = new JobsAdapter(this, jobs);
+        JobsAdapter jobsAdapter = new JobsAdapter(this, jobs,"home");
         binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
-        binding.recyclerViewSuggestedJobs.setAdapter(jobsAdapter);
+//        binding.recyclerViewSuggestedJobs.setAdapter(jobsAdapter);
         binding.recyclerViewRecentJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+//        new Thread(() -> {
+//            jobDao.insertAllJobs(jobs);
+//            // Load Recent Jobs
+//            List<RecentSearch> recentSearches = appDatabase.jobDao().getRecentSearches();
+//            showSuggestedJobs();
+//
+//            if (!recentSearches.isEmpty()) {
+//                List<Job> allRecentJobs = new ArrayList<>();
+//                for (RecentSearch search : recentSearches) {
+//                    List<Job> jobsMatched = jobDao.getJobsByTitle(search.query); // matches title
+//                    allRecentJobs.addAll(jobsMatched);
+//                }
+//
+//                runOnUiThread(() -> {
+//                    LayoutAnimationController controller =
+//                            AnimationUtils.loadLayoutAnimation(this, R.anim.fall_down_anim);
+//                    binding.recyclerViewRecentJobs.setLayoutAnimation(controller);
+//                    binding.recyclerViewRecentJobs.scheduleLayoutAnimation();
+//                    JobsAdapter jobsAdapter = new JobsAdapter(this, allRecentJobs);
+//                    binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
+//                });
+//            } else {
+//                // Fallback to Suggested Jobs
+//                runOnUiThread(this::showSuggestedJobs);
+//            }
+//        }).start();
 
         LayoutAnimationController controller =
                 AnimationUtils.loadLayoutAnimation(this, R.anim.fall_down_anim);
@@ -413,8 +538,170 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerViewSuggestedJobs.setLayoutAnimation(controller);
         binding.recyclerViewRecentJobs.scheduleLayoutAnimation();
         binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
+    }
 
-        new Thread(() -> jobDao.insertAllJobs(jobs)).start();
+    private void showNewJobs(){
+        String BASE_URL = Config.BASE_URL;
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient.Builder()
+                        .connectTimeout(60, TimeUnit.SECONDS)
+                        .readTimeout(60, TimeUnit.SECONDS)
+                        .writeTimeout(60, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<List<Job>> call = apiService.getNewJobs();
+
+        call.enqueue(new Callback<List<Job>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Job>> call, @NonNull Response<List<Job>> response) {
+                if (response.isSuccessful()) {
+                    List<Job> jobs = response.body();
+                    if (jobs != null) {
+                        Log.d("API Response", "New jobs Received " + jobs.size() + " jobs");
+
+                        //set up new jobs section
+
+                        List<Job> displayedJobs = new ArrayList<>();
+                        for (int i = 0; i < Math.min(jobs.size(), 10); i++) {
+                            displayedJobs.add(jobs.get(i));
+                        }
+
+                        // Add dummy "View All" item
+                        Job viewAllJob = new Job();
+                        viewAllJob.setJobId("123456789");
+                        viewAllJob.setUrl(null); // This triggers the view type
+                        displayedJobs.add(viewAllJob);
+
+                        JobsAdapter jobsAdapter = new JobsAdapter(MainActivity.this, displayedJobs,"new openings");
+                        binding.recyclerViewNewJobs.setAdapter(jobsAdapter);
+                        binding.recyclerViewNewJobs.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        binding.recyclerViewNewJobs.setVisibility(VISIBLE);
+                    }else{
+                        Log.d("API Response", "No jobs found");
+
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Job>> call, @NonNull Throwable throwable) {
+                Log.e("API Error", "Failed to connect to spring boot server "+throwable);
+                Toast.makeText(MainActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showRecentJobs() {
+        new Thread(() -> {
+//            jobDao.insertAllJobs(jobs);
+            // Load Recent Jobs
+            List<RecentSearch> recentSearches = appDatabase.jobDao().getRecentSearches();
+
+            if (!recentSearches.isEmpty()) {
+                List<Job> allRecentJobs = new ArrayList<>();
+                int recentSearchesSize = recentSearches.size();
+
+                for (RecentSearch search : recentSearches) {
+                    if(recentSearchesSize>10) {
+                        allRecentJobs.addAll(jobDao.getJobsByTitle(search.query,3));
+                    } else if(recentSearchesSize>5){
+                        allRecentJobs.addAll(jobDao.getJobsByTitle(search.query,5));
+                    }else{
+                        allRecentJobs.addAll(jobDao.getJobsByTitle(search.query,10));
+                    }
+//                    System.out.println("recent search: "+search+" ,new size after adding related jobs "+allRecentJobs.size());
+                    if(allRecentJobs.size()==10){
+                        // Add dummy "View All" item
+                        break;
+                    }
+                }
+
+                Job viewAllJob = new Job();
+                viewAllJob.setJobId("123456789");
+                viewAllJob.setUrl(null);
+                allRecentJobs.add(viewAllJob);
+
+                runOnUiThread(() -> {
+                    LayoutAnimationController controller =
+                            AnimationUtils.loadLayoutAnimation(this, R.anim.fall_down_anim);
+                    binding.recyclerViewRecentJobs.setLayoutAnimation(controller);
+                    binding.recyclerViewRecentJobs.scheduleLayoutAnimation();
+//                    System.err.println("final size of recent jobs: "+allRecentJobs.size());
+                    JobsAdapter jobsAdapter = new JobsAdapter(this, allRecentJobs,"recent");
+                    binding.recyclerViewRecentJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                    binding.recyclerViewRecentJobs.setAdapter(jobsAdapter);
+                    binding.recyclerViewRecentJobs.setForegroundGravity(Gravity.CENTER);
+                });
+            } else {
+                // Fallback to Suggested Jobs
+                runOnUiThread(this::showNewJobs);
+            }
+        }).start();
+    }
+
+    private void showSuggestedJobs() {
+        new Thread(() -> {
+            User user = jobDao.getCurrentUser();
+            List<Job> allJobs = jobDao.getAllJobs();
+            if(user!=null && user.getSkills()!=null && !user.getSkills().isEmpty()) {
+                List<Job> suggestedJobs = new ArrayList<>();
+                for (Job job : allJobs) {
+                    String content = (job.getFullDescription() + " " + job.getShortDescription());
+                    if (jobMatchesSkillRegex(content, user.getSkills())) {
+                        suggestedJobs.add(job);
+
+                        if(suggestedJobs.size()==10){
+                            // Add dummy "View All" item
+                            Job viewAllJob = new Job();
+                            viewAllJob.setJobId("123456789");
+                            viewAllJob.setUrl(null); // This triggers the view type
+                            suggestedJobs.add(viewAllJob);
+                            break;
+                        }
+                    }
+                }
+//                System.out.println("suggested jobs found: "+suggestedJobs.size());
+//                System.out.println("suggested jobs: "+suggestedJobs);
+                runOnUiThread(() -> {
+                    JobsAdapter adapter = new JobsAdapter(this, suggestedJobs,"suggested");
+                    binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                    binding.recyclerViewSuggestedJobs.setAdapter(adapter);
+                    binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
+                    binding.recyclerViewSuggestedJobs.setVisibility(VISIBLE);
+                });
+            }else {
+                runOnUiThread(() -> {
+                    //send 10 jobs only along with dummy job
+                    List<Job> displayedJobs = allJobs.subList(0, 10);
+                    // Add dummy "View All" item
+                    Job viewAllJob = new Job();
+                    viewAllJob.setJobId("123456789");
+                    viewAllJob.setUrl(null); // This triggers the view type
+                    displayedJobs.add(viewAllJob);
+
+                    JobsAdapter adapter = new JobsAdapter(this, displayedJobs,"suggested");
+                    binding.recyclerViewSuggestedJobs.setAdapter(adapter);
+                    binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                    binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
+                    binding.recyclerViewSuggestedJobs.setVisibility(VISIBLE);
+                });
+            }
+        }).start();
+    }
+
+    private boolean jobMatchesSkillRegex(String jobText, List<String> skills) {
+        jobText = jobText.toLowerCase();
+        for (String skill : skills) {
+            String regex = "\\b" + Pattern.quote(skill.toLowerCase()) + "\\b";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(jobText);
+            if (matcher.find()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
