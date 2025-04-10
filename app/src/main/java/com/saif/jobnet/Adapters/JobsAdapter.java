@@ -3,6 +3,8 @@ package com.saif.jobnet.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.saif.jobnet.Activities.ViewAllJobsActivity;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
@@ -40,7 +43,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder> {
+public class JobsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Job> jobList;
     private final Context context;
@@ -48,12 +51,18 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     private JobDao jobDao;
     private User currentUser;
     private ProgressBar progressBar;
+    private static final int VIEW_TYPE_JOB = 0;
+    private static final int VIEW_TYPE_VIEW_ALL = 1;
+    private String source;
 
-    public JobsAdapter(Context context, List<Job> jobList) {
+    public JobsAdapter(Context context, List<Job> jobList,String source) {
         this.context = context;
         this.jobList = jobList;
+        this.source=source;
         appDatabase= DatabaseClient.getInstance(context).getAppDatabase();
         jobDao = appDatabase.jobDao();
+        Log.d("JobsAdapter", "Total items in adapter(from source: " + source + "): " + this.jobList.size());
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -64,16 +73,47 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             }
         }).start();
     }
+
     @NonNull
     @Override
-    public JobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.job_card, parent, false);
-        return new JobViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        if (viewType == VIEW_TYPE_VIEW_ALL) {
+            View view = inflater.inflate(R.layout.item_view_all, parent, false);
+            return new ViewAllViewHolder(view);
+        } else {
+            JobCardBinding binding = JobCardBinding.inflate(inflater, parent, false);
+            return new JobViewHolder(binding);
+        }
     }
 
+
+
     @Override
-    public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
+    public int getItemViewType(int position) {
         Job job = jobList.get(position);
+        return (job.getUrl() == null) ? VIEW_TYPE_VIEW_ALL : VIEW_TYPE_JOB;
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder1, int position) {
+        Job job = jobList.get(position);
+
+        if (getItemViewType(position) == VIEW_TYPE_VIEW_ALL) {
+            holder1.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ViewAllJobsActivity.class);
+                intent.putExtra("source", source);
+                context.startActivity(intent);
+            });
+            return;
+        }
+
+        Log.d("JobsAdapter", "Binding position: " + position);
+
+        JobViewHolder holder = (JobViewHolder) holder1;
+
         holder.binding.jobTitle.setText(job.getTitle());
         holder.binding.companyName.setText(job.getCompany());
         holder.binding.location.setText(job.getLocation());
@@ -229,11 +269,18 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     }
 
     static class JobViewHolder extends RecyclerView.ViewHolder {
-
         JobCardBinding binding;
-        public JobViewHolder(@NonNull View itemView) {
-            super(itemView);
-            binding = JobCardBinding.bind(itemView);
+        public JobViewHolder(JobCardBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
+
+    static class ViewAllViewHolder extends RecyclerView.ViewHolder {
+        public ViewAllViewHolder(@NonNull View itemView) {
+            super(itemView);
+            itemView.setForegroundGravity(Gravity.CENTER);
+        }
+    }
+
 }
