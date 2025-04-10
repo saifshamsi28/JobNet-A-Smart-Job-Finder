@@ -185,6 +185,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:elevation="8sp"
+                        android:foregroundGravity="center_vertical"
+                        android:orientation="horizontal"
                         android:visibility="gone" />
 
                     <TextView
@@ -285,6 +287,85 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:elevation="8sp"
+                        android:orientation="horizontal"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <!-- New jobs section -->
+                <LinearLayout
+                    android:id="@+id/new_jobs_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    app:layout_constraintEnd_toStartOf="@+id/shimmer_layout_suggested"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/shimmer_layout_suggested"
+                    app:layout_constraintTop_toBottomOf="@id/shimmer_layout_suggested">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="New Openings"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/view_all_new_jobs"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:text="View all"
+                        android:textColor="@color/colorActionBarBackground"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- New jobs shimmer -->
+                <LinearLayout
+                    android:id="@+id/shimmer_layout_new"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/Recent_jobs_header">
+
+                    <TextView
+                        android:id="@+id/error_textview_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmer_view_container_new"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="8dp">
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/shimmer_job_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    <!-- New jobs recyclerview -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_new_jobs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:elevation="8sp"
+                        android:orientation="horizontal"
                         android:visibility="gone" />
 
                 </LinearLayout>
