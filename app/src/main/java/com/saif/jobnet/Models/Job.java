@@ -7,8 +7,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.time.LocalDateTime;
 
 @Entity(
         tableName = "jobs",
@@ -69,6 +72,10 @@ public class Job implements Parcelable {
     @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
     @SerializedName("full_description")
     private String fullDescription;
+
+    @SerializedName("dateTime")
+    @ColumnInfo(name = "dateTime")
+    private String dateTime;
 
     // Constructor
     public Job() {}
@@ -257,5 +264,13 @@ public class Job implements Parcelable {
 
     public void setFullDescription(String fullDescription) {
         this.fullDescription = fullDescription;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 }

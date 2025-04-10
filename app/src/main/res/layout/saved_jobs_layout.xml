@@ -80,6 +80,7 @@
                 android:textSize="16sp"
                 android:padding="3dp"
                 android:text="6 Lacs PA"
+                android:textColor="@color/golden"
                 app:drawableStartCompat="@drawable/rupees_img"
                 app:drawableTint="@color/teal_low"/>
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8sp"
-    tools:context=".Activities.NewOpeningsActivity">
+    tools:context=".Activities.ViewAllJobsActivity">
 
     <TextView
         android:id="@+id/new_jobs_size"

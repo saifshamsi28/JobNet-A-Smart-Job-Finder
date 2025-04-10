@@ -22,6 +22,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -475,20 +476,22 @@ public class JobDetailActivity extends AppCompatActivity {
 
             // Dynamically add TextViews for each skill
             for (String skill : keySkills) {
-                TextView skillView = new TextView(this);
+                RadioButton skillView = new RadioButton(this);
                 skillView.setText(skill);
-                skillView.setTextSize(14);
-                skillView.setSingleLine(true);
-                skillView.setPadding(20, 12, 20, 12);
-                skillView.setBackgroundResource(R.drawable.skill_chip_background); // Custom background
-                skillView.setTextColor(Color.BLACK);
+                skillView.setTextSize(12);
+//                skillView.setSingleLine(true);
+                skillView.setPadding(12, 5, 5, 5);
+//                skillView.setBackgroundResource(R.drawable.skill_chip_background); // Custom background
+                skillView.setButtonDrawable(null);
+                skillView.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_selected));
+                skillView.setTextColor(ContextCompat.getColor(this, R.color.black));
 
                 // Set layout parameters with margin
                 FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
-                layoutParams.setMargins(8, 8, 8, 8); // Add margin between skill chips
+                layoutParams.setMargins(8, 12, 8, 8); // Add margin between skill chips
                 skillView.setLayoutParams(layoutParams);
 
                 // Add the TextView to the FlexboxLayout
