@@ -1220,6 +1220,7 @@ public class ProfileActivity extends AppCompatActivity {
             binding.graduationEduSection.setVisibility(View.VISIBLE);
             binding.graduationCourseTitle.setText(user.getGraduationDetails().getCourse());
             binding.graduationCollegeName.setText(user.getGraduationDetails().getCollege());
+            binding.collegeName.setText(user.getGraduationDetails().getCollege());
             binding.graduationYear.setText(user.getGraduationDetails().getPassingYear()+
                     ", " +user.getGraduationDetails().getCourseType());
         }
@@ -1272,8 +1273,6 @@ public class ProfileActivity extends AppCompatActivity {
             skillsLayout.addView(skillButton);
         }
     }
-
-
 
     private String formatDate(String inputDate) {
         try {

@@ -59,6 +59,7 @@
             app:layout_constraintStart_toEndOf="@id/profile_name"
             app:layout_constraintTop_toTopOf="@+id/profile_name" />
 
+        <!--saved jobs counter-->
         <LinearLayout
             android:id="@+id/saved_jobs_layout"
             android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
                 android:id="@+id/saved_jobs_number"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableEnd="@drawable/right_arrow"
+                android:drawableEnd="@drawable/arrow_forward"
                 android:text="24"
                 android:textColor="@color/colorActionBarBackground"
                 android:textSize="20sp"
@@ -88,12 +89,40 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/saved_jobs_layout"
+            app:layout_constraintStart_toEndOf="@id/saved_jobs_layout"
+            app:layout_constraintTop_toTopOf="@+id/saved_jobs_layout">
+
+            <ImageView
+                android:id="@+id/github_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16sp"
+                android:src="@drawable/github_icon"
+                app:layout_constraintStart_toEndOf="@id/saved_jobs_layout"
+                app:layout_constraintTop_toTopOf="@id/saved_jobs_layout" />
+
+            <TextView
+                android:id="@+id/github_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="saifshamsi"
+                app:layout_constraintBottom_toBottomOf="@id/saved_jobs_layout"
+                app:layout_constraintEnd_toEndOf="@+id/github_icon"
+                app:layout_constraintStart_toStartOf="@+id/github_icon" />
+        </LinearLayout>
+
+
         <EditText
             android:id="@+id/college_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:hint="Maulana Azad National Urdu University"
             android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="12sp"
