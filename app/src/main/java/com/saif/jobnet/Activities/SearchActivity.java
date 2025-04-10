@@ -31,12 +31,16 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.saif.jobnet.Adapters.JobsAdapter;
+import com.saif.jobnet.Database.AppDatabase;
+import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Api.ApiService;
+import com.saif.jobnet.Models.RecentSearch;
 import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.ActivitySearchBinding;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,6 +61,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView searchHintText;
     private Handler handler = new Handler();
     private Runnable titleUpdater;
+    private AppDatabase appDatabase;
 //    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +70,13 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 //        progressDialog=new ProgressDialog(this);
 
+        binding.searchView.requestFocus();
+        appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
+
         //to animate the hint of search view
         searchHintText = binding.searchView.findViewById(androidx.appcompat.R.id.search_src_text);
         if (searchHintText != null) {
-            searchHintText.setHint("Search \"Android Developer\""); // Initial hint
+            searchHintText.setHint("Search \"Android Developer\"");
         }
 
         // Job titles list
@@ -85,6 +93,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search based on the title, location, and preferences
+
+                RecentSearch search = new RecentSearch();
+                search.setQuery(query);
+                search.setSearchedAt(LocalDateTime.now());
+
+                new Thread(() -> {
+                    appDatabase.jobDao().insertSearch(search);
+                }).start();
 
                 showPreferences(false);
                 finJobsByTitleAndPreferences(query);
@@ -294,7 +310,7 @@ public class SearchActivity extends AppCompatActivity {
                             if (jobs != null) {
                                 binding.recyclerViewJobs.setVisibility(VISIBLE);
 //                                binding.noJobsFound.setVisibility(View.GONE);
-                                JobsAdapter jobsAdapter=new JobsAdapter(SearchActivity.this,jobs);
+                                JobsAdapter jobsAdapter=new JobsAdapter(SearchActivity.this,jobs,"search");
                                 binding.recyclerViewJobs.setAdapter(jobsAdapter);
                                 binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
 

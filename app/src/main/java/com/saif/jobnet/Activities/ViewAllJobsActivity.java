@@ -7,11 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.saif.jobnet.Adapters.JobsAdapter;
@@ -22,7 +18,6 @@ import com.saif.jobnet.Database.JobDao;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.RecentSearch;
 import com.saif.jobnet.Models.User;
-import com.saif.jobnet.R;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.databinding.ActivityNewOpeningsBinding;
 
@@ -39,7 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NewOpeningsActivity extends AppCompatActivity {
+public class ViewAllJobsActivity extends AppCompatActivity {
 
     ActivityNewOpeningsBinding binding;
     private AppDatabase database;
@@ -107,9 +102,9 @@ public class NewOpeningsActivity extends AppCompatActivity {
                         binding.newJobsSize.setText(jobs.size() + " new openings");
 
                         //set up new jobs section
-                        JobsAdapter jobsAdapter = new JobsAdapter(NewOpeningsActivity.this, jobs);
+                        JobsAdapter jobsAdapter = new JobsAdapter(ViewAllJobsActivity.this, jobs,"new openings");
                         binding.recyclerviewNewOpenings.setAdapter(jobsAdapter);
-                        binding.recyclerviewNewOpenings.setLayoutManager(new LinearLayoutManager(NewOpeningsActivity.this, LinearLayoutManager.VERTICAL, false));
+                        binding.recyclerviewNewOpenings.setLayoutManager(new LinearLayoutManager(ViewAllJobsActivity.this, LinearLayoutManager.VERTICAL, false));
                         binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
                     }else{
                         Log.d("API Response", "No jobs found");
@@ -121,7 +116,7 @@ public class NewOpeningsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Job>> call, Throwable throwable) {
                 Log.e("API Error", "Failed to connect to spring boot server "+throwable);
-                Toast.makeText(NewOpeningsActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewAllJobsActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -141,7 +136,7 @@ public class NewOpeningsActivity extends AppCompatActivity {
 //                System.out.println("suggested jobs found: "+suggestedJobs.size());
 //                System.out.println("suggested jobs: "+suggestedJobs);
                 runOnUiThread(() -> {
-                    JobsAdapter adapter = new JobsAdapter(this, suggestedJobs);
+                    JobsAdapter adapter = new JobsAdapter(this, suggestedJobs,"suggested");
                     binding.recyclerviewNewOpenings.setAdapter(adapter);
                     binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
                     binding.recyclerviewNewOpenings.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -164,13 +159,21 @@ public class NewOpeningsActivity extends AppCompatActivity {
 
             if (!recentSearches.isEmpty()) {
                 List<Job> allRecentJobs = new ArrayList<>();
+                int recentSearchesSize = recentSearches.size();
+                List<Job> jobsMatched =new ArrayList<>();
                 for (RecentSearch search : recentSearches) {
-                    List<Job> jobsMatched = jobDao.getJobsByTitle(search.query); // matches title
+                    if(recentSearchesSize>10) {
+                        jobsMatched = jobDao.getJobsByTitle(search.query,3);
+                    } else if(recentSearchesSize>5){
+                        jobsMatched = jobDao.getJobsByTitle(search.query,5);
+                    }else{
+                        jobsMatched = jobDao.getJobsByTitle(search.query,10);
+                    }
                     allRecentJobs.addAll(jobsMatched);
                 }
 
                 runOnUiThread(() -> {
-                    JobsAdapter adapter = new JobsAdapter(this, allRecentJobs);
+                    JobsAdapter adapter = new JobsAdapter(this, allRecentJobs,"recent");
                     binding.recyclerviewNewOpenings.setAdapter(adapter);
                     binding.recyclerviewNewOpenings.scheduleLayoutAnimation();
                     binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
