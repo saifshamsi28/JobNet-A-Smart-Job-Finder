@@ -16,13 +16,13 @@ import com.saif.jobnet.Models.Education.GraduationDetails;
 import com.saif.jobnet.Models.Education.GraduationTypeConverter;
 import com.saif.jobnet.Models.Resume.Resume;
 import com.saif.jobnet.Models.Resume.ResumeConverter;
-import com.saif.jobnet.Utils.Converters;
+import com.saif.jobnet.Utils.SavedJobsConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(tableName = "user")
-@TypeConverters({ResumeConverter.class,GraduationTypeConverter.class, Class10TypeConverter.class, Class12TypeConverter.class,Converters.class})
+@TypeConverters({ResumeConverter.class,GraduationTypeConverter.class, Class10TypeConverter.class, Class12TypeConverter.class, SavedJobsConverter.class})
 public class User {
     @PrimaryKey
     @NonNull
@@ -38,7 +38,7 @@ public class User {
     @TypeConverters(ResumeConverter.class)
     private Resume resume;
 
-    @TypeConverters(Converters.class) // Convert List<Job> to a storable format
+    @TypeConverters(SavedJobsConverter.class) // Convert List<Job> to a storable format
     private List<Job> savedJobs = new ArrayList<>();
 
     @Embedded

@@ -8,7 +8,7 @@ import com.saif.jobnet.Models.Job;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class Converters {
+public class SavedJobsConverter {
     @TypeConverter
     public static String fromJobList(List<Job> jobs) {
         Gson gson = new Gson();
