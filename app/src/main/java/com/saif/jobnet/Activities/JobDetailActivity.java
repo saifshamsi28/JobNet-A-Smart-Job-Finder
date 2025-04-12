@@ -166,7 +166,8 @@ public class JobDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Job job = response.body();
                     if (job != null) {
-                        System.out.println("received shortDescription: \n" + job.getFullDescription());
+//                        System.out.println("received shortDescription: \n" + job.getFullDescription());
+                        Log.d("JobDetailActivity", "Job description fetched successfully");
                         binding.descriptionContent.setText(Html.fromHtml(job.getFullDescription(), Html.FROM_HTML_MODE_LEGACY));
                         setDescriptionInViews(job);
                     } else {

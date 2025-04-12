@@ -65,18 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
     private static final float END_SCALE = 0.7f;
     private ActivityMainBinding binding;
-    private SearchView searchView;
     private final ArrayList<String> stringTitles = new ArrayList<>();
     ProgressDialog progressDialog;
     private long startTime;
     private long endTime;
     private AppDatabase appDatabase;
     private JobDao jobDao;
-    private List<Job> savedJobs =new ArrayList<>();
     private User user;
     private TextView drawerUserName;
     private TextView drawerUserEmail;
     private ImageView drawerProfileImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.colorActionBarBackground));
         //to set the color of items of status bar black
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        TextView jobTitlesTextView = findViewById(R.id.job_title);
-        searchView = findViewById(R.id.search_view);
 
         binding.recyclerViewSuggestedJobs.setVisibility(GONE);
         binding.recyclerViewRecentJobs.setVisibility(GONE);
@@ -562,6 +559,16 @@ public class MainActivity extends AppCompatActivity {
                     if (jobs != null) {
                         Log.d("API Response", "New jobs Received " + jobs.size() + " jobs");
 
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+//                                int sizeBefore=allJobs.size();
+                                jobDao.insertAllJobs(jobs);
+//                                allJobs=jobDao.getAllJobs();
+//                                int sizeAfter=allJobs.size();
+//                                System.out.println("new jobs added: "+(sizeAfter-sizeBefore));
+                            }
+                        }).start();
                         //set up new jobs section
 
                         List<Job> displayedJobs = new ArrayList<>();
