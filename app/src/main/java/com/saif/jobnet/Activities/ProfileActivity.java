@@ -84,12 +84,16 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -1206,7 +1210,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //set education details
-            setEducationDetails();
+        setEducationDetails();
 
         //set skills
         displaySkills();
@@ -1253,26 +1257,57 @@ public class ProfileActivity extends AppCompatActivity {
 
         findViewById(R.id.skills_cardview).setVisibility(View.VISIBLE); // Show skills section
 
+        user.setSkills(formatSkillsToCamelCase(user.getSkills()));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                jobDao.insertOrUpdateUser(user);
+            }
+        }).start();
         for (String skill : user.getSkills()) {
             RadioButton skillButton = new RadioButton(this);
-            skillButton.setText(skill);
+            skillButton.setText(skill.trim());
             skillButton.setTextSize(12);
             skillButton.setTextColor(ContextCompat.getColor(this, R.color.black));
             skillButton.setPadding(12, 5, 5, 5);
-            skillButton.setButtonDrawable(null); // Remove default radio circle
+            skillButton.setButtonDrawable(null);
             skillButton.setBackground(ContextCompat.getDrawable(this, R.drawable.gender_selected));
-
             // Set margins between skill buttons
             FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(8, 12, 8, 8); // Set margin (left, top, right, bottom)
+            params.setMargins(12, 16, 12, 8); // Set margin (left, top, right, bottom)
             skillButton.setLayoutParams(params);
 
             skillsLayout.addView(skillButton);
         }
     }
+
+    public List<String> formatSkillsToCamelCase(List<String> skills) {
+        Set<String> formattedSkillsSet = new HashSet<>();
+
+        for (String skill : skills) {
+            if (skill == null || skill.trim().isEmpty()) continue;
+
+            // Remove anything inside parentheses (and the parentheses)
+            String cleanedSkill = skill.replaceAll("\\(.*?\\)", "").trim();
+
+            // Convert to Camel Case
+            String formatted = Arrays.stream(cleanedSkill.split("\\s+"))
+                    .map(word -> word.isEmpty() ? word :
+                            Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase()
+                    )
+                    .collect(Collectors.joining(" "));
+
+            formattedSkillsSet.add(formatted);
+        }
+
+        return new ArrayList<>(formattedSkillsSet);
+    }
+
+
 
     private String formatDate(String inputDate) {
         try {
