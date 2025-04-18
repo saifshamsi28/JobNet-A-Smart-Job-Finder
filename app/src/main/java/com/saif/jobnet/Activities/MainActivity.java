@@ -3,6 +3,8 @@ package com.saif.jobnet.Activities;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.saif.jobnet.Utils.Config.BASE_URL;
+
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -26,7 +28,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,6 +35,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Models.Job;
 import com.saif.jobnet.Models.RecentSearch;
 import com.saif.jobnet.Models.User;
@@ -46,10 +49,12 @@ import com.saif.jobnet.Api.ApiService;
 import com.saif.jobnet.R;
 import com.saif.jobnet.databinding.ActivityMainBinding;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -130,37 +135,34 @@ public class MainActivity extends AppCompatActivity {
                 "Python Developer", "Flutter Developer", "IOS Developer", "Data Scientist", "Data Analyst", "Data Engineer"
                 , "Front-end Developer", "Back-end Developer");
 
-
-        //to select random title from list
-//        Random random = new Random();
-//        int randomIndex = random.nextInt(stringTitles.size());
-//        Log.d("MainActivity", "Title selected: " + stringTitles.get(randomIndex));
-//        System.out.println("fetching this job for home: "+ stringTitles.get(randomIndex));
-//        fetchJobs(stringTitles.get(randomIndex), "home");
-
         //show the jobs for different sections
         new Thread(new Runnable() {
             @Override
             public void run() {
                 user = appDatabase.jobDao().getCurrentUser();
+                //sync data from server
                 showSuggestedJobs();
                 showRecentJobs();
                 showNewJobs();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setShimmerEffect();
-                        if(user.getProfileImage()!=null && !user.getProfileImage().isEmpty()){
-                            Uri profileImageUri = Uri.parse(user.getProfileImage());
-                            Glide.with(MainActivity.this)
-                                    .load(profileImageUri)
-                                    .circleCrop()
-                                    .into(drawerProfileImage);
-                            drawerUserName.setText(user.getName());
-                            drawerUserEmail.setText(user.getEmail());
+
+                if(user!=null) {
+                    syncUserDataWithServer(user.getId());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setShimmerEffect();
+                            if (user.getProfileImage() != null && !user.getProfileImage().isEmpty()) {
+                                Uri profileImageUri = Uri.parse(user.getProfileImage());
+                                Glide.with(MainActivity.this)
+                                        .load(profileImageUri)
+                                        .circleCrop()
+                                        .into(drawerProfileImage);
+                                drawerUserName.setText(user.getName());
+                                drawerUserEmail.setText(user.getEmail());
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }).start();
 
@@ -246,6 +248,54 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ViewAllJobsActivity.class);
                 intent.putExtra("source", "new openings");
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void syncUserDataWithServer(String id) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(new OkHttpClient
+                        .Builder().connectTimeout(10, TimeUnit.SECONDS)
+                        .callTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService=retrofit.create(ApiService.class);
+        Call<User> response=apiService.getUserProfile(id);
+        response.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if(response.isSuccessful()){
+                    User user1=response.body();
+                    if(user1!=null && user!=null){
+//                        System.out.println("previous user basic details: "+user);
+                        user=user1;
+                        //save to local database
+                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+//                        System.out.println("updated user basic details: "+user.getBasicDetails());
+//                        Toast.makeText(ProfileActivity.this, "Profile synchronised Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Log.d("MainActivity", "Error synchronizing user details");
+                    try{
+                        if(response.errorBody()!=null){
+                            AuthResponse errorResponse=new Gson().fromJson(response.errorBody().string(),AuthResponse.class);
+                            Log.d("MainActivity", "Error synchronizing user details: "+errorResponse);
+                        }
+                    }catch (IOException e){
+                        e.printStackTrace();
+
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable throwable) {
+                Log.e("MainActivity", "Error synchronizing user details: "+throwable);
+                Toast.makeText(MainActivity.this, "Error synchronizing user details", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -652,43 +702,49 @@ public class MainActivity extends AppCompatActivity {
         new Thread(() -> {
             User user = jobDao.getCurrentUser();
             List<Job> allJobs = jobDao.getAllJobs();
-            if(user!=null && user.getSkills()!=null && !user.getSkills().isEmpty()) {
-                List<Job> suggestedJobs = new ArrayList<>();
-                for (Job job : allJobs) {
-                    String content = (job.getFullDescription() + " " + job.getShortDescription());
-                    if (jobMatchesSkillRegex(content, user.getSkills())) {
-                        suggestedJobs.add(job);
 
-                        if(suggestedJobs.size()==10){
-                            // Add dummy "View All" item
-                            Job viewAllJob = new Job();
-                            viewAllJob.setJobId("123456789");
-                            viewAllJob.setUrl(null); // This triggers the view type
-                            suggestedJobs.add(viewAllJob);
-                            break;
+            if (user != null && user.getSkills() != null && !user.getSkills().isEmpty()) {
+                Set<Job> suggestedJobsSet = new LinkedHashSet<>(); // To avoid duplicates
+                int jobsPerSkill = 3;
+
+                for (String skill : user.getSkills()) {
+                    int count = 0;
+                    for (Job job : allJobs) {
+                        String content = (job.getFullDescription() + " " + job.getShortDescription());
+                        if (matchesSkill(content, skill)) {
+                            if (suggestedJobsSet.add(job)) {
+                                count++;
+                            }
                         }
+                        if (count >= jobsPerSkill) break;
                     }
                 }
-//                System.out.println("suggested jobs found: "+suggestedJobs.size());
-//                System.out.println("suggested jobs: "+suggestedJobs);
+
+                // Add "View All" dummy job if needed
+                List<Job> suggestedJobs = new ArrayList<>(suggestedJobsSet);
+                if (!suggestedJobs.isEmpty()) {
+                    Job viewAllJob = new Job();
+                    viewAllJob.setJobId("123456789");
+                    viewAllJob.setUrl(null);
+                    suggestedJobs.add(viewAllJob);
+                }
+
                 runOnUiThread(() -> {
-                    JobsAdapter adapter = new JobsAdapter(this, suggestedJobs,"suggested");
+                    JobsAdapter adapter = new JobsAdapter(this, suggestedJobs, "suggested");
                     binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
                     binding.recyclerViewSuggestedJobs.setAdapter(adapter);
                     binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
                     binding.recyclerViewSuggestedJobs.setVisibility(VISIBLE);
                 });
-            }else {
+            } else {
                 runOnUiThread(() -> {
-                    //send 10 jobs only along with dummy job
-                    List<Job> displayedJobs = allJobs.subList(0, 10);
-                    // Add dummy "View All" item
+                    List<Job> displayedJobs = allJobs.subList(0, Math.min(10, allJobs.size()));
                     Job viewAllJob = new Job();
                     viewAllJob.setJobId("123456789");
-                    viewAllJob.setUrl(null); // This triggers the view type
+                    viewAllJob.setUrl(null);
                     displayedJobs.add(viewAllJob);
 
-                    JobsAdapter adapter = new JobsAdapter(this, displayedJobs,"suggested");
+                    JobsAdapter adapter = new JobsAdapter(this, displayedJobs, "suggested");
                     binding.recyclerViewSuggestedJobs.setAdapter(adapter);
                     binding.recyclerViewSuggestedJobs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
                     binding.recyclerViewSuggestedJobs.scheduleLayoutAnimation();
@@ -698,17 +754,9 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private boolean jobMatchesSkillRegex(String jobText, List<String> skills) {
-        jobText = jobText.toLowerCase();
-        for (String skill : skills) {
-            String regex = "\\b" + Pattern.quote(skill.toLowerCase()) + "\\b";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(jobText);
-            if (matcher.find()) {
-                return true;
-            }
-        }
-        return false;
+    private boolean matchesSkill(String content, String skill) {
+        Pattern pattern = Pattern.compile("\\b" + Pattern.quote(skill) + "\\b", Pattern.CASE_INSENSITIVE);
+        return pattern.matcher(content).find();
     }
 
     @Override
