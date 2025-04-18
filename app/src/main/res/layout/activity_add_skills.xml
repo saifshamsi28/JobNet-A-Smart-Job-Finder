@@ -8,102 +8,112 @@
     android:padding="16dp"
     tools:context=".Activities.AddSkillsActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout_buttons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
 
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8sp"
-            android:src="@drawable/arrow_back_icon" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Key Skills"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8sp"
-            android:text="Recruiters look for the candidates with specific key skills. Add them here to appear in searches"
-            android:textSize="14sp" />
-
-
-        <!-- Search Input -->
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8sp"
-            android:layout_marginTop="16sp"
-            android:layout_marginEnd="8sp"
-            android:hint="Key skills"
-            app:hintAnimationEnabled="true">
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout_buttons"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/search_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:src="@drawable/arrow_back_icon" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/skills_cardview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="8sp"
-            app:cardElevation="16sp"
-            android:visibility="gone"
-            android:layout_marginStart="8sp"
-            android:layout_marginEnd="8sp"
-            >
-            <LinearLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Key Skills"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="Recruiters look for the candidates with specific key skills. Add them here to appear in searches"
+                android:textSize="14sp" />
+
+
+            <!-- Search Input -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
-                <!-- Suggested Skills RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/suggestions_recycler_view"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8sp"
+                android:layout_marginTop="16sp"
+                android:layout_marginEnd="8sp"
+                android:hint="Key skills"
+                app:hintAnimationEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/search_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:listitem="@layout/skill_item" />
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- set a progressbar-->
-                <ProgressBar
-                    android:id="@+id/progressbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:indeterminate="true"
-                    android:visibility="gone"
-                    android:indeterminateTint="@color/colorActionBarBackground"
-                    />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:id="@+id/skills_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8sp"
+                android:layout_marginEnd="8sp"
+                android:visibility="gone"
+                app:cardCornerRadius="8sp"
+                app:cardElevation="16sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <!-- Suggested Skills RecyclerView -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/suggestions_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:listitem="@layout/skill_item" />
+
+                    <!-- set a progressbar-->
+                    <ProgressBar
+                        android:id="@+id/progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/colorActionBarBackground"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
 
-        <!-- Selected Skills Container -->
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/flexbox_selected_skills"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            app:alignItems="center"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_start" />
-    </LinearLayout>
+            <!-- Selected Skills Container -->
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexbox_selected_skills"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                app:alignItems="center"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start" />
+        </LinearLayout>
+    </ScrollView>
+
 
     <!-- Buttons -->
     <LinearLayout
