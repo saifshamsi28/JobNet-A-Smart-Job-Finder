@@ -8,10 +8,12 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -288,19 +290,33 @@ public class AddSkillsActivity extends AppCompatActivity {
 
     private void createSkillRadioButton(String skill) {
         View chipView = LayoutInflater.from(this).inflate(R.layout.skill_item, selectedSkillsContainer, false);
-        RadioButton chip = chipView.findViewById(R.id.skillRadioButton);
-        chip.setText(skill);
-        chip.setVisibility(View.VISIBLE);
-        chip.setChecked(true);
-        chip.setBackgroundResource(R.drawable.gender_selected);
-        chip.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
+        RadioButton skillButton = new RadioButton(this);
+        skillButton.setText(skill);
+        skillButton.setChecked(true);
+        skillButton.setBackgroundResource(R.drawable.gender_selected);
+        skillButton.setCompoundDrawablesWithIntrinsicBounds(null, null, closeIcon, null);
 
-        chip.setOnClickListener(v -> {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(16, 16, 16, 16);
+        skillButton.setLayoutParams(params);
+
+// Optional styling
+        skillButton.setTextSize(12);
+        skillButton.setTextColor(ContextCompat.getColor(this, R.color.black));
+        skillButton.setButtonDrawable(null); // Equivalent to android:button="@null"
+
+// Handle click to remove
+        skillButton.setOnClickListener(v -> {
             selectedSkills.remove(skill);
-            selectedSkillsContainer.removeView(chipView);
+            selectedSkillsContainer.removeView(skillButton);
         });
 
-        selectedSkillsContainer.addView(chipView);
+// Add it directly to the selectedSkillsContainer
+        selectedSkillsContainer.addView(skillButton);
+
     }
 }
 
