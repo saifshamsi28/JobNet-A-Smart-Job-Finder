@@ -3,6 +3,7 @@ package com.saif.jobnet.Activities;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ public class ViewAllJobsActivity extends AppCompatActivity {
     ActivityNewOpeningsBinding binding;
     private AppDatabase database;
     private JobDao jobDao;
-
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +49,8 @@ public class ViewAllJobsActivity extends AppCompatActivity {
 
         database = DatabaseClient.getInstance(this).getAppDatabase();
         jobDao = database.jobDao();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
 
         binding.notFoundJobs.setVisibility(GONE);
         binding.recyclerviewNewOpenings.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -57,6 +60,8 @@ public class ViewAllJobsActivity extends AppCompatActivity {
             switch (source) {
                 case "suggested":
                     setTitle("Suggested Jobs");
+                    progressDialog.setMessage("Fetching suggested jobs...");
+                    progressDialog.show();
                     showSuggestedJobs();
                     break;
                 case "history button":
@@ -64,6 +69,8 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                     break;
                 case "recent":
                     setTitle("Recent Searches");
+                    progressDialog.setMessage("Fetching recent searches...");
+                    progressDialog.show();
                     showRecentJobs();
                     break;
                 case "navigation drawer":
@@ -71,6 +78,8 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                     break;
                 case "new openings":
                         setTitle("New Openings");
+                        progressDialog.setMessage("Fetching new openings...");
+                        progressDialog.show();
                         showNewJobs();
             }
         }
@@ -106,9 +115,15 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                         binding.recyclerviewNewOpenings.setAdapter(jobsAdapter);
                         binding.recyclerviewNewOpenings.setLayoutManager(new LinearLayoutManager(ViewAllJobsActivity.this, LinearLayoutManager.VERTICAL, false));
                         binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
+                        binding.notFoundJobs.setVisibility(GONE);
+                        progressDialog.dismiss();
                     }else{
                         Log.d("API Response", "No jobs found");
-
+                        binding.notFoundJobs.setText("No new openings found");
+                        binding.notFoundJobs.setVisibility(VISIBLE);
+                        binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
+                        binding.newJobsSize.setVisibility(GONE);
+                        progressDialog.dismiss();
                     }
                 }
             }
@@ -117,6 +132,7 @@ public class ViewAllJobsActivity extends AppCompatActivity {
             public void onFailure(Call<List<Job>> call, Throwable throwable) {
                 Log.e("API Error", "Failed to connect to spring boot server "+throwable);
                 Toast.makeText(ViewAllJobsActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         });
     }
@@ -143,12 +159,14 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                     binding.notFoundJobs.setVisibility(GONE);
                     binding.newJobsSize.setVisibility(VISIBLE);
                     binding.newJobsSize.setText(suggestedJobs.size()+" suggestions");
+                    progressDialog.dismiss();
                 });
             }else {
                 binding.notFoundJobs.setText("Not enough skills to suggest jobs");
                 binding.notFoundJobs.setVisibility(VISIBLE);
                 binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
                 binding.newJobsSize.setVisibility(GONE);
+                progressDialog.dismiss();
             }
         }).start();
     }
@@ -180,12 +198,14 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                     binding.notFoundJobs.setVisibility(GONE);
                     binding.newJobsSize.setVisibility(VISIBLE);
                     binding.newJobsSize.setText(allRecentJobs.size()+" recent searches");
+                    progressDialog.dismiss();
                 });
             } else{
                 binding.notFoundJobs.setText("No recent searches found");
                 binding.notFoundJobs.setVisibility(VISIBLE);
                 binding.recyclerviewNewOpenings.setVisibility(VISIBLE);
                 binding.newJobsSize.setVisibility(GONE);
+                progressDialog.dismiss();
             }
         }).start();
     }
