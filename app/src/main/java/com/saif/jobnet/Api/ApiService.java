@@ -32,7 +32,7 @@ public interface ApiService {
     @GET("home")
     Call<List<Job>> showJobs();
 
-    @GET("home/jobs/new")
+    @GET("home/new-jobs")
     Call<List<Job>> getNewJobs();
 
     @GET("jobs")

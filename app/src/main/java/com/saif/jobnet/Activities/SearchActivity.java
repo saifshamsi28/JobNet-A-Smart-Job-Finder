@@ -69,6 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 //        progressDialog=new ProgressDialog(this);
+        setTitle("Search Jobs");
 
         binding.searchView.requestFocus();
         appDatabase = DatabaseClient.getInstance(this).getAppDatabase();
@@ -111,6 +112,8 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        //if searchview has some text then remove call back
 
 //        binding.searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
@@ -228,7 +231,12 @@ public class SearchActivity extends AppCompatActivity {
                     currentIndex = (currentIndex + 1) % stringTitles.size();
 
                     // Repeat after 3 seconds
-                    handler.postDelayed(titleUpdater, 2500);
+//                    handler.postDelayed(titleUpdater, 2500);
+                    if(binding.searchView.getQuery().toString().isEmpty()) {
+                        handler.postDelayed(titleUpdater, 2500);
+                    }else {
+                        handler.removeCallbacks(titleUpdater);
+                    }
                 }, 300); // Update text midway for smooth effect
             }
         };
