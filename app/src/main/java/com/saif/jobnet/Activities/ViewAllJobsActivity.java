@@ -149,8 +149,6 @@ public class ViewAllJobsActivity extends AppCompatActivity {
                         suggestedJobs.add(job);
                     }
                 }
-//                System.out.println("suggested jobs found: "+suggestedJobs.size());
-//                System.out.println("suggested jobs: "+suggestedJobs);
                 runOnUiThread(() -> {
                     JobsAdapter adapter = new JobsAdapter(this, suggestedJobs,"suggested");
                     binding.recyclerviewNewOpenings.setAdapter(adapter);

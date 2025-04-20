@@ -144,6 +144,8 @@ public class Job implements Parcelable {
                 ", rating='" + rating + '\'' +
                 ", review='" + review + '\'' +
                 ", postDate='" + postDate + '\'' +
+                ", openings='" + openings + '\'' +
+                ", applicants='" + applicants + '\'' +
                 ", shortDescription='" + shortDescription + '\'' +
                 ", fullDescription='" + fullDescription + '\'' +
                 '}';
