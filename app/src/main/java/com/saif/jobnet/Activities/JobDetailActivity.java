@@ -170,6 +170,7 @@ public class JobDetailActivity extends AppCompatActivity {
 //                        System.out.println("received shortDescription: \n" + job.getFullDescription());
                         Log.d("JobDetailActivity", "Job description fetched successfully");
                         binding.descriptionContent.setText(Html.fromHtml(job.getFullDescription(), Html.FROM_HTML_MODE_LEGACY));
+                        System.out.println("job received: "+job);
                         setDescriptionInViews(job);
                     } else {
                         Log.d("API Response", "No job details found");
@@ -198,7 +199,7 @@ public class JobDetailActivity extends AppCompatActivity {
                             job.setFullDescription(job.getFullDescription());
                             currentJob.setFullDescription(job.getFullDescription());
                             new Thread(() -> jobDao.updateJobDescription(currentJob.getUrl(), job.getFullDescription())).start();
-                            updateJobDescriptionOnServer(currentJob);
+//                            updateJobDescriptionOnServer(currentJob);
 //                            setUpShimmerEffect(false); // Stop shimmer effect
 ////                            Toast.makeText(JobDetailActivity.this, "Job description updated", Toast.LENGTH_SHORT).show();
 //                            Log.d("JobDetailActivity", "Job description updated");
@@ -321,38 +322,39 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     public void displayFormattedDescription(Job job) {
-        SpannableStringBuilder spannableContent = new SpannableStringBuilder();
-        String description = job.getShortDescription();
-        System.out.println("JobDetailActivity: shortDescription: "+description);
-        String[] lines = description.split("\n");
+//        SpannableStringBuilder spannableContent = new SpannableStringBuilder();
+//        String description = job.getShortDescription();
+//        System.out.println("JobDetailActivity: shortDescription: "+description);
+//        String[] lines = description.split("\n");
 
-        for (String line : lines) {
-            SpannableString spannableLine;
+//        for (String line : lines) {
+//            SpannableString spannableLine;
+//
+//            if (line.startsWith("[HEADING]")) {
+//                String heading = line.replace("[HEADING]", "").trim();
+//                spannableLine = new SpannableString(heading + "\n");
+//                spannableLine.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                spannableLine.setSpan(new RelativeSizeSpan(1.2f), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            } else if (line.startsWith("[BULLET]")) {
+//                String bulletText = line.replace("[BULLET]", "").trim();
+//                spannableLine = new SpannableString(bulletText + "\n");
+//
+//                if(!spannableLine.toString().startsWith("•"))
+//                        spannableLine.setSpan(new BulletSpan(15), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            } else {
+//                spannableLine = new SpannableString(line + "\n");
+//            }
+//            spannableContent.append(spannableLine);
+//        }
 
-            if (line.startsWith("[HEADING]")) {
-                String heading = line.replace("[HEADING]", "").trim();
-                spannableLine = new SpannableString(heading + "\n");
-                spannableLine.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spannableLine.setSpan(new RelativeSizeSpan(1.2f), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else if (line.startsWith("[BULLET]")) {
-                String bulletText = line.replace("[BULLET]", "").trim();
-                spannableLine = new SpannableString(bulletText + "\n");
-
-                if(!spannableLine.toString().startsWith("•"))
-                        spannableLine.setSpan(new BulletSpan(15), 0, spannableLine.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else {
-                spannableLine = new SpannableString(line + "\n");
-            }
-            spannableContent.append(spannableLine);
-        }
-
-        binding.descriptionContent.setText(spannableContent);
-        binding.postDate.setText("Posted: "+ job.getPostDate().trim());
+//        binding.descriptionContent.setText(spannableContent);
+        binding.postDate.setText("Posted: "+ job.getPostDate().trim()+" days ago");
         binding.jobTitle.setText(job.getTitle());
         binding.companyName.setText(job.getCompany());
         binding.location.setText(job.getLocation());
         binding.salary.setText(job.getSalary());
-        binding.descriptionContent.setText(spannableContent);
+//        binding.descriptionContent.setText(spannableContent);
+        binding.descriptionContent.setText(job.getFullDescription());
         String rating = job.getRating();
         if (rating == null || rating.equals("N/A")) {
             binding.jobRating.setVisibility(GONE);
@@ -380,6 +382,8 @@ public class JobDetailActivity extends AppCompatActivity {
             binding.applicantsLogo.setVisibility(View.VISIBLE);
             binding.applicants.setText("Applicants: " + job.getApplicants().trim());
         }
+
+
         setUpShimmerEffect(false);
     }
 
