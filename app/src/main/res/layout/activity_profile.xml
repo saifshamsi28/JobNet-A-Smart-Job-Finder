@@ -26,6 +26,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- set a progressbar-->
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorActionBarBackground"
+            android:visibility="visible"
+            android:background="@drawable/circular_background"
+            app:layout_constraintBottom_toBottomOf="@+id/user_profile_img"
+            app:layout_constraintEnd_toEndOf="@+id/user_profile_img"
+            app:layout_constraintStart_toStartOf="@+id/user_profile_img"
+            app:layout_constraintTop_toTopOf="@+id/user_profile_img" />
+
         <ImageView
             android:id="@+id/profile_img_edit_button"
             android:layout_width="wrap_content"

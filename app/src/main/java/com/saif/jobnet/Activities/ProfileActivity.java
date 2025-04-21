@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -118,11 +119,10 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int PICK_PDF_REQUEST = 100;
     private String resumeName="";
     private String resumeUrl="";
-    private String resumeDate="";
-    private String resumeSize="";
     private String userId;
     private Uri selectedImg;
     private JobNetPermissions jobNetPermissions;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
         progressDialog=new ProgressDialog(this);
         userId = sharedPreferences.getString("userId", null);
         jobNetPermissions=new JobNetPermissions();
+        progressBar = findViewById(R.id.progressbar);
 
         binding.updateButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorActionBarBackground));
         binding.cancelButton.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.white));
@@ -485,6 +486,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void uploadProfileImageInChunks(Uri imageUri) {
+        progressBar.setVisibility(VISIBLE);
         try {
             File imageFile = convertUriToFile(this, imageUri, "profile");
             long chunkSize = 512 * 1024; // 512kb
@@ -549,18 +551,18 @@ public class ProfileActivity extends AppCompatActivity {
                         user.setProfileImage(jobNetResponse.getMessage());
 //                        System.out.println("Updated profile image URL: " + jobNetResponse.getMessage());
 
-                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                            if (user.getProfileImage() != null) {
-                                Glide.with(ProfileActivity.this)
-                                        .load(user.getProfileImage())
-                                        .placeholder(R.drawable.profile_icon)
-                                        .error(R.drawable.profile_icon)
-                                        .circleCrop()
-                                        .skipMemoryCache(true)  // Avoid caching in memory
-                                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Avoid disk caching
-                                        .into(binding.userProfileImg);
-                            }
-                        }, 2000); // Delay by 2 seconds
+//                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                            if (user.getProfileImage() != null) {
+//                                Glide.with(ProfileActivity.this)
+//                                        .load(user.getProfileImage())
+//                                        .placeholder(R.drawable.profile_icon)
+//                                        .error(R.drawable.profile_icon)
+//                                        .circleCrop()
+//                                        .skipMemoryCache(true)  // Avoid caching in memory
+//                                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Avoid disk caching
+//                                        .into(binding.userProfileImg);
+//                            }
+//                        }, 2000); // Delay by 2 seconds
 
                         setUpProfile(user);
                     } else {
@@ -1162,6 +1164,7 @@ public class ProfileActivity extends AppCompatActivity {
                     .circleCrop()
                     .into(binding.userProfileImg);
         }
+        progressBar.setVisibility(GONE);
         binding.profileName.setText(user.getName());
         binding.username.setText(user.getUserName());
         binding.userEmail.setText(user.getEmail());
