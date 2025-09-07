@@ -339,7 +339,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        Call<User> response=apiService.getUserProfile(id);
+        String jwtToken=sharedPreferences.getString("token",null);
+        Call<User> response=apiService.getLoggedInUser(jwtToken);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {

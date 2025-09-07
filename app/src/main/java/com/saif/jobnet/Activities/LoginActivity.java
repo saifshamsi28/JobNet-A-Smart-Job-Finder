@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import com.saif.jobnet.Database.AppDatabase;
 import com.saif.jobnet.Database.DatabaseClient;
 import com.saif.jobnet.Database.JobDao;
+import com.saif.jobnet.Models.AuthResponse;
 import com.saif.jobnet.Utils.Config;
 import com.saif.jobnet.Models.User;
 import com.saif.jobnet.Models.UserLoginCredentials;
@@ -158,44 +159,107 @@ public class LoginActivity extends AppCompatActivity {
                     .build();
 
             ApiService apiService = retrofit.create(ApiService.class);
-            Call<User> call = apiService.loginUser(credentials);
+//            Call<User> call = apiService.loginUser(credentials);
+//
+//            call.enqueue(new Callback<User>() {
+//                @Override
+//                public void onResponse(Call<User> call, Response<User> response) {
+//                    if (response.isSuccessful()) {
+//                        User user = response.body();
+//                        if (user != null) {
+//                            Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+//                            editor.putBoolean("isLoggedIn", true);
+//                            editor.putString("userId", user.getId());
+//                            editor.putString("name", user.getName());
+//                            editor.putString("userName", user.getUserName());
+//                            editor.putString("userEmail", user.getEmail());
+//                            editor.putString("phoneNumber", user.getPhoneNumber());
+//                            editor.putString("password", user.getPassword());
+//                            editor.putBoolean("userStored", true);
+//                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+//                            editor.apply();
+//                            dialog.dismiss();
+//                            redirectToProfile(user);
+//                        }
+//                    } else {
+//                        binding.invalidCredentials.setVisibility(View.VISIBLE);
+//                        binding.invalidCredentials.setText("Invalid username or password");
+//                        dialog.dismiss();
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<User> call, Throwable t) {
+//                    Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+//                    dialog.dismiss();
+//                }
+//            });
+        Call<AuthResponse> call=apiService.loginUser(credentials);
+
+        call.enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                dialog.dismiss();
+                if(response.isSuccessful()){
+                    System.out.println("login successful");
+                    AuthResponse authResponse=response.body();
+                    if (authResponse != null) {
+                        String token=authResponse.getMessage();
+                        sharedPreferences.edit().putString("jwtToken", token).apply();
+                        getLoggedInUserDetails(token);
+
+                    }
+                }else {
+                    binding.invalidCredentials.setVisibility(View.VISIBLE);
+                    binding.invalidCredentials.setText("Invalid username or password");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable throwable) {
+                dialog.dismiss();
+                System.out.println("login failed: "+throwable.getMessage());
+            }
+        });
+
+    }
+
+    private void getLoggedInUserDetails(String token) {
+        if(token != null){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            ApiService apiService = retrofit.create(ApiService.class);
+
+            // Add "Bearer " prefix to token
+            Call<User> call = apiService.getLoggedInUser("Bearer " + token);
 
             call.enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()) {
+                    if(response.isSuccessful() && response.body() != null){
                         User user = response.body();
-                        if (user != null) {
-                            Toast.makeText(LoginActivity.this, "Welcome to JobNet, " + user.getName(), Toast.LENGTH_SHORT).show();
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putBoolean("isLoggedIn", true);
-                            editor.putString("userId", user.getId());
-                            editor.putString("name", user.getName());
-                            editor.putString("userName", user.getUserName());
-                            editor.putString("userEmail", user.getEmail());
-                            editor.putString("phoneNumber", user.getPhoneNumber());
-                            editor.putString("password", user.getPassword());
-                            editor.putBoolean("userStored", true);
-                            new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
-                            editor.apply();
-                            dialog.dismiss();
-                            redirectToProfile(user);
-                        }
+//                        System.out.println("user: "+user);
+
+                        new Thread(() -> jobDao.insertOrUpdateUser(user)).start();
+                        // Now redirect with user details
+                        redirectToProfile(user);
                     } else {
-                        binding.invalidCredentials.setVisibility(View.VISIBLE);
-                        binding.invalidCredentials.setText("Invalid username or password");
-                        dialog.dismiss();
+                        Log.e("UserFetch", "Failed to fetch user. Code: " + response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
+                    Log.e("UserFetch", "API call failed: " + t.getMessage());
                 }
             });
-
+        }
     }
+
 
 
     private void togglePasswordVisibility() {
@@ -229,9 +293,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void redirectToProfile(User user) {
         Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-        Log.d("LoginActivity","user id: "+user.getId());
-        Log.d("LoginActivity","user name: "+user.getName());
-        Log.d("LoginActivity","user email: "+user.getEmail());
+//        Log.d("LoginActivity","user id: "+user.getId());
+//        Log.d("LoginActivity","user name: "+user.getName());
+//        Log.d("LoginActivity","user email: "+user.getEmail());
 //        intent.putExtra("user", user);
         //store the user details in shared prefs
         sharedPreferences.edit().putString("userId", user.getId()).apply();

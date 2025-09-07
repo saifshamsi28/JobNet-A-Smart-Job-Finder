@@ -19,6 +19,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -48,7 +49,11 @@ public interface ApiService {
     Call<AuthResponse> registerUser(@Body User user);
 
     @POST("/auth/login")
-    Call<User> loginUser(@Body UserLoginCredentials credentials);
+    Call<AuthResponse> loginUser(@Body UserLoginCredentials credentials);
+
+    @GET("auth/me")
+    Call<User> getLoggedInUser(@Header("Authorization") String token);
+
 
     @POST("user/username/{username}")
     Call<Boolean> checkUserName(@Path("username") String username);
@@ -63,7 +68,8 @@ public interface ApiService {
     Call<ResponseBody> updateBasicDetails(@Path("id") String id, @Body User user);
 
     @PATCH("user/id/{id}/update-education-details")
-    Call<ResponseBody> updateEducationDetails(@Path("id") String id,
+    Call<ResponseBody> updateEducationDetails(
+                                              @Path("id") String id,
                                               @Query("education_level") String educationLevel,
                                               @Body User user);
 
@@ -81,7 +87,8 @@ public interface ApiService {
     );
 
     @GET("user/{id}/profile")
-    Call<User> getUserProfile(@Path("id") String id);
+    Call<User> getUserProfile(@Header("Authorization") String token, @Path("id") String id);
+
 
     @PUT("user/save-jobs")
     Call<ResponseBody> saveJobs(@Body SaveJobsModel saveJobsModel);

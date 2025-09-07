@@ -322,21 +322,22 @@ public class SearchActivity extends AppCompatActivity {
                                 binding.recyclerViewJobs.setAdapter(jobsAdapter);
                                 binding.recyclerViewJobs.setLayoutManager(new LinearLayoutManager(SearchActivity.this));
 
-                                for(Job job:jobs){
-                                    System.out.println(job.getTitle());
-                                    System.out.println(job.getLocation());
-                                    System.out.println(job.getCompany());
-                                    System.out.println(job.getSalary());
-//                                    System.out.println(job.getJobType());
-//                                    System.out.println(job.getUrl());
-                                    System.out.println(job.getPostDate());
-                                    System.out.println(job.getRating());
-                                    System.out.println(job.getReview());
-                                    System.out.println(job.getShortDescription());
-//                                    System.out.println(job.getReviewsRating());
-//                                    System.out.println(job.getReviewsCount());
-
-                                }
+                                System.out.println("SearchActivity: onResponse: %d jobs matched\n");
+//                                for(Job job:jobs){
+//                                    System.out.println(job.getTitle());
+//                                    System.out.println(job.getLocation());
+//                                    System.out.println(job.getCompany());
+//                                    System.out.println(job.getSalary());
+////                                    System.out.println(job.getJobType());
+////                                    System.out.println(job.getUrl());
+//                                    System.out.println(job.getPostDate());
+//                                    System.out.println(job.getRating());
+//                                    System.out.println(job.getReview());
+//                                    System.out.println(job.getShortDescription());
+////                                    System.out.println(job.getReviewsRating());
+////                                    System.out.println(job.getReviewsCount());
+//
+//                                }
                             }else {
                                 System.out.println("No jobs found");
                             }

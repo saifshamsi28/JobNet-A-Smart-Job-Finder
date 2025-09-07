@@ -3,6 +3,7 @@ package com.saif.jobnet.Activities;
 import static com.saif.jobnet.Utils.Config.BASE_URL;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -256,6 +257,9 @@ public class EditBasicDetailsActivity extends AppCompatActivity {
                 .build();
 
         System.out.println("calling method to update details on backend");
+
+//        SharedPreferences sharedPreferences = getSharedPreferences("JobNetPrefs", MODE_PRIVATE);
+//        Str
 
         ApiService apiService=retrofit.create(ApiService.class);
         apiService.updateBasicDetails(user.getId(),user)

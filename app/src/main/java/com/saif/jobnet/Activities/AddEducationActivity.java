@@ -3,6 +3,7 @@ package com.saif.jobnet.Activities;
 import static android.view.View.VISIBLE;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -457,6 +458,10 @@ public class AddEducationActivity extends AppCompatActivity {
 
         ApiService apiService = retrofit.create(ApiService.class);
 
+        //fetch token from shared prefs
+
+
+
         apiService.updateEducationDetails(user.getId(),educationLevel,user)
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -754,6 +759,7 @@ public class AddEducationActivity extends AppCompatActivity {
         if (radioButtonCategory.getId()==binding.courseLevel.getId()) {
             System.out.println("selected radio button category: "+radioButtonCategory.getChildAt(0));
             hideEducationSection();
+
         } else if (radioButtonCategory.getId() == binding.gradingSystemFlexLayout.getId()) {
             binding.gpaObtainedLayout.setVisibility(View.GONE);
             binding.gpaObtained.setVisibility(View.GONE);

@@ -265,7 +265,10 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         ApiService apiService=retrofit.create(ApiService.class);
-        Call<User> response=apiService.getUserProfile(id);
+        //fetch jwt token from shared prefs....
+        SharedPreferences sharedPreferences=getSharedPreferences("JobNetPrefs",MODE_PRIVATE);
+        String jwtToken=sharedPreferences.getString("jwtToken",null);
+        Call<User> response=apiService.getLoggedInUser("Bearer "+jwtToken);
         response.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {

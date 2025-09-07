@@ -12,7 +12,7 @@ public class DatabaseClient {
     public DatabaseClient(Context context) {
         this.context = context;
         appDatabase = Room.databaseBuilder(context, AppDatabase.class, "jobs.db")
-                .fallbackToDestructiveMigration() // Use destructive migration to start fresh
+                .fallbackToDestructiveMigration() // For destructive migration to start fresh
                 .build();
     }
 
