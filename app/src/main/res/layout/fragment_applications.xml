@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_screen"
+    android:fillViewport="true"
+    android:paddingBottom="88dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/btn_back_applications"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Back"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/my_applications"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_no_applications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/no_applications"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/container_applications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

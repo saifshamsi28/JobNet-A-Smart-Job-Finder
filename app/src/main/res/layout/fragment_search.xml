@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_screen">
+
+    <!-- Sticky Header -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_screen"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp">
+
+            <!-- Title Row -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find Your"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter_regular" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dream Job"
+                android:textColor="@color/text_primary"
+                android:textSize="26sp"
+                android:fontFamily="@font/inter_bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Search Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_search_bar"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/primary" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="Job title, keywords..."
+                    app:hintTextColor="@color/text_hint"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_regular"
+                    android:background="@null"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:paddingHorizontal="12dp" />
+
+                <!-- Filter Button -->
+                <LinearLayout
+                    android:id="@+id/btn_filter"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_button_primary"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_filter"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Filter Chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginTop="14dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_filter_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Chip: All -->
+                    <TextView
+                        android:id="@+id/chip_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:text="All Jobs"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_chip_selected"
+                        android:textColor="@color/white"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chip_full_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:text="Full Time"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chip_part_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:text="Part Time"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chip_remote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:text="Remote"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/chip_internship"
+                        android:layout_width="wrap_content"
+                        android:layout_height="34dp"
+                        android:text="Internship"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_medium"
+                        android:gravity="center"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Results -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Results Count Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/tv_results_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="238 Jobs Found"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:fontFamily="@font/inter_semibold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sort"
+                android:textColor="@color/primary"
+                android:textSize="13sp"
+                android:fontFamily="@font/inter_medium" />
+        </LinearLayout>
+
+        <!-- Job List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="20dp"
+            android:paddingBottom="88dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

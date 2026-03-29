@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary Brand -->
+    <color name="primary">#4F46E5</color>
+    <color name="primary_dark">#3730A3</color>
+    <color name="primary_light">#818CF8</color>
+    <color name="primary_surface">#EEF2FF</color>
+
+    <!-- Accent -->
+    <color name="accent">#7C3AED</color>
+    <color name="accent_light">#A78BFA</color>
+
+    <!-- Secondary Accent -->
+    <color name="teal">#0EA5E9</color>
+    <color name="teal_light">#BAE6FD</color>
+
+    <!-- Gradient stops -->
+    <color name="gradient_start">#4F46E5</color>
+    <color name="gradient_mid">#7C3AED</color>
+    <color name="gradient_end">#0EA5E9</color>
+
+    <!-- Backgrounds -->
+    <color name="bg_app">#F8F9FF</color>
+    <color name="bg_screen">#F8F9FF</color>
+    <color name="bg_surface">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_input">#F1F3FA</color>
+    <color name="bg_chip">#EEF2FF</color>
+    <color name="bg_chip_selected">#4F46E5</color>
+    <color name="bg_bottom_nav">#FFFFFF</color>
+
+    <!-- Dark background for header -->
+    <color name="bg_dark_header">#0F0E2A</color>
+    <color name="bg_dark_card">#1A1940</color>
+
+    <!-- Text -->
+    <color name="text_primary">#0F0E2A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_tertiary">#94A3B8</color>
+    <color name="text_hint">#94A3B8</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_dark">#FFFFFF</color>
+    <color name="text_on_dark_secondary">#A5AECB</color>
+    <color name="text_chip">#4F46E5</color>
+    <color name="text_chip_selected">#FFFFFF</color>
+
+    <!-- Status colors -->
+    <color name="success">#10B981</color>
+    <color name="success_surface">#ECFDF5</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_surface">#FFFBEB</color>
+    <color name="error">#EF4444</color>
+    <color name="error_surface">#FEF2F2</color>
+
+    <!-- Dividers & borders -->
+    <color name="divider">#E2E8F0</color>
+    <color name="border">#E2E8F0</color>
+    <color name="border_focus">#4F46E5</color>
+
+    <!-- Shadow -->
+    <color name="shadow_color">#1A4F46E5</color>
+
+    <!-- Badge -->
+    <color name="badge_bg">#EF4444</color>
+    <color name="badge_text">#FFFFFF</color>
+    <color name="accent_orange">#EF4444</color>
+
+    <!-- Star / Rating -->
+    <color name="star">#F59E0B</color>
+
+    <!-- Bookmark saved -->
+    <color name="bookmark_saved">#4F46E5</color>
+    <color name="bookmark_unsaved">#CBD5E1</color>
+
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="accent_yellow">#F6EDA1</color>
+
+    <!-- On-dark alpha tokens for glass/overlay effects -->
+    <color name="overlay_white_08">#15FFFFFF</color>
+    <color name="overlay_white_10">#1AFFFFFF</color>
+    <color name="overlay_white_13">#20FFFFFF</color>
+    <color name="overlay_white_19">#30FFFFFF</color>
+    <color name="overlay_white_20">#33FFFFFF</color>
+
+    <!-- On-dark readable text tiers -->
+    <color name="text_on_dark_60">#99FFFFFF</color>
+    <color name="text_on_dark_67">#AAFFFFFF</color>
+    <color name="text_on_dark_70">#B3FFFFFF</color>
+    <color name="text_on_dark_73">#BBFFFFFF</color>
+    <color name="text_on_dark_80">#CCFFFFFF</color>
+
+</resources>

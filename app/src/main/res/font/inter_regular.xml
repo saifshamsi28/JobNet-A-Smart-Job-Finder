@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Download Inter fonts from https://fonts.google.com/specimen/Inter
+    and place them as:
+      res/font/inter_regular.ttf
+      res/font/inter_medium.ttf
+      res/font/inter_semibold.ttf
+      res/font/inter_bold.ttf
+
+    OR use the Android Studio "Download fonts" feature:
+    Right-click res/font → New → Font resource file → search "Inter"
+-->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:fontProviderAuthority="com.google.android.gms.fonts"
+    app:fontProviderPackage="com.google.android.gms"
+    app:fontProviderQuery="Inter"
+    app:fontProviderCerts="@array/com_google_android_gms_fonts_certs">
+</font-family>

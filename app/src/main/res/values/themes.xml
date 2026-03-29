@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.JobNet" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary brand -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+        <item name="colorTertiary">@color/teal</item>
+
+        <!-- Surface -->
+        <item name="colorSurface">@color/bg_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/bg_app</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/bg_bottom_nav</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Window -->
+        <item name="android:windowBackground">@color/bg_app</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!-- Ripple -->
+        <item name="colorControlHighlight">#1A4F46E5</item>
+
+        <!-- Shape -->
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.JobNet.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.JobNet.Large</item>
+
+        <!-- Bottom navigation -->
+        <item name="bottomNavigationStyle">@style/Widget.JobNet.BottomNavigationView</item>
+    </style>
+
+    <!-- Splash theme -->
+    <style name="Theme.JobNet.Splash" parent="Theme.JobNet">
+        <item name="android:statusBarColor">@color/bg_dark_header</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/bg_dark_header</item>
+        <item name="android:windowBackground">@color/bg_dark_header</item>
+    </style>
+
+    <!-- Shape appearances -->
+    <style name="ShapeAppearance.JobNet.Medium" parent="">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.JobNet.Large" parent="">
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ShapeAppearance.JobNet.Small" parent="">
+        <item name="cornerSize">10dp</item>
+    </style>
+
+    <!-- Bottom Nav -->
+    <style name="Widget.JobNet.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/bg_bottom_nav</item>
+        <item name="itemTextColor">@color/selector_bottom_nav_text</item>
+        <item name="itemIconTint">@color/selector_bottom_nav_text</item>
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">8dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+
+    <!-- Card styles -->
+    <style name="Widget.JobNet.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="cardCornerRadius">@dimen/radius_lg</item>
+        <item name="contentPadding">0dp</item>
+    </style>
+
+    <style name="Widget.JobNet.Card.Featured" parent="Widget.JobNet.Card">
+        <item name="strokeWidth">0dp</item>
+        <item name="cardCornerRadius">@dimen/radius_xl</item>
+    </style>
+
+    <!-- Text styles -->
+    <style name="TextAppearance.JobNet.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textSize">@dimen/text_6xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">@dimen/text_4xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">@dimen/text_3xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">@dimen/text_2xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">@dimen/text_lg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+
+    <style name="TextAppearance.JobNet.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!-- Button styles -->
+    <style name="Widget.JobNet.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Button</item>
+        <item name="backgroundTint">@color/primary</item>
+        <item name="iconPadding">8dp</item>
+    </style>
+
+    <style name="Widget.JobNet.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Button</item>
+        <item name="strokeColor">@color/primary</item>
+    </style>
+
+    <style name="ShapeAppearance.JobNet.Button" parent="">
+        <item name="cornerSize">14dp</item>
+    </style>
+
+    <!-- Input styles -->
+    <style name="Widget.JobNet.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/bg_input</item>
+        <item name="boxStrokeColor">@color/selector_input_stroke</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="hintTextColor">@color/text_tertiary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+    </style>
+
+    <!-- Chip styles -->
+    <style name="Widget.JobNet.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipCornerRadius">@dimen/radius_full</item>
+        <item name="chipBackgroundColor">@color/selector_chip_bg</item>
+        <item name="android:textColor">@color/selector_chip_text</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+
+    <!-- Divider -->
+    <style name="Widget.JobNet.Divider" parent="">
+        <item name="android:background">@color/divider</item>
+    </style>
+
+    <!-- Snackbar -->
+    <style name="Widget.JobNet.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:layout_margin">16dp</item>
+        <item name="backgroundTint">@color/text_primary</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Medium</item>
+    </style>
+
+</resources>

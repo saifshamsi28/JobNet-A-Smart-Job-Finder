@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vertical job list card -->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/bg_card"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/border"
+    app:cardCornerRadius="@dimen/radius_lg"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding">
+
+        <!-- Top row: Logo + Company/Title + Bookmark -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Company logo -->
+            <FrameLayout
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/bg_card_white">
+                <ImageView
+                    android:id="@+id/iv_company_logo"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_briefcase"
+                    android:contentDescription="Company logo" />
+            </FrameLayout>
+
+            <!-- Title & Company info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_job_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Senior UI Designer"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_md"
+                    android:fontFamily="sans-serif-medium"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tv_company_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Google Inc."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_sm"
+                    android:fontFamily="sans-serif"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Bookmark -->
+            <ImageView
+                android:id="@+id/iv_bookmark"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bookmark"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Save job"
+                android:padding="2dp" />
+
+        </LinearLayout>
+
+        <!-- Tags row: type + location -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp">
+
+            <!-- Job type badge -->
+            <TextView
+                android:id="@+id/tv_job_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Full Time"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_xs"
+                android:fontFamily="sans-serif-medium"
+                android:background="@drawable/bg_tag_primary"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:letterSpacing="0.02" />
+
+            <!-- Remote badge -->
+            <TextView
+                android:id="@+id/tv_work_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remote"
+                android:textColor="@color/success"
+                android:textSize="@dimen/text_xs"
+                android:fontFamily="sans-serif-medium"
+                android:background="@drawable/bg_tag_green"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+        </LinearLayout>
+
+        <!-- Bottom row: Salary + Location + Posted -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical">
+
+            <!-- Salary -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_dollar"
+                    android:contentDescription="Salary" />
+                <TextView
+                    android:id="@+id/tv_salary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="$80k — $120k"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_sm"
+                    android:fontFamily="sans-serif-medium" />
+            </LinearLayout>
+
+            <!-- Location -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/ic_location"
+                    android:contentDescription="Location" />
+                <TextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="San Francisco, CA"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="@dimen/text_sm"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

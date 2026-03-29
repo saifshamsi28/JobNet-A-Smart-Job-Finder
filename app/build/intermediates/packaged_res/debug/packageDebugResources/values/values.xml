@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="com_google_android_gms_fonts_certs">
+        <item>@array/com_google_android_gms_fonts_certs_dev</item>
+        <item>@array/com_google_android_gms_fonts_certs_prod</item>
+    </array>
+    <string-array name="com_google_android_gms_fonts_certs_dev">
+        <item>
+            MIIEqDCCA5CgAwIBAgIJANWFuGx90071MA0GCSqGSIb3DQEBBAUAMIGUMQswCQYD
+            VQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZyYW5j
+            aXNjbzETMBEGA1UEChMKR29vZ2xlIEluYzEXMBUGA1UECxMORW5naW5lZXJpbmcx
+            GjAYBgNVBAMTEWlvc2FwcC5nb29nbGUuY29tMB4XDTEzMDkwNjIxMjkzM1oXDTIz
+        </item>
+    </string-array>
+    <string-array name="com_google_android_gms_fonts_certs_prod">
+        <item>
+            MIIEQzCCAyugAwIBAgIJAMLgh0ZkSjCNMA0GCSqGSIb3DQEBBAUAMHMxCzAJBgNV
+            BAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBW
+            aWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjERMA8GA1UECxMIU2VydmljZXMxDjAM
+        </item>
+    </string-array>
+    <color name="accent">#7C3AED</color>
+    <color name="accent_light">#A78BFA</color>
+    <color name="accent_orange">#EF4444</color>
+    <color name="accent_yellow">#F6EDA1</color>
+    <color name="badge_bg">#EF4444</color>
+    <color name="badge_text">#FFFFFF</color>
+    <color name="bg_app">#F8F9FF</color>
+    <color name="bg_bottom_nav">#FFFFFF</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_chip">#EEF2FF</color>
+    <color name="bg_chip_selected">#4F46E5</color>
+    <color name="bg_dark_card">#1A1940</color>
+    <color name="bg_dark_header">#0F0E2A</color>
+    <color name="bg_input">#F1F3FA</color>
+    <color name="bg_screen">#F8F9FF</color>
+    <color name="bg_surface">#FFFFFF</color>
+    <color name="bookmark_saved">#4F46E5</color>
+    <color name="bookmark_unsaved">#CBD5E1</color>
+    <color name="border">#E2E8F0</color>
+    <color name="border_focus">#4F46E5</color>
+    <color name="divider">#E2E8F0</color>
+    <color name="error">#EF4444</color>
+    <color name="error_surface">#FEF2F2</color>
+    <color name="gradient_end">#0EA5E9</color>
+    <color name="gradient_mid">#7C3AED</color>
+    <color name="gradient_start">#4F46E5</color>
+    <color name="overlay_white_08">#15FFFFFF</color>
+    <color name="overlay_white_10">#1AFFFFFF</color>
+    <color name="overlay_white_13">#20FFFFFF</color>
+    <color name="overlay_white_19">#30FFFFFF</color>
+    <color name="overlay_white_20">#33FFFFFF</color>
+    <color name="primary">#4F46E5</color>
+    <color name="primary_dark">#3730A3</color>
+    <color name="primary_light">#818CF8</color>
+    <color name="primary_surface">#EEF2FF</color>
+    <color name="shadow_color">#1A4F46E5</color>
+    <color name="star">#F59E0B</color>
+    <color name="success">#10B981</color>
+    <color name="success_surface">#ECFDF5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="teal">#0EA5E9</color>
+    <color name="teal_light">#BAE6FD</color>
+    <color name="text_chip">#4F46E5</color>
+    <color name="text_chip_selected">#FFFFFF</color>
+    <color name="text_hint">#94A3B8</color>
+    <color name="text_on_dark">#FFFFFF</color>
+    <color name="text_on_dark_60">#99FFFFFF</color>
+    <color name="text_on_dark_67">#AAFFFFFF</color>
+    <color name="text_on_dark_70">#B3FFFFFF</color>
+    <color name="text_on_dark_73">#BBFFFFFF</color>
+    <color name="text_on_dark_80">#CCFFFFFF</color>
+    <color name="text_on_dark_secondary">#A5AECB</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_primary">#0F0E2A</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="text_tertiary">#94A3B8</color>
+    <color name="transparent">#00000000</color>
+    <color name="warning">#F59E0B</color>
+    <color name="warning_surface">#FFFBEB</color>
+    <color name="white">#ffffff</color>
+    <dimen name="avatar_lg">80dp</dimen>
+    <dimen name="avatar_md">52dp</dimen>
+    <dimen name="avatar_sm">40dp</dimen>
+    <dimen name="avatar_xl">100dp</dimen>
+    <dimen name="avatar_xs">28dp</dimen>
+    <dimen name="avatar_xxl">120dp</dimen>
+    <dimen name="bottom_nav_height">72dp</dimen>
+    <dimen name="button_height">54dp</dimen>
+    <dimen name="button_height_sm">44dp</dimen>
+    <dimen name="card_elevation">0dp</dimen>
+    <dimen name="card_padding">20dp</dimen>
+    <dimen name="category_card_height">96dp</dimen>
+    <dimen name="category_card_width">110dp</dimen>
+    <dimen name="chip_height">34dp</dimen>
+    <dimen name="company_logo_lg">64dp</dimen>
+    <dimen name="company_logo_md">52dp</dimen>
+    <dimen name="company_logo_sm">40dp</dimen>
+    <dimen name="featured_card_height">200dp</dimen>
+    <dimen name="featured_card_width">280dp</dimen>
+    <dimen name="icon_lg">24dp</dimen>
+    <dimen name="icon_md">20dp</dimen>
+    <dimen name="icon_sm">16dp</dimen>
+    <dimen name="icon_xl">28dp</dimen>
+    <dimen name="input_height">52dp</dimen>
+    <dimen name="input_height_sm">44dp</dimen>
+    <dimen name="page_margin">20dp</dimen>
+    <dimen name="progress_stroke">8dp</dimen>
+    <dimen name="radius_full">100dp</dimen>
+    <dimen name="radius_lg">20dp</dimen>
+    <dimen name="radius_md">16dp</dimen>
+    <dimen name="radius_sm">10dp</dimen>
+    <dimen name="radius_xl">24dp</dimen>
+    <dimen name="radius_xs">6dp</dimen>
+    <dimen name="radius_xxl">32dp</dimen>
+    <dimen name="shadow_elevation">12dp</dimen>
+    <dimen name="space_10">10dp</dimen>
+    <dimen name="space_12">12dp</dimen>
+    <dimen name="space_14">14dp</dimen>
+    <dimen name="space_16">16dp</dimen>
+    <dimen name="space_2">2dp</dimen>
+    <dimen name="space_20">20dp</dimen>
+    <dimen name="space_24">24dp</dimen>
+    <dimen name="space_28">28dp</dimen>
+    <dimen name="space_32">32dp</dimen>
+    <dimen name="space_4">4dp</dimen>
+    <dimen name="space_40">40dp</dimen>
+    <dimen name="space_48">48dp</dimen>
+    <dimen name="space_56">56dp</dimen>
+    <dimen name="space_6">6dp</dimen>
+    <dimen name="space_64">64dp</dimen>
+    <dimen name="space_8">8dp</dimen>
+    <dimen name="text_2xl">20sp</dimen>
+    <dimen name="text_3xl">24sp</dimen>
+    <dimen name="text_4xl">28sp</dimen>
+    <dimen name="text_5xl">32sp</dimen>
+    <dimen name="text_6xl">36sp</dimen>
+    <dimen name="text_base">14sp</dimen>
+    <dimen name="text_lg">16sp</dimen>
+    <dimen name="text_md">15sp</dimen>
+    <dimen name="text_sm">12sp</dimen>
+    <dimen name="text_xl">18sp</dimen>
+    <dimen name="text_xs">10sp</dimen>
+    <dimen name="top_bar_height">64dp</dimen>
+    <string name="about_company">About Company</string>
+    <string name="app_name">JobNet</string>
+    <string name="applicants">Applicants</string>
+    <string name="application_status_format">Application status: %1$s</string>
+    <string name="application_status_none">You have not applied to this job yet</string>
+    <string name="applications_sent">Applications</string>
+    <string name="applied_label">Applied</string>
+    <string name="apply_failed">Could not submit application right now</string>
+    <string name="apply_now">Apply Now</string>
+    <string name="apply_now_label">Apply Now</string>
+    <string name="apply_success">Application submitted successfully</string>
+    <string name="categories">Browse Categories</string>
+    <string name="certifications">Certifications</string>
+    <string name="company_label">Company</string>
+    <string name="create_job_action">Publish Job</string>
+    <string name="create_job_failed">Could not post job right now</string>
+    <string name="create_job_loading">Publishing...</string>
+    <string name="create_job_subtitle">Publish a role for candidates in your network.</string>
+    <string name="create_job_success">Job posted successfully</string>
+    <string name="create_job_title">Create Job Posting</string>
+    <string name="deadline">Deadline</string>
+    <string name="default_profile_company">JobNet User</string>
+    <string name="default_profile_title">JOB SEEKER</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="education">Education</string>
+    <string name="experience">Experience</string>
+    <string name="experience_title">Experience</string>
+    <string name="featured_jobs">Featured Jobs</string>
+    <string name="filter">Filter</string>
+    <string name="full_description_label">Full Description</string>
+    <string name="full_time">Full Time</string>
+    <string name="get_started">Get Started</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    <string name="greeting_morning">Good Morning</string>
+    <string name="help">Help &amp; Support</string>
+    <string name="hide_password">HIDE</string>
+    <string name="home_stat_featured">Featured</string>
+    <string name="home_stat_recommended">Recommended</string>
+    <string name="home_stat_saved">Saved</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="interviews">Interviews</string>
+    <string name="job_overview">Job Overview</string>
+    <string name="job_requirements_unavailable">Requirements will be discussed during screening.</string>
+    <string name="job_title_label">Job Title</string>
+    <string name="location_hint">City, remote, anywhere…</string>
+    <string name="location_label">Location</string>
+    <string name="login_header">Sign in to JobNet</string>
+    <string name="login_identifier">Email or Username</string>
+    <string name="login_identifier_hint">you@example.com or username</string>
+    <string name="login_loading">Signing in...</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_password">Password</string>
+    <string name="login_password_hint">Enter your password</string>
+    <string name="login_social_placeholder">Continue with Google</string>
+    <string name="login_subtitle">Continue your applications, saved jobs, and profile updates.</string>
+    <string name="login_title_cta">Sign In</string>
+    <string name="login_welcome">WELCOME BACK</string>
+    <string name="logout">Log Out</string>
+    <string name="my_applications">My Applications</string>
+    <string name="my_profile">My Profile</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_search">Search</string>
+    <string name="no_applications">No applications yet</string>
+    <string name="no_recruiter_jobs">No job posts yet. Create your first opening.</string>
+    <string name="no_saved_jobs">No saved jobs yet</string>
+    <string name="no_saved_subtitle">Tap the bookmark icon on any job to save it here</string>
+    <string name="not_available">Not available</string>
+    <string name="notifications">Notifications</string>
+    <string name="part_time">Part Time</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="post_new_job">Post New Job</string>
+    <string name="posted">Posted</string>
+    <string name="privacy">Privacy</string>
+    <string name="profile_completion">Profile Completion</string>
+    <string name="profile_stat_openings">Openings</string>
+    <string name="profile_stat_recommended">Recommended</string>
+    <string name="profile_stat_saved">Saved</string>
+    <string name="profile_views">Profile Views</string>
+    <string name="recent_searches">Recent Searches</string>
+    <string name="recommended">Recommended for You</string>
+    <string name="recommended_jobs_label">RECOMMENDED JOBS</string>
+    <string name="recruiter_dashboard_subtitle">Manage your job posts and publish new opportunities.</string>
+    <string name="recruiter_dashboard_title">Recruiter Dashboard</string>
+    <string name="recruiter_role_title">RECRUITER</string>
+    <string name="register_confirm_password">Confirm Password</string>
+    <string name="register_confirm_password_hint">Re-enter your password</string>
+    <string name="register_email">Email</string>
+    <string name="register_email_hint">john@example.com</string>
+    <string name="register_have_account">Already have an account?</string>
+    <string name="register_header">Join JobNet Today</string>
+    <string name="register_loading">Creating account...</string>
+    <string name="register_name">Full Name</string>
+    <string name="register_name_hint">John Doe</string>
+    <string name="register_role">Register as</string>
+    <string name="register_subtitle">Build your profile and discover roles tailored for you.</string>
+    <string name="register_success">Account created. Please sign in.</string>
+    <string name="register_title_cta">Create Account</string>
+    <string name="register_username">Username</string>
+    <string name="register_username_hint">john_doe</string>
+    <string name="register_welcome">CREATE YOUR ACCOUNT</string>
+    <string name="remote">Remote</string>
+    <string name="requirements">Requirements</string>
+    <string name="responsibilities">Responsibilities</string>
+    <string name="results_found">%1$d jobs found</string>
+    <string name="resume">Resume</string>
+    <string name="role_job_seeker">Job Seeker</string>
+    <string name="role_recruiter">Recruiter</string>
+    <string name="salary_label">Salary</string>
+    <string name="salary_range">Salary Range</string>
+    <string name="save_job">Save Job</string>
+    <string name="saved">Saved</string>
+    <string name="saved_jobs">Saved Jobs</string>
+    <string name="search_hint">Job title, company, keywords…</string>
+    <string name="see_all">See All</string>
+    <string name="settings">Settings</string>
+    <string name="share">Share</string>
+    <string name="short_description_label">Short Description</string>
+    <string name="show_password">SHOW</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Create Account</string>
+    <string name="skills">Skills</string>
+    <string name="sort_by">Sort by</string>
+    <string name="splash_tagline">Connecting Talent with Opportunity</string>
+    <string name="subtitle_home">Let\'s find your perfect role</string>
+    <string name="tagline">Find Your Dream Job</string>
+    <string name="toggle_password">Toggle password visibility</string>
+    <string name="top_companies">Top Companies Hiring</string>
+    <string name="upload_resume">Upload Resume</string>
+    <style name="ShapeAppearance.JobNet.Button" parent="">
+        <item name="cornerSize">14dp</item>
+    </style>
+    <style name="ShapeAppearance.JobNet.Large" parent="">
+        <item name="cornerSize">24dp</item>
+    </style>
+    <style name="ShapeAppearance.JobNet.Medium" parent="">
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="ShapeAppearance.JobNet.Small" parent="">
+        <item name="cornerSize">10dp</item>
+    </style>
+    <style name="TextAppearance.JobNet.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+    <style name="TextAppearance.JobNet.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+    <style name="TextAppearance.JobNet.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textSize">@dimen/text_6xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+    <style name="TextAppearance.JobNet.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">@dimen/text_4xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    <style name="TextAppearance.JobNet.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">@dimen/text_3xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextAppearance.JobNet.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <style name="TextAppearance.JobNet.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">@dimen/text_2xl</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="TextAppearance.JobNet.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">@dimen/text_lg</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="Theme.JobNet" parent="Theme.Material3.Light.NoActionBar">
+        
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorOnSecondary">@color/text_on_primary</item>
+        <item name="colorTertiary">@color/teal</item>
+
+        
+        <item name="colorSurface">@color/bg_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:colorBackground">@color/bg_app</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+
+        
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/bg_bottom_nav</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        
+        <item name="android:windowBackground">@color/bg_app</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        
+        <item name="colorControlHighlight">#1A4F46E5</item>
+
+        
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.JobNet.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.JobNet.Large</item>
+
+        
+        <item name="bottomNavigationStyle">@style/Widget.JobNet.BottomNavigationView</item>
+    </style>
+    <style name="Theme.JobNet.Splash" parent="Theme.JobNet">
+        <item name="android:statusBarColor">@color/bg_dark_header</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/bg_dark_header</item>
+        <item name="android:windowBackground">@color/bg_dark_header</item>
+    </style>
+    <style name="Widget.JobNet.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="android:background">@color/bg_bottom_nav</item>
+        <item name="itemTextColor">@color/selector_bottom_nav_text</item>
+        <item name="itemIconTint">@color/selector_bottom_nav_text</item>
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">8dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+    <style name="Widget.JobNet.Button.Primary" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Button</item>
+        <item name="backgroundTint">@color/primary</item>
+        <item name="iconPadding">8dp</item>
+    </style>
+    <style name="Widget.JobNet.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">@dimen/text_md</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Button</item>
+        <item name="strokeColor">@color/primary</item>
+    </style>
+    <style name="Widget.JobNet.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/border</item>
+        <item name="cardCornerRadius">@dimen/radius_lg</item>
+        <item name="contentPadding">0dp</item>
+    </style>
+    <style name="Widget.JobNet.Card.Featured" parent="Widget.JobNet.Card">
+        <item name="strokeWidth">0dp</item>
+        <item name="cardCornerRadius">@dimen/radius_xl</item>
+    </style>
+    <style name="Widget.JobNet.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="android:textSize">@dimen/text_sm</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="fontFamily">sans-serif-medium</item>
+        <item name="chipMinHeight">@dimen/chip_height</item>
+        <item name="chipCornerRadius">@dimen/radius_full</item>
+        <item name="chipBackgroundColor">@color/selector_chip_bg</item>
+        <item name="android:textColor">@color/selector_chip_text</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+    <style name="Widget.JobNet.Divider" parent="">
+        <item name="android:background">@color/divider</item>
+    </style>
+    <style name="Widget.JobNet.Snackbar" parent="Widget.Material3.Snackbar">
+        <item name="android:layout_margin">16dp</item>
+        <item name="backgroundTint">@color/text_primary</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.JobNet.Medium</item>
+    </style>
+    <style name="Widget.JobNet.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/bg_input</item>
+        <item name="boxStrokeColor">@color/selector_input_stroke</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+        <item name="hintTextColor">@color/text_tertiary</item>
+        <item name="android:textColorHint">@color/text_tertiary</item>
+    </style>
+</resources>

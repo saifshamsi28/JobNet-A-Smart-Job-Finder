@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_screen"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Hero Header (Blue) matching reference screenshot -->
+        <FrameLayout
+            android:id="@+id/profile_header"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:background="@drawable/bg_gradient_primary">
+
+            <!-- Toolbar Row -->
+            <LinearLayout
+                android:id="@+id/profile_toolbar_row"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:layout_gravity="top">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/text_on_dark_60" />
+
+                <View android:layout_width="0dp" android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <!-- Notification bell with red dot -->
+                <FrameLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_bell"
+                        app:tint="@color/text_on_dark_60"
+                        android:layout_gravity="center" />
+
+                    <View
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:background="@color/badge_bg"
+                        android:layout_gravity="top|end" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Avatar + Progress Ring (centered) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="24dp">
+
+                <!-- Progress Ring using ProgressBar as ring -->
+                <FrameLayout
+                    android:layout_width="108dp"
+                    android:layout_height="108dp"
+                    android:layout_marginBottom="14dp">
+
+                    <!-- Yellow ring progress -->
+                    <ProgressBar
+                        android:id="@+id/progress_profile"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:progressDrawable="@drawable/progress_ring"
+                        android:progress="72"
+                        android:rotation="-90"
+                        android:layout_gravity="center" />
+
+                    <!-- Avatar Circle -->
+                    <LinearLayout
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_avatar_border"
+                        android:layout_gravity="center">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/iv_avatar"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/primary" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- Profile Completion Text -->
+                <TextView
+                    android:id="@+id/tv_profile_completion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile synced"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:id="@+id/tv_profile_last_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Latest account data"
+                    android:textColor="@color/text_on_dark_60"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_regular"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Name & Title -->
+                <TextView
+                    android:id="@+id/tv_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="JobNet User"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/inter_bold"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:id="@+id/tv_profile_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_profile_title"
+                    android:textColor="@color/text_on_dark_80"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:id="@+id/tv_profile_company"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_profile_company"
+                    android:textColor="@color/text_on_dark_60"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_regular" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Recommended Jobs Card (green accent, matching reference) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/surface"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="16dp">
+
+                <!-- Number badge -->
+                <LinearLayout
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_gradient_primary"
+                    android:layout_marginEnd="14dp">
+
+                    <TextView
+                        android:id="@+id/tv_recommended_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/inter_bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recommended_jobs_label"
+                        android:textColor="@color/text_hint"
+                        android:textSize="10sp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:letterSpacing="0.08"
+                        android:layout_marginBottom="2dp" />
+
+                    <TextView
+                        android:id="@+id/tv_recommended_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No recommendation yet"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/inter_semibold" />
+
+                    <TextView
+                        android:id="@+id/tv_recommended_company"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:fontFamily="@font/inter_regular" />
+                </LinearLayout>
+
+                <!-- Green SEE ALL button -->
+                <LinearLayout
+                    android:id="@+id/btn_see_recommended"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_tag_green"
+                    android:backgroundTint="@color/accent_light"
+                    android:paddingHorizontal="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SEE ALL"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:layout_marginEnd="4dp" />
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Stats Row (Saved / Applied / New) matching reference -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@color/surface"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="20dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Saved -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_profile_stat_saved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/text_primary"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/inter_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_stat_saved"
+                    android:textColor="@color/text_hint"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:letterSpacing="0.06" />
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="40dp"
+                android:background="@color/border" />
+
+            <!-- Applied -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_profile_stat_recommended"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/text_primary"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/inter_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_stat_recommended"
+                    android:textColor="@color/text_hint"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:letterSpacing="0.06" />
+            </LinearLayout>
+
+            <View android:layout_width="1dp" android:layout_height="40dp"
+                android:background="@color/border" />
+
+            <!-- New -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_profile_stat_openings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/primary"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/inter_bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_stat_openings"
+                    android:textColor="@color/text_hint"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_medium"
+                    android:letterSpacing="0.06" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Your Job Searches (matching reference screenshot) -->
+        <LinearLayout
+            android:id="@+id/section_job_searches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/surface"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR JOB SEARCHES"
+                android:textColor="@color/text_hint"
+                android:textSize="11sp"
+                android:fontFamily="@font/inter_semibold"
+                android:letterSpacing="0.08"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="10dp" />
+
+            <!-- Search Alert 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="UI/UX Designer"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_semibold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="36 NEW"
+                    android:textColor="@color/primary"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginEnd="12dp" />
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_bell"
+                    app:tint="@color/text_hint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border"
+                android:layout_marginHorizontal="20dp" />
+
+            <!-- Search Alert 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Full-Stack Developer"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_semibold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="46 NEW"
+                    android:textColor="@color/primary"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginEnd="12dp" />
+
+                <LinearLayout
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_tag_green">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_bell"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border"
+                android:layout_marginHorizontal="20dp" />
+
+            <!-- Search Alert 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Product Manager"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/inter_semibold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18 NEW"
+                    android:textColor="@color/primary"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:layout_marginEnd="12dp" />
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_bell"
+                    app:tint="@color/text_hint" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Profile Menu Items -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/surface"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACCOUNT"
+                android:textColor="@color/text_hint"
+                android:textSize="11sp"
+                android:fontFamily="@font/inter_semibold"
+                android:letterSpacing="0.08"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="10dp" />
+
+            <!-- Edit Profile -->
+            <LinearLayout
+                android:id="@+id/btn_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_primary"
+                    android:layout_marginEnd="14dp">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_edit" app:tint="@color/white" />
+                </LinearLayout>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Edit Profile"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_medium" />
+
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right" app:tint="@color/text_hint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border" android:layout_marginHorizontal="20dp" />
+
+            <!-- Upload Resume -->
+            <LinearLayout
+                android:id="@+id/btn_upload_resume"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_tag_green"
+                    android:layout_marginEnd="14dp">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_upload" app:tint="@color/white" />
+                </LinearLayout>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Upload Resume"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_medium" />
+
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right" app:tint="@color/text_hint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border" android:layout_marginHorizontal="20dp" />
+
+            <!-- My Applications -->
+            <LinearLayout
+                android:id="@+id/btn_my_applications"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_tag_primary"
+                    android:layout_marginEnd="14dp">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_briefcase" app:tint="@color/primary" />
+                </LinearLayout>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/my_applications"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_medium" />
+
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right" app:tint="@color/text_hint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border" android:layout_marginHorizontal="20dp" />
+
+            <!-- Settings -->
+            <LinearLayout
+                android:id="@+id/btn_settings"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_tag_primary"
+                    android:layout_marginEnd="14dp">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_settings" app:tint="@color/primary" />
+                </LinearLayout>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Settings"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_medium" />
+
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right" app:tint="@color/text_hint" />
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="@color/border" android:layout_marginHorizontal="20dp" />
+
+            <!-- Logout -->
+            <LinearLayout
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:background="@color/error_surface"
+                    android:layout_marginEnd="14dp">
+                    <ImageView android:layout_width="18dp" android:layout_height="18dp"
+                        android:src="@drawable/ic_logout" app:tint="@color/error" />
+                </LinearLayout>
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Logout"
+                    android:textColor="@color/error"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/inter_medium" />
+
+                <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                    android:src="@drawable/ic_arrow_right" app:tint="@color/error" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Bottom padding for nav bar -->
+        <View android:layout_width="match_parent" android:layout_height="88dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
