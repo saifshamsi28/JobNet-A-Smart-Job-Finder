@@ -21,11 +21,21 @@ Key design choices:
 
 ## Screenshots
 
-*(Add your app screenshots to the `screenshots/` folder and link them here)*
+### Job Seeker View
 
-| Home Screen | Search & Filters | Job Details | Profile Dashboard |
+| Dashboard | Search & Filters | Saved Jobs | Profile & Stats |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/dashboard_jobseeker.png" width="250"/> | <img src="screenshots/search.png" width="250"/> | <img src="screenshots/saved_jobs.png" width="250"/> | <img src="screenshots/profile_jobseeker.png" width="250"/> |
+| <img src="screenshots/dashboard_jobseeker.jpeg" width="250"/> | <img src="screenshots/search.jpeg" width="250"/> | <img src="screenshots/saved_jobs.jpeg" width="250"/> | <img src="screenshots/profile_jobseeker.jpeg" width="250"/> |
+| **My Applications** | **Application Progress** | | |
+| <img src="screenshots/my_applications.jpeg" width="250"/> | <img src="screenshots/application_progress.jpeg" width="250"/> | | |
+
+### Recruiter View
+
+| Dashboard | Posted Jobs | Post New Job | Job Applicants |
+| :---: | :---: | :---: | :---: |
+| <img src="screenshots/dashboard_recruiter.jpeg" width="250"/> | <img src="screenshots/recruiter_posted_jobs.jpeg" width="250"/> | <img src="screenshots/recruiter_post_new_job.jpeg" width="250"/> | <img src="screenshots/job_applicants.jpeg" width="250"/> |
+| **Notifications** | **Recruiter Profile** | | |
+| <img src="screenshots/notification_recruiter.jpeg" width="250"/> | <img src="screenshots/profile_recruiter.jpeg" width="250"/> | | |
 
 ---
 
