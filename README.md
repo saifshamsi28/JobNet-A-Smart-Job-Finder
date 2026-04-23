@@ -19,6 +19,16 @@ Key design choices:
 
 ---
 
+## Screenshots
+
+*(Add your app screenshots to the `screenshots/` folder and link them here)*
+
+| Home Screen | Search & Filters | Job Details | Profile Dashboard |
+| :---: | :---: | :---: | :---: |
+| <img src="screenshots/dashboard_jobseeker.png" width="250"/> | <img src="screenshots/search.png" width="250"/> | <img src="screenshots/saved_jobs.png" width="250"/> | <img src="screenshots/profile_jobseeker.png" width="250"/> |
+
+---
+
 ## Project Structure
 
 ```
