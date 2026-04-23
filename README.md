@@ -1,25 +1,31 @@
-# JobNet — Premium Job Search Android App (Java + XML)
+# JobNet — Premium Android Job Portal
 
-A Dribbble-quality Android job search application built in Java with XML layouts, following the
-UI reference from the "Job Seeker Mobile App UI Kit" design.
+JobNet is a professional, feature-rich Android application designed to bridge the gap between talented job seekers and top recruiters. Built natively in Java with a modern XML-based UI, JobNet delivers a seamless, high-performance experience with an elegant, dribbble-quality design system.
 
----
-
-## Design Reference
-
-Inspired by: https://www.indiamart.com/proddetail/job-seeker-mobile-app-ui-kit-design-in-adobe-xd
-
-Key design choices:
-- **Primary**: Royal Blue `#1A56DB` — hero headers, buttons, primary actions
-- **Accent Yellow**: `#FFC107` — progress ring on profile screen
-- **Accent Green**: `#16A34A` — "SEE ALL" CTAs, success states
-- **Typography**: Inter (via Google Fonts provider) — Regular, Medium, SemiBold, Bold
-- **Cards**: 16dp corner radius, 4dp elevation, white background
-- **Profile hero**: Blue gradient header with circular avatar + yellow progress ring (72%)
+The platform offers two distinct user flows: a comprehensive **Job Seeker** portal for finding and tracking opportunities, and a powerful **Recruiter** dashboard for posting jobs and managing applicants.
 
 ---
 
-## Screenshots
+## Key Capabilities & Features
+
+### 👨‍💻 For Job Seekers
+* **Smart Search & Filters:** Find the perfect role with real-time search and advanced filters (Full Time, Remote, Internship, etc.).
+* **Detailed Job Listings:** View comprehensive job descriptions, salary brackets, required skills, and location details.
+* **One-Tap Apply:** Streamlined application process with a beautifully animated progress tracker.
+* **Saved Jobs:** Bookmark interesting opportunities to review and apply later.
+* **Profile Management:** Showcase your skills, education, and experience with a dynamic profile dashboard featuring visual completion rings.
+* **Application Tracking:** Monitor the status of your applications across the entire hiring pipeline (Applied → Reviewed → Interviewing).
+
+### 🏢 For Recruiters
+* **Recruiter Dashboard:** A dedicated hub to oversee all active job postings and recent applicant activity.
+* **Job Management:** Easily post new jobs, edit existing listings, and manage application deadlines.
+* **Applicant Tracking System (ATS):** Review applicant profiles, download resumes, and update candidate statuses in real-time.
+* **Real-time Notifications:** Stay informed when new candidates apply to your job postings.
+* **Company Profile:** Manage your employer brand and recruiter details.
+
+---
+
+## App in Action
 
 ### Job Seeker View
 
@@ -49,99 +55,38 @@ Key design choices:
 
 ---
 
-## Project Structure
+## Tech Stack & Architecture
 
-```
-android/
-├── app/
-│   ├── build.gradle
-│   └── src/main/
-│       ├── AndroidManifest.xml
-│       ├── java/com/jobnet/app/
-│       │   ├── ui/
-│       │   │   ├── main/MainActivity.java
-│       │   │   ├── home/
-│       │   │   │   ├── HomeFragment.java
-│       │   │   │   ├── JobsAdapter.java
-│       │   │   │   ├── FeaturedJobsAdapter.java
-│       │   │   │   └── CategoriesAdapter.java
-│       │   │   ├── search/SearchFragment.java
-│       │   │   ├── jobdetails/JobDetailsFragment.java
-│       │   │   ├── saved/SavedJobsFragment.java
-│       │   │   └── profile/ProfileFragment.java
-│       │   ├── data/model/
-│       │   │   ├── Job.java
-│       │   │   └── JobCategory.java
-│       │   └── util/SampleData.java
-│       └── res/
-│           ├── layout/
-│           │   ├── activity_main.xml       ← BottomNavigationView + NavHostFragment
-│           │   ├── fragment_home.xml       ← Hero banner, categories, recruiters, job list
-│           │   ├── fragment_search.xml     ← Search bar, filter chips, results RecyclerView
-│           │   ├── fragment_job_details.xml ← Collapsing hero, stats, description, apply CTA
-│           │   ├── fragment_profile.xml    ← Blue hero, progress ring, stats, job searches
-│           │   ├── fragment_saved.xml      ← Saved jobs list with tabs
-│           │   ├── item_job_card.xml       ← Job list card item
-│           │   ├── item_featured_card.xml  ← Horizontal featured job card
-│           │   ├── item_category_card.xml  ← Category grid card
-│           │   ├── item_requirement.xml    ← Requirement row with green check
-│           │   └── item_skill_tag.xml      ← Skill pill tag
-│           ├── values/
-│           │   ├── colors.xml
-│           │   ├── themes.xml
-│           │   ├── strings.xml
-│           │   └── dimens.xml
-│           ├── drawable/                   ← 30+ vector icons + gradient/shape drawables
-│           ├── font/                       ← Inter font (via Google Fonts provider)
-│           ├── navigation/nav_graph.xml
-│           ├── menu/bottom_nav_menu.xml
-│           └── anim/                       ← slide in/out animations
-└── build.gradle
-```
+JobNet is built using modern Android development practices, ensuring high performance, scalability, and maintainability.
+
+* **Language:** Java
+* **UI Design:** Native XML with Material Design Components
+* **Architecture:** MVC/MVVM principles with robust Data Binding and Navigation Graph
+* **Networking:** Retrofit / OkHttp (API Integration)
+* **Image Loading:** Glide
+* **Layout Management:** FlexboxLayout, CoordinatorLayout, ConstraintLayout
+* **Local Storage:** SharedPreferences for session management
 
 ---
 
 ## Setup Instructions
 
 ### 1. Open in Android Studio
-- File → Open → select the `android/` folder
-- Android Studio will sync Gradle automatically
+- Launch Android Studio and select **File → Open**.
+- Navigate to and select the cloned `android/` folder.
+- Android Studio will automatically sync the Gradle files and download required dependencies.
 
-### 2. Add Inter Font TTF files (optional, GMS fallback works without this)
-If you have no internet or prefer local fonts:
-1. Download from https://fonts.google.com/specimen/Inter
-2. Extract and copy:
-   - `Inter-Regular.ttf` → `res/font/inter_regular.ttf`
-   - `Inter-Medium.ttf` → `res/font/inter_medium.ttf`
-   - `Inter-SemiBold.ttf` → `res/font/inter_semibold.ttf`
-   - `Inter-Bold.ttf` → `res/font/inter_bold.ttf`
-3. Replace the `.xml` font files with the `.ttf` files
+### 2. Configure API Endpoint (Optional)
+If running against a live backend, ensure the base URL in your networking client is pointed to your active server IP/Domain.
 
-### 3. Add FlexboxLayout dependency
-Already included in `app/build.gradle`:
-```groovy
-implementation 'com.google.android.flexbox:flexbox:3.0.0'
-```
-
-### 4. Minimum SDK
-- `minSdk 24` (Android 7.0+)
-- `targetSdk 34`
+### 3. Build & Run
+- Recommended Minimum SDK: `minSdk 24` (Android 7.0 Nougat or higher).
+- Target SDK: `targetSdk 34`.
+- Click the **Run** button (Shift + F10) to deploy the app to an emulator or connected physical device.
 
 ---
 
-## Screens
-
-| Screen | Description |
-|--------|-------------|
-| **Home** | Blue hero banner, category grid (Engineering/Fresher/Walk-in/HR), featured horizontal cards, job list |
-| **Search** | Sticky search bar + filter chips (All/Full Time/Part Time/Remote/Internship), live filtering results |
-| **Job Details** | Collapsing toolbar hero, salary/location/type stats card, description, requirements, skills, Apply Now CTA |
-| **Saved Jobs** | Bookmarked jobs list with tab filter |
-| **Profile** | Blue hero, circular avatar with animated yellow progress ring (72%), stats row (12 Saved / 22 Applied / 14 New), job search alerts, account menu |
-
----
-
-## Dependencies
+## Core Dependencies
 
 ```groovy
 implementation 'androidx.appcompat:appcompat:1.7.0'
