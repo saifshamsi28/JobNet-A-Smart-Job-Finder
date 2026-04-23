@@ -26,15 +26,25 @@ Key design choices:
 | Dashboard | Search & Filters | Saved Jobs | Profile & Stats |
 | :---: | :---: | :---: | :---: |
 | <img src="screenshots/dashboard_jobseeker.jpeg" width="200"/> | <img src="screenshots/search.jpeg" width="200"/> | <img src="screenshots/saved_jobs.jpeg" width="200"/> | <img src="screenshots/profile_jobseeker.jpeg" width="200"/> |
-| **My Applications** | **Application Progress** | **Job Details (1)** | **Job Details (2)** |
+
+<br>
+
+| My Applications | Application Progress | Job Details (1) | Job Details (2) |
+| :---: | :---: | :---: | :---: |
 | <img src="screenshots/my_applications.jpeg" width="200"/> | <img src="screenshots/application_progress.jpeg" width="200"/> | <img src="screenshots/job_detail_img1.jpeg" width="200"/> | <img src="screenshots/job_detail_img2.jpeg" width="200"/> |
+
+<br><br>
 
 ### Recruiter View
 
 | Dashboard | Posted Jobs | Post New Job | Job Applicants |
 | :---: | :---: | :---: | :---: |
 | <img src="screenshots/dashboard_recruiter.jpeg" width="200"/> | <img src="screenshots/recruiter_posted_jobs.jpeg" width="200"/> | <img src="screenshots/recruiter_post_new_job.jpeg" width="200"/> | <img src="screenshots/job_applicants.jpeg" width="200"/> |
-| **Notifications** | **Recruiter Profile** | **Edit Job** | **Edit Profile** |
+
+<br>
+
+| Notifications | Recruiter Profile | Edit Job | Edit Profile |
+| :---: | :---: | :---: | :---: |
 | <img src="screenshots/notification_recruiter.jpeg" width="200"/> | <img src="screenshots/profile_recruiter.jpeg" width="200"/> | <img src="screenshots/recruiter_edit_job.jpeg" width="200"/> | <img src="screenshots/edit_profile.jpeg" width="200"/> |
 
 ---
