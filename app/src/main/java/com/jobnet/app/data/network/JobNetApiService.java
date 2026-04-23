@@ -7,14 +7,19 @@ import com.jobnet.app.data.network.dto.SaveJobRequestDto;
 import com.jobnet.app.data.network.dto.UserDto;
 import com.jobnet.app.data.network.dto.AuthResponseDto;
 import com.jobnet.app.data.network.dto.ApplicationDto;
+import com.jobnet.app.data.network.dto.ApplicationStatusRequestDto;
 import com.jobnet.app.data.network.dto.ApplyJobRequestDto;
 import com.jobnet.app.data.network.dto.RecruiterJobCreateRequestDto;
+import com.jobnet.app.data.network.dto.RecruiterJobStatusRequestDto;
+import com.jobnet.app.data.network.dto.RefreshTokenRequestDto;
+import com.jobnet.app.data.network.dto.UserUpdateRequestDto;
 
 import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
@@ -27,6 +32,9 @@ public interface JobNetApiService {
 
         @POST("auth/login")
         Call<AuthResponseDto> login(@Body LoginRequestDto request);
+
+        @POST("auth/refresh")
+        Call<AuthResponseDto> refreshToken(@Body RefreshTokenRequestDto request);
 
         @POST("auth/register")
         Call<AuthResponseDto> register(@Body RegisterRequestDto request);
@@ -77,6 +85,12 @@ public interface JobNetApiService {
             @Body List<String> skills
     );
 
+    @PUT("user/update")
+    Call<UserDto> updateUser(
+            @Header("Authorization") String authHeader,
+            @Body UserUpdateRequestDto request
+    );
+
     @POST("applications/apply")
     Call<ApplicationDto> applyToJob(
             @Header("Authorization") String authHeader,
@@ -105,5 +119,38 @@ public interface JobNetApiService {
     @GET("recruiter/jobs/me")
     Call<List<JobDto>> getRecruiterPostedJobs(
             @Header("Authorization") String authHeader
+    );
+
+    @GET("recruiter/jobs/{jobId}/applications")
+    Call<List<ApplicationDto>> getJobApplicants(
+            @Header("Authorization") String authHeader,
+            @Path("jobId") String jobId
+    );
+
+    @PUT("recruiter/jobs/{jobId}")
+    Call<JobDto> updateRecruiterJob(
+            @Header("Authorization") String authHeader,
+            @Path("jobId") String jobId,
+            @Body RecruiterJobCreateRequestDto request
+    );
+
+    @PATCH("recruiter/jobs/{jobId}/status")
+    Call<JobDto> updateRecruiterJobStatus(
+            @Header("Authorization") String authHeader,
+            @Path("jobId") String jobId,
+            @Body RecruiterJobStatusRequestDto request
+    );
+
+    @DELETE("recruiter/jobs/{jobId}")
+    Call<ResponseBody> deleteRecruiterJob(
+            @Header("Authorization") String authHeader,
+            @Path("jobId") String jobId
+    );
+
+    @PATCH("applications/{id}/status")
+    Call<ApplicationDto> updateApplicationStatus(
+            @Header("Authorization") String authHeader,
+            @Path("id") String applicationId,
+            @Body ApplicationStatusRequestDto request
     );
 }

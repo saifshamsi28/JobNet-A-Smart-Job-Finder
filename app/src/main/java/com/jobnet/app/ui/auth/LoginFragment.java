@@ -1,7 +1,8 @@
 package com.jobnet.app.ui.auth;
 
 import android.os.Bundle;
-import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import java.util.Locale;
 public class LoginFragment extends Fragment {
 
     private AuthRepository authRepository;
+    private boolean isPasswordHidden = true;
 
     @Nullable
     @Override
@@ -49,18 +51,12 @@ public class LoginFragment extends Fragment {
         MaterialButton btnGoogle = view.findViewById(R.id.btn_google_placeholder);
         TextView goToRegister = view.findViewById(R.id.btn_go_register);
         ProgressBar loginProgress = view.findViewById(R.id.login_progress);
+        TextView togglePassword = view.findViewById(R.id.btn_toggle_password);
 
-        view.findViewById(R.id.btn_toggle_password).setOnClickListener(v -> {
-            int type = inputPassword.getInputType();
-            boolean hidden = (type & InputType.TYPE_TEXT_VARIATION_PASSWORD) == InputType.TYPE_TEXT_VARIATION_PASSWORD;
-            inputPassword.setInputType(hidden
-                    ? InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                    : InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            if (v instanceof TextView) {
-                TextView toggleView = (TextView) v;
-                toggleView.setText(hidden ? R.string.hide_password : R.string.show_password);
-            }
-            inputPassword.setSelection(inputPassword.getText() == null ? 0 : inputPassword.getText().length());
+        applyPasswordVisibility(inputPassword, togglePassword);
+        togglePassword.setOnClickListener(v -> {
+            isPasswordHidden = !isPasswordHidden;
+            applyPasswordVisibility(inputPassword, togglePassword);
         });
 
         btnLogin.setOnClickListener(v -> {
@@ -99,7 +95,7 @@ public class LoginFragment extends Fragment {
     private void setLoading(boolean loading, MaterialButton button, ProgressBar progressBar) {
         button.setEnabled(!loading);
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
-        button.setText(loading ? getString(R.string.login_loading) : getString(R.string.login_title_cta));
+        button.setText(loading ? "" : getString(R.string.login_title_cta));
     }
 
     private void navigateByRole(@NonNull View view) {
@@ -110,5 +106,13 @@ public class LoginFragment extends Fragment {
             return;
         }
         Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment);
+    }
+
+    private void applyPasswordVisibility(TextInputEditText inputPassword, TextView toggleView) {
+        inputPassword.setTransformationMethod(isPasswordHidden
+                ? PasswordTransformationMethod.getInstance()
+                : HideReturnsTransformationMethod.getInstance());
+        toggleView.setText(isPasswordHidden ? R.string.show_password : R.string.hide_password);
+        inputPassword.setSelection(inputPassword.getText() == null ? 0 : inputPassword.getText().length());
     }
 }

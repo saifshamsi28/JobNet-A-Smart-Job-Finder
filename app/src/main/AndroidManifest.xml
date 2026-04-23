@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -14,15 +15,20 @@
         android:windowSoftInputMode="adjustResize">
 
         <activity
-            android:name=".ui.main.MainActivity"
-            android:theme="@style/Theme.JobNet"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".ui.main.SplashActivity"
+            android:theme="@style/Theme.JobNet.Splash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:theme="@style/Theme.JobNet"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

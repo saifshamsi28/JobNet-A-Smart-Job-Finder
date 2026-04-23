@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Skeleton loader card that mirrors the exact shape of item_notification.xml.
+  The adapter pulses alpha on the root view using ObjectAnimator.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp">
+
+        <!-- Icon bubble placeholder -->
+        <View
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/bg_skeleton_circle" />
+
+        <!-- Text placeholders -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Title line -->
+            <View
+                android:layout_width="160dp"
+                android:layout_height="13dp"
+                android:background="@drawable/bg_skeleton_rect" />
+
+            <!-- Message lines -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="11dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_skeleton_rect" />
+
+            <View
+                android:layout_width="120dp"
+                android:layout_height="11dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_skeleton_rect" />
+
+            <!-- Chip + time row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp">
+
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/bg_skeleton_rect_round" />
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="11dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/bg_skeleton_rect" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Chevron placeholder -->
+        <View
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/bg_skeleton_circle" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

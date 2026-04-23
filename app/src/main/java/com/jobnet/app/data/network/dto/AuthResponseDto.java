@@ -9,4 +9,10 @@ public class AuthResponseDto {
 
     @SerializedName("status")
     public int status;
+
+    @SerializedName("accessToken")
+    public String accessToken;
+
+    @SerializedName("refreshToken")
+    public String refreshToken;
 }

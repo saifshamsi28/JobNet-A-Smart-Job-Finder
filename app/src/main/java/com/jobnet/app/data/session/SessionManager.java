@@ -9,6 +9,7 @@ public class SessionManager {
     private static final String LEGACY_PREF_NAME = "JobNetPrefs";
     private static final String KEY_TOKEN = "jwtToken";
     private static final String KEY_FALLBACK_TOKEN = "token";
+    private static final String KEY_REFRESH_TOKEN = "refreshToken";
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_USER_EMAIL = "userEmail";
@@ -53,6 +54,22 @@ public class SessionManager {
     public void saveAuthToken(String token) {
         prefs.edit().putString(KEY_TOKEN, token).putString(KEY_FALLBACK_TOKEN, token).apply();
         legacyPrefs.edit().putString(KEY_TOKEN, token).putString(KEY_FALLBACK_TOKEN, token).apply();
+    }
+
+    public void saveRefreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            return;
+        }
+        prefs.edit().putString(KEY_REFRESH_TOKEN, refreshToken).apply();
+        legacyPrefs.edit().putString(KEY_REFRESH_TOKEN, refreshToken).apply();
+    }
+
+    public String getRefreshToken() {
+        String token = prefs.getString(KEY_REFRESH_TOKEN, null);
+        if (token == null || token.isBlank()) {
+            token = legacyPrefs.getString(KEY_REFRESH_TOKEN, null);
+        }
+        return token;
     }
 
     public void saveUserId(String userId) {

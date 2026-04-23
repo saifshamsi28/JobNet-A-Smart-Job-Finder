@@ -53,6 +53,24 @@
     <!-- Profile -->
     <string name="my_profile">My Profile</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="edit_profile_header">Edit Profile</string>
+    <string name="edit_profile_subtitle">Keep your details current so recruiters can reach you quickly.</string>
+    <string name="edit_profile_name_label">Full Name</string>
+    <string name="edit_profile_email_label">Email Address</string>
+    <string name="edit_profile_phone_label">Phone Number</string>
+    <string name="edit_profile_skills_label">Skills</string>
+    <string name="edit_profile_name_hint">John Doe</string>
+    <string name="edit_profile_phone_hint">+1 234 567 890</string>
+    <string name="edit_profile_skills_hint">Android, Kotlin, UI Design</string>
+    <string name="edit_profile_skills_helper">Separate skills with commas. Example: Java, Spring Boot, REST APIs</string>
+    <string name="edit_profile_tip_title">Profile Tip</string>
+    <string name="edit_profile_tip_body">A clear name, reachable email, and updated skills help your profile appear in stronger recruiter matches.</string>
+    <string name="edit_profile_save">Save Changes</string>
+    <string name="edit_profile_saving">Saving...</string>
+    <string name="edit_profile_saved">Profile updated successfully</string>
+    <string name="edit_profile_save_failed">Could not update profile right now</string>
+    <string name="edit_profile_invalid_name">Please enter your full name</string>
+    <string name="edit_profile_invalid_email">Please enter a valid email address</string>
     <string name="profile_completion">Profile Completion</string>
     <string name="skills">Skills</string>
     <string name="experience_title">Experience</string>
@@ -118,6 +136,7 @@
     <string name="profile_stat_saved">Saved</string>
     <string name="profile_stat_recommended">Recommended</string>
     <string name="profile_stat_openings">Openings</string>
+    <string name="profile_stat_applied">Applied</string>
     <string name="default_profile_title">JOB SEEKER</string>
     <string name="default_profile_company">JobNet User</string>
     <string name="recommended_jobs_label">RECOMMENDED JOBS</string>
@@ -125,12 +144,17 @@
     <string name="job_requirements_unavailable">Requirements will be discussed during screening.</string>
     <string name="my_applications">My Applications</string>
     <string name="application_status_none">You have not applied to this job yet</string>
+    <string name="application_status_closed">Hiring has closed for this role</string>
     <string name="application_status_format">Application status: %1$s</string>
     <string name="apply_now_label">Apply Now</string>
+    <string name="hiring_closed">Hiring Closed</string>
     <string name="applied_label">Applied</string>
+    <string name="applying_label">Applying...</string>
     <string name="apply_success">Application submitted successfully</string>
     <string name="apply_failed">Could not submit application right now</string>
     <string name="no_applications">No applications yet</string>
+    <string name="applications_count_all">Showing %1$d jobs</string>
+    <string name="applications_count_filtered">Showing %1$d %2$s</string>
     <string name="recruiter_dashboard_title">Recruiter Dashboard</string>
     <string name="recruiter_dashboard_subtitle">Manage your job posts and publish new opportunities.</string>
     <string name="post_new_job">Post New Job</string>
@@ -147,5 +171,145 @@
     <string name="create_job_loading">Publishing...</string>
     <string name="create_job_success">Job posted successfully</string>
     <string name="create_job_failed">Could not post job right now</string>
+    <string name="recruiter_jobs_load_failed">Could not refresh your posted jobs right now</string>
+    <string name="recruiter_filter_all_count">All (%1$d)</string>
+    <string name="recruiter_filter_active_count">Active (%1$d)</string>
+    <string name="recruiter_filter_closed_count">Closed (%1$d)</string>
+    <string name="recruiter_filter_draft_count">Draft (%1$d)</string>
+    <string name="recruiter_jobs_empty_all_title">No jobs posted yet</string>
+    <string name="recruiter_jobs_empty_all_message">Create a new job post to start receiving applicants.</string>
+    <string name="recruiter_jobs_empty_filtered_title">No matching jobs</string>
+    <string name="recruiter_jobs_empty_filtered_message">Try changing your search query or status filter.</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="retry_post_draft">Retry Posting Draft</string>
+    <string name="draft_saved_local">Draft saved locally. You can retry posting anytime.</string>
+    <string name="draft_synced_server">Draft synced to server</string>
+    <string name="draft_empty">Nothing to save yet</string>
+    <string name="post_job_required_fields">Title, company, and location are required to publish</string>
     <string name="recruiter_role_title">RECRUITER</string>
+
+    <!-- Auth extras -->
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- Applicant status labels -->
+    <string name="status_applied">Applied</string>
+    <string name="status_reviewed">Reviewed</string>
+    <string name="status_shortlisted">Shortlisted</string>
+    <string name="status_rejected">Rejected</string>
+    <string name="status_offered">Offered</string>
+    <string name="status_interview">Interview</string>
+    <string name="status_withdrawn">Withdrawn</string>
+    <string name="application_updated_time">Updated %1$s</string>
+    <string name="timeline_data_unavailable">Timeline data is unavailable for this application.</string>
+    <string name="timeline_subtitle_default">Track your progress across hiring stages</string>
+    <string name="timeline_subtitle_updated">Last updated on %1$s</string>
+    <string name="timeline_pending">Pending</string>
+    <string name="timeline_completed">Completed</string>
+    <string name="timeline_in_progress">In progress</string>
+    <string name="timeline_view_progress">Progress</string>
+    <string name="timeline_withdraw_action">Withdraw</string>
+    <string name="timeline_withdrawing">Withdrawing...</string>
+    <string name="timeline_withdraw_success">Application withdrawn</string>
+    <string name="timeline_withdraw_failed">Could not withdraw this application</string>
+    <string name="timeline_withdraw_confirm_title">Withdraw application?</string>
+    <string name="timeline_withdraw_confirm_message">Your application will be moved to Withdrawn and recruiters will be notified.</string>
+    <string name="timeline_withdraw_confirm_action">Withdraw Application</string>
+    <string name="timeline_job_unavailable">Job details unavailable</string>
+
+    <!-- Recruiter actions -->
+    <string name="edit_job">Edit Job</string>
+    <string name="close_job">Close Job</string>
+    <string name="open_job">Reopen Job</string>
+    <string name="view_applicants">View Applicants</string>
+    <string name="applicants_count">%1$d Applicants</string>
+
+    <!-- Empty states -->
+    <string name="empty_applications_title">No applications yet</string>
+    <string name="empty_applications_subtitle">Start applying to jobs to track your progress here</string>
+    <string name="empty_recruiter_jobs_title">No jobs posted yet</string>
+
+    <!-- Recruiter profile -->
+    <string name="recruiter_profile_title">My Profile</string>
+    <string name="stat_total_jobs">Total Jobs</string>
+    <string name="stat_active_jobs">Active Jobs</string>
+    <string name="stat_total_applicants">Applicants</string>
+    <string name="my_posted_jobs">My Posted Jobs</string>
+    <string name="post_new_job_action">Post New Job</string>
+    <string name="recruiter_edit_profile_header">Edit Recruiter Profile</string>
+    <string name="recruiter_edit_profile_subtitle">Keep your recruiter identity and hiring focus updated so candidates can trust your listings.</string>
+    <string name="recruiter_edit_profile_role_badge">RECRUITER PROFILE</string>
+    <string name="recruiter_edit_profile_contact_section">Contact Details</string>
+    <string name="recruiter_edit_profile_hiring_focus_section">Hiring Focus</string>
+    <string name="recruiter_edit_profile_name_hint">Hiring Manager Name</string>
+    <string name="recruiter_edit_profile_phone_hint">+1 234 567 890</string>
+    <string name="recruiter_edit_profile_skills_hint">Backend, Product Design, Data Analytics</string>
+    <string name="recruiter_edit_profile_skills_helper">Use comma-separated skills or focus areas. Example: Android, Sales, Machine Learning</string>
+    <string name="recruiter_edit_profile_tip_title">Recruiter Tip</string>
+    <string name="recruiter_edit_profile_tip_body">Clear profile details improve response rates from candidates and help build confidence in your openings.</string>
+    <string name="recruiter_edit_profile_save">Save Recruiter Profile</string>
+    <string name="recruiter_edit_profile_saving">Saving...</string>
+    <string name="recruiter_edit_profile_saved">Recruiter profile updated successfully</string>
+    <string name="recruiter_edit_profile_save_failed">Could not update recruiter profile right now</string>
+    <string name="recruiter_edit_profile_invalid_name">Please enter your full name</string>
+    <string name="recruiter_edit_profile_invalid_email">Please enter a valid email address</string>
+
+    <!-- Edit job -->
+    <string name="edit_job_title">Edit Job</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="saving">Saving...</string>
+    <string name="update_job_success">Job updated successfully</string>
+    <string name="job_closed">Job closed</string>
+    <string name="job_reopened">Job reopened</string>
+
+    <!-- Applicants screen -->
+    <string name="applicants_screen_title">Applicants</string>
+    <string name="no_applicants_yet">No applicants yet</string>
+    <string name="applicant_shortlisted">Applicant Shortlisted</string>
+    <string name="applicant_rejected">Applicant Rejected</string>
+
+    <!-- Nav labels -->
+    <string name="nav_recruiter_jobs">Jobs</string>
+    <string name="nav_recruiter_post">Post Job</string>
+    <string name="nav_recruiter_profile">Profile</string>
+
+
+    <!-- Confirmation dialogs -->
+    <string name="logout_confirm_title">Log out?</string>
+    <string name="logout_confirm_message">You will be signed out and returned to the login screen.</string>
+    <string name="reject_confirm_title">Reject applicant?</string>
+    <string name="reject_confirm_message">This will move the applicant to Rejected status. This action can be changed later.</string>
+    <string name="shortlist_confirm_title">Shortlist applicant?</string>
+    <string name="shortlist_confirm_message">This will move the applicant to Shortlisted status and flag them for further review.</string>
+    <string name="cancel_action">Cancel</string>
+    <string name="reject_action">Reject</string>
+    <string name="shortlist_action">Shortlist</string>
+    <string name="confirm_logout">Log Out</string>
+    <string name="logged_out_success">Logged out successfully</string>
+    <string name="delete_job_confirm_title">Delete this job post?</string>
+    <string name="delete_job_confirm_message">This permanently removes the job and its applicant pipeline from your dashboard.</string>
+    <string name="delete_job_action">Delete Job</string>
+    <string name="recruiter_job_deleted">Job deleted successfully</string>
+    <string name="recruiter_job_delete_failed">Could not delete this job right now</string>
+
+    <!-- Notifications mode labels -->
+    <string name="notifications_mode_seeker">Job Seeker</string>
+    <string name="notifications_mode_recruiter">Recruiter</string>
+
+    <!-- Notifications screen (already added via previous session strings.xml strings) -->
+    <string name="notifications_subtitle_seeker">Track your latest application updates</string>
+    <string name="notifications_subtitle_recruiter">See incoming applicants across your jobs</string>
+    <string name="notifications_mark_all_read">Mark all read</string>
+    <string name="notifications_clear_all">Clear all</string>
+    <string name="notifications_empty_title">You\'re all caught up</string>
+    <string name="notifications_empty_seeker">Status updates from your applications will appear here.</string>
+    <string name="notifications_empty_recruiter">New candidate applications will appear here.</string>
+    <string name="notification_application_received">Application received</string>
+    <string name="notification_status_changed">Application status updated</string>
+    <string name="notification_new_applicant">New applicant</string>
+    <string name="notification_update">Update</string>
+    <string name="notification_recent">Recent</string>
+    <string name="notification_unknown_job">Job opening</string>
+    <string name="notification_unknown_company">Company</string>
+    <string name="notification_seeker_message">%1$s is now %2$s</string>
+    <string name="notification_recruiter_message">A candidate applied for %1$s</string>
 </resources>

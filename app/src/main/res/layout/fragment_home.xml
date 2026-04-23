@@ -30,7 +30,7 @@
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/page_margin"
                 android:paddingRight="@dimen/page_margin"
-                android:paddingTop="52dp"
+                android:paddingTop="@dimen/page_margin"
                 android:paddingBottom="36dp">
 
                 <!-- Top bar: Greeting + Bell + Avatar -->
@@ -83,8 +83,6 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:layout_marginEnd="12dp"
-                            android:background="@color/overlay_white_20"
-                            android:backgroundTint="@color/overlay_white_20"
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackgroundBorderless">
@@ -95,27 +93,37 @@
                                 android:src="@drawable/ic_bell"
                                 android:contentDescription="Notifications"
                                 app:tint="@color/text_on_dark" />
-                            <!-- Red badge dot -->
-                            <View
-                                android:layout_width="10dp"
-                                android:layout_height="10dp"
+                            <!-- Red badge count -->
+                            <TextView
+                                android:id="@+id/view_notification_badge_dot"
+                                android:layout_width="wrap_content"
+                                android:layout_height="18dp"
+                                android:minWidth="18dp"
                                 android:layout_gravity="top|end"
-                                android:layout_marginTop="6dp"
-                                android:layout_marginEnd="6dp"
-                                android:background="@drawable/bg_badge_dot" />
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/bg_badge_count"
+                                android:gravity="center"
+                                android:paddingLeft="4dp"
+                                android:paddingRight="4dp"
+                                android:textColor="@color/white"
+                                android:textSize="10sp"
+                                android:fontFamily="@font/inter_semibold"
+                                android:visibility="gone"
+                                tools:text="3" />
                         </FrameLayout>
 
                         <!-- Avatar -->
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <ImageView
                             android:id="@+id/iv_avatar"
                             android:layout_width="@dimen/avatar_sm"
                             android:layout_height="@dimen/avatar_sm"
                             android:contentDescription="profile icon"
                             android:src="@drawable/ic_person"
                             app:civ_border_width="2.5dp"
-                            app:civ_border_color="@color/primary_light"
                             android:clickable="true"
-                            android:focusable="true" />
+                            android:focusable="true"
+                            app:tint="@color/white" />
 
                     </LinearLayout>
 

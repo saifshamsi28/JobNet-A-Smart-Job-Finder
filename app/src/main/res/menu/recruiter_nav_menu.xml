@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/recruiterDashboardFragment"
+        android:icon="@drawable/ic_briefcase"
+        android:title="Jobs" />
+
+    <item
+        android:id="@+id/recruiterPostJobFragment"
+        android:icon="@drawable/ic_edit"
+        android:title="Post Job" />
+
+    <item
+        android:id="@+id/recruiterProfileFragment"
+        android:icon="@drawable/ic_person"
+        android:title="Profile" />
+
+</menu>

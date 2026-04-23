@@ -12,12 +12,14 @@ import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.jobnet.app.R;
 import com.jobnet.app.data.model.Job;
+import com.jobnet.app.util.SalaryUtils;
 import java.util.List;
 
 public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder> {
 
     private List<Job> jobs;
     private OnJobClickListener listener;
+    private int lastAnimatedPosition = -1;
 
     public interface OnJobClickListener {
         void onJobClick(Job job, int position);
@@ -43,7 +45,7 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.tvTitle.setText(job.getTitle());
         holder.tvCompany.setText(job.getCompany());
         holder.tvLocation.setText(job.getLocation());
-        holder.tvSalary.setText(job.getSalary());
+        holder.tvSalary.setText(SalaryUtils.normalizeDisplay(job.getSalary()));
         holder.tvType.setText(job.getType());
         holder.tvWorkMode.setText(job.getWorkMode());
         holder.ivBookmark.setImageResource(
@@ -70,6 +72,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
         holder.ivBookmark.setOnClickListener(v -> {
             if (listener != null) listener.onBookmarkClick(job, holder.getAdapterPosition());
         });
+
+        animateEntry(holder.itemView, position);
     }
 
     @Override
@@ -77,7 +81,26 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
     public void updateData(List<Job> newJobs) {
         this.jobs = newJobs;
+        this.lastAnimatedPosition = -1;
         notifyDataSetChanged();
+    }
+
+    private void animateEntry(View itemView, int position) {
+        if (position <= lastAnimatedPosition) {
+            itemView.setAlpha(1f);
+            itemView.setTranslationY(0f);
+            return;
+        }
+        itemView.animate().cancel();
+        itemView.setAlpha(0f);
+        itemView.setTranslationY(16f);
+        itemView.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(260L)
+                .setStartDelay((long) Math.min(position, 6) * 42L)
+                .start();
+        lastAnimatedPosition = position;
     }
 
     static class JobViewHolder extends RecyclerView.ViewHolder {

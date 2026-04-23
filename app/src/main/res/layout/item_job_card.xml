@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Vertical job list card -->
+<!-- Premium vertical job list card -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="14dp"
     app:cardBackgroundColor="@color/bg_card"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
@@ -26,19 +27,20 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <!-- Company logo -->
+            <!-- Company logo with primary icon bg -->
             <FrameLayout
                 android:layout_width="52dp"
                 android:layout_height="52dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/bg_card_white">
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/bg_icon_primary">
                 <ImageView
                     android:id="@+id/iv_company_logo"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_briefcase"
-                    android:contentDescription="Company logo" />
+                    android:contentDescription="Company logo"
+                    app:tint="@color/white" />
             </FrameLayout>
 
             <!-- Title & Company info -->
@@ -63,30 +65,28 @@
                     android:id="@+id/tv_company_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="3dp"
                     android:text="Google Inc."
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_sm"
                     android:fontFamily="sans-serif"
                     android:maxLines="1"
                     android:ellipsize="end" />
-
             </LinearLayout>
 
             <!-- Bookmark -->
             <ImageView
                 android:id="@+id/iv_bookmark"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/ic_bookmark"
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="Save job"
                 android:padding="2dp" />
-
         </LinearLayout>
 
-        <!-- Tags row: type + location -->
+        <!-- Tags row: job type + work mode -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                 android:paddingBottom="5dp"
                 android:letterSpacing="0.02" />
 
-            <!-- Remote badge -->
+            <!-- Work mode badge -->
             <TextView
                 android:id="@+id/tv_work_mode"
                 android:layout_width="wrap_content"
@@ -124,15 +124,21 @@
                 android:paddingRight="10dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp" />
-
         </LinearLayout>
 
-        <!-- Bottom row: Salary + Location + Posted -->
+        <!-- Subtle divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/border"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Bottom row: Salary + Location + Time posted -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="14dp"
             android:gravity="center_vertical">
 
             <!-- Salary -->
@@ -146,7 +152,8 @@
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:src="@drawable/ic_dollar"
-                    android:contentDescription="Salary" />
+                    android:contentDescription="Salary"
+                    app:tint="@color/text_tertiary" />
                 <TextView
                     android:id="@+id/tv_salary"
                     android:layout_width="wrap_content"
@@ -168,13 +175,14 @@
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:src="@drawable/ic_location"
-                    android:contentDescription="Location" />
+                    android:contentDescription="Location"
+                    app:tint="@color/text_tertiary" />
                 <TextView
                     android:id="@+id/tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="San Francisco, CA"
+                    android:text="San Francisco"
                     android:textColor="@color/text_tertiary"
                     android:textSize="@dimen/text_sm"
                     android:maxLines="1"
@@ -182,7 +190,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

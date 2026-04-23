@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/page_margin"
     android:background="@color/bg_screen">
 
     <!-- Sticky Header -->
@@ -70,21 +71,45 @@
                     android:inputType="text"
                     android:paddingHorizontal="12dp" />
 
-                <!-- Filter Button -->
-                <LinearLayout
+                <!-- Filter Button with active-filter count badge -->
+                <FrameLayout
                     android:id="@+id/btn_filter"
                     android:layout_width="38dp"
                     android:layout_height="38dp"
-                    android:gravity="center"
-                    android:background="@drawable/bg_button_primary"
-                    android:elevation="2dp">
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:clipChildren="false"
+                    android:clipToPadding="false">
 
-                    <ImageView
-                        android:layout_width="18dp"
+                    <LinearLayout
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_button_primary"
+                        android:elevation="2dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_filter"
+                            app:tint="@color/white" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_filter_count_badge"
+                        android:layout_width="wrap_content"
                         android:layout_height="18dp"
-                        android:src="@drawable/ic_filter"
-                        app:tint="@color/white" />
-                </LinearLayout>
+                        android:minWidth="18dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/bg_badge_count"
+                        android:gravity="center"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:elevation="6dp"/>
+                </FrameLayout>
             </LinearLayout>
 
             <!-- Filter Chips -->
@@ -198,12 +223,15 @@
                 android:fontFamily="@font/inter_semibold" />
 
             <TextView
+                android:id="@+id/btn_sort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sort"
                 android:textColor="@color/primary"
                 android:textSize="13sp"
-                android:fontFamily="@font/inter_medium" />
+                android:fontFamily="@font/inter_medium"
+                android:clickable="true"
+                android:focusable="true" />
         </LinearLayout>
 
         <!-- Job List -->

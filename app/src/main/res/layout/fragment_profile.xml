@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,26 +25,35 @@
             <LinearLayout
                 android:id="@+id/profile_toolbar_row"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
+                android:minHeight="56dp"
+                android:layout_marginTop="0dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="8dp"
                 android:layout_gravity="top">
 
                 <ImageView
+                    android:id="@+id/btn_profile_settings_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_settings"
-                    app:tint="@color/text_on_dark_60" />
+                    app:tint="@color/text_on_dark_60"
+                    android:clickable="true"
+                    android:focusable="true" />
 
                 <View android:layout_width="0dp" android:layout_height="0dp"
                     android:layout_weight="1" />
 
                 <!-- Notification bell with red dot -->
                 <FrameLayout
+                    android:id="@+id/btn_profile_notifications"
                     android:layout_width="36dp"
-                    android:layout_height="36dp">
+                    android:layout_height="36dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -52,11 +62,21 @@
                         app:tint="@color/text_on_dark_60"
                         android:layout_gravity="center" />
 
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@color/badge_bg"
-                        android:layout_gravity="top|end" />
+                    <TextView
+                        android:id="@+id/view_profile_notification_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="16dp"
+                        android:minWidth="16dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/bg_badge_count"
+                        android:gravity="center"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="9sp"
+                        android:fontFamily="@font/inter_semibold"
+                        android:visibility="gone"
+                        tools:text="4" />
                 </FrameLayout>
             </LinearLayout>
 
@@ -268,11 +288,14 @@
 
             <!-- Saved -->
             <LinearLayout
+                android:id="@+id/stat_saved_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/tv_profile_stat_saved"
@@ -298,11 +321,14 @@
 
             <!-- Applied -->
             <LinearLayout
+                android:id="@+id/stat_recommended_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/tv_profile_stat_recommended"
@@ -328,11 +354,14 @@
 
             <!-- New -->
             <LinearLayout
+                android:id="@+id/stat_applied_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/tv_profile_stat_openings"
@@ -346,7 +375,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/profile_stat_openings"
+                    android:text="@string/profile_stat_applied"
                     android:textColor="@color/text_hint"
                     android:textSize="11sp"
                     android:fontFamily="@font/inter_medium"

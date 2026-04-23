@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/skeleton_root_dashboard"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_app">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="52dp"
+            android:paddingBottom="20dp"
+            android:background="@drawable/bg_gradient_dark">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="110dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_skeleton_rect_round" />
+
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_skeleton_rect_round" />
+
+                    <View
+                        android:layout_width="80dp"
+                        android:layout_height="16dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_skeleton_rect_round" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_skeleton_circle" />
+
+                <View
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_skeleton_circle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginTop="22dp"
+                android:padding="14dp"
+                android:orientation="horizontal"
+                android:background="@color/overlay_white_10">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_skeleton_rect" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/bg_skeleton_rect" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_skeleton_rect" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="16dp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_skeleton_rect_round" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="10dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="160dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_skeleton_rect_round" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="32dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bg_skeleton_rect_round" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_skeleton_rect" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="132dp"
+                android:background="@drawable/bg_skeleton_rect" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

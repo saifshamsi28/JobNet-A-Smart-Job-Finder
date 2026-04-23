@@ -93,4 +93,24 @@
     <color name="text_on_dark_73">#BBFFFFFF</color>
     <color name="text_on_dark_80">#CCFFFFFF</color>
 
+    <!-- Role card backgrounds -->
+    <color name="role_card_selected_bg">#EEF2FF</color>
+    <color name="role_card_selected_border">#4F46E5</color>
+    <color name="role_card_unselected_bg">#FFFFFF</color>
+    <color name="role_card_unselected_border">#E2E8F0</color>
+
+    <!-- Application status colors -->
+    <color name="status_applied_text">#4F46E5</color>
+    <color name="status_applied_bg">#EEF2FF</color>
+    <color name="status_reviewed_text">#0EA5E9</color>
+    <color name="status_reviewed_bg">#E0F2FE</color>
+    <color name="status_shortlisted_text">#F59E0B</color>
+    <color name="status_shortlisted_bg">#FFFBEB</color>
+    <color name="status_rejected_text">#EF4444</color>
+    <color name="status_rejected_bg">#FEF2F2</color>
+    <color name="status_offered_text">#10B981</color>
+    <color name="status_offered_bg">#ECFDF5</color>
+    <color name="status_withdrawn_text">#475569</color>
+    <color name="status_withdrawn_bg">#E2E8F0</color>
+
 </resources>

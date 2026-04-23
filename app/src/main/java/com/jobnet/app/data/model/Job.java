@@ -1,6 +1,8 @@
 package com.jobnet.app.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Job implements Serializable {
     private String id;
@@ -19,6 +21,13 @@ public class Job implements Serializable {
     private boolean saved;
     private float rating;
     private String experience;
+    private String openings;
+    private String category;
+    private List<String> requiredSkills = new ArrayList<>();
+    private String status;
+    private String source;
+    private String dateTime;
+    private String updatedAt;
 
     public Job() {}
 
@@ -96,4 +105,27 @@ public class Job implements Serializable {
 
     public String getExperience() { return experience; }
     public void setExperience(String experience) { this.experience = experience; }
+
+    public String getOpenings() { return openings; }
+    public void setOpenings(String openings) { this.openings = openings; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public List<String> getRequiredSkills() { return requiredSkills; }
+    public void setRequiredSkills(List<String> requiredSkills) {
+        this.requiredSkills = requiredSkills == null ? new ArrayList<>() : new ArrayList<>(requiredSkills);
+    }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getSource() { return source; }
+    public void setSource(String source) { this.source = source; }
+
+    public String getDateTime() { return dateTime; }
+    public void setDateTime(String dateTime) { this.dateTime = dateTime; }
+
+    public String getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(String updatedAt) { this.updatedAt = updatedAt; }
 }

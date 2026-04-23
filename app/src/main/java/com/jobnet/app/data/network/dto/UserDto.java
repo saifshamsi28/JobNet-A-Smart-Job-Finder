@@ -19,6 +19,9 @@ public class UserDto {
     @SerializedName("email")
     public String email;
 
+    @SerializedName("phoneNumber")
+    public String phoneNumber;
+
     @SerializedName(value = "role", alternate = {"userRole", "accountType"})
     public String role;
 

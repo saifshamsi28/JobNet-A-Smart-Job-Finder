@@ -4,6 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jobnet.app.data.network.ApiClient;
 import com.jobnet.app.data.network.JobNetApiService;
 import com.jobnet.app.data.network.dto.AuthResponseDto;
@@ -30,6 +33,7 @@ public class AuthRepository {
     private final SessionManager sessionManager;
 
     private AuthRepository(Context context) {
+        ApiClient.initialize(context.getApplicationContext());
         this.api = ApiClient.getApiService();
         this.sessionManager = new SessionManager(context);
     }
@@ -55,24 +59,34 @@ public class AuthRepository {
             @Override
             public void onResponse(@NonNull Call<AuthResponseDto> call, @NonNull Response<AuthResponseDto> response) {
                 if (!response.isSuccessful() || response.body() == null) {
-                    callback.onError("Invalid credentials or server error");
+                    callback.onError(extractErrorMessage(response, loginFallbackMessage(response.code())));
                     return;
                 }
 
                 AuthResponseDto auth = response.body();
-                String token = auth.message;
-                if (token == null || token.isBlank() || auth.status != 200) {
+                String accessToken = auth.accessToken;
+                String refreshToken = auth.refreshToken;
+
+                if ((accessToken == null || accessToken.isBlank()) && auth.message != null && !auth.message.isBlank()) {
+                    // Backward compatibility if backend still sends token in message.
+                    accessToken = auth.message;
+                }
+
+                if (accessToken == null || accessToken.isBlank() || auth.status != 200) {
                     callback.onError(auth.message == null ? "Login failed" : auth.message);
                     return;
                 }
 
-                sessionManager.saveAuthToken(token);
+                sessionManager.saveAuthToken(accessToken);
+                if (refreshToken != null && !refreshToken.isBlank()) {
+                    sessionManager.saveRefreshToken(refreshToken);
+                }
                 fetchAndStoreUserProfile(callback);
             }
 
             @Override
             public void onFailure(@NonNull Call<AuthResponseDto> call, @NonNull Throwable t) {
-                callback.onError("Network error during login");
+                callback.onError("Could not connect to server. Check your internet and try again.");
             }
         });
     }
@@ -93,32 +107,23 @@ public class AuthRepository {
             return;
         }
 
-        RegisterRequestDto payload = new RegisterRequestDto(
-                fullName.trim(),
-                userName.trim(),
-                email.trim(),
-                password,
-            "",
-            role.trim()
-        );
+        String normalizedUserName = userName.trim();
+        String normalizedEmail = email.trim().toLowerCase();
 
-        api.register(payload).enqueue(new Callback<>() {
+        api.checkUsername(normalizedUserName).enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<AuthResponseDto> call, @NonNull Response<AuthResponseDto> response) {
-                if (response.isSuccessful()) {
-                    callback.onSuccess();
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                if (response.isSuccessful() && Boolean.TRUE.equals(response.body())) {
+                    callback.onError("This username is already taken");
                     return;
                 }
-                String message = "Unable to create account";
-                if (response.code() == 400) {
-                    message = "Email or username already exists";
-                }
-                callback.onError(message);
+                checkEmailAndRegister(fullName, normalizedUserName, normalizedEmail, password, role, callback);
             }
 
             @Override
-            public void onFailure(@NonNull Call<AuthResponseDto> call, @NonNull Throwable t) {
-                callback.onError("Network error during registration");
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {
+                // Proceed to email check; backend register still performs final conflict validation.
+                checkEmailAndRegister(fullName, normalizedUserName, normalizedEmail, password, role, callback);
             }
         });
     }
@@ -157,6 +162,128 @@ public class AuthRepository {
                 callback.onSuccess();
             }
         });
+    }
+
+    private void checkEmailAndRegister(String fullName,
+                                       String userName,
+                                       String email,
+                                       String password,
+                                       String role,
+                                       @NonNull AuthCallback callback) {
+        api.checkEmail(email).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                if (response.isSuccessful() && Boolean.FALSE.equals(response.body())) {
+                    callback.onError("An account with this email already exists");
+                    return;
+                }
+                performRegister(fullName, userName, email, password, role, callback);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {
+                // Proceed to register and let server-side checks be source of truth.
+                performRegister(fullName, userName, email, password, role, callback);
+            }
+        });
+    }
+
+    private void performRegister(String fullName,
+                                 String userName,
+                                 String email,
+                                 String password,
+                                 String role,
+                                 @NonNull AuthCallback callback) {
+        RegisterRequestDto payload = new RegisterRequestDto(
+                fullName.trim(),
+                userName.trim(),
+                email.trim().toLowerCase(),
+                password,
+                "",
+                role.trim()
+        );
+
+        api.register(payload).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<AuthResponseDto> call, @NonNull Response<AuthResponseDto> response) {
+                if (response.isSuccessful()) {
+                    callback.onSuccess();
+                    return;
+                }
+                callback.onError(extractErrorMessage(response, registerFallbackMessage(response.code())));
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AuthResponseDto> call, @NonNull Throwable t) {
+                callback.onError("Could not connect to server. Check your internet and try again.");
+            }
+        });
+    }
+
+    private String extractErrorMessage(Response<?> response, String fallback) {
+        try {
+            if (response.errorBody() == null) {
+                return fallback;
+            }
+            String raw = response.errorBody().string();
+            if (raw == null || raw.isBlank()) {
+                return fallback;
+            }
+
+            try {
+                AuthResponseDto authError = new Gson().fromJson(raw, AuthResponseDto.class);
+                if (authError != null && authError.message != null && !authError.message.isBlank()) {
+                    return authError.message;
+                }
+            } catch (Exception ignored) {
+                // Fall through to generic JSON parsing.
+            }
+
+            JsonObject obj = JsonParser.parseString(raw).getAsJsonObject();
+            if (obj.has("message") && !obj.get("message").isJsonNull()) {
+                String message = obj.get("message").getAsString();
+                if (!message.isBlank()) {
+                    return message;
+                }
+            }
+            if (obj.has("error") && !obj.get("error").isJsonNull()) {
+                String error = obj.get("error").getAsString();
+                if (!error.isBlank()) {
+                    return error;
+                }
+            }
+        } catch (Exception ignored) {
+            // Fallback to provided message.
+        }
+        return fallback;
+    }
+
+    private String loginFallbackMessage(int code) {
+        switch (code) {
+            case 400:
+                return "Please enter a valid username/email and password";
+            case 401:
+                return "Incorrect password. Please try again";
+            case 404:
+                return "No account found with this email or username";
+            case 429:
+                return "Too many attempts. Please wait and try again";
+            case 500:
+            default:
+                return "Server error during login. Please try again";
+        }
+    }
+
+    private String registerFallbackMessage(int code) {
+        switch (code) {
+            case 400:
+                return "Please check your registration details and try again";
+            case 409:
+                return "Username or email already exists";
+            case 500:
+            default:
+                return "Unable to create account right now. Please try again";
+        }
     }
 
     private boolean isBlank(String value) {

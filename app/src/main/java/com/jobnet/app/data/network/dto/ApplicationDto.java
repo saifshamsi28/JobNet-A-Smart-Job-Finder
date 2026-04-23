@@ -2,7 +2,9 @@ package com.jobnet.app.data.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ApplicationDto {
+import java.io.Serializable;
+
+public class ApplicationDto implements Serializable {
 
     @SerializedName("id")
     public String id;

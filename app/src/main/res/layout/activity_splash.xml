@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash_screen">
+
+    <View
+        android:id="@+id/splash_orb_top"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-72dp"
+        android:layout_marginEnd="-56dp"
+        android:background="@drawable/bg_splash_orb_blue" />
+
+    <View
+        android:id="@+id/splash_orb_bottom"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="-96dp"
+        android:layout_marginStart="-68dp"
+        android:background="@drawable/bg_splash_orb_teal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingLeft="28dp"
+        android:paddingRight="28dp">
+
+        <LinearLayout
+            android:id="@+id/splash_brand_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <FrameLayout
+                android:id="@+id/splash_logo_plate"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_splash_logo_plate">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="JobNet"
+                    android:src="@drawable/ic_briefcase"
+                    app:tint="@color/text_on_dark" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/splash_title_reveal_mask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-14dp"
+                android:paddingStart="14dp"
+                android:clipChildren="true"
+                android:clipToPadding="true">
+
+                <TextView
+                    android:id="@+id/splash_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="JobNet"
+                    android:textColor="@color/text_on_dark"
+                    android:textSize="31sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:includeFontPadding="false" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

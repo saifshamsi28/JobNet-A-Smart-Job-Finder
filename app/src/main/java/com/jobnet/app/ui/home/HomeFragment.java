@@ -1,5 +1,9 @@
 package com.jobnet.app.ui.home;
 
+import android.animation.ObjectAnimator;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +28,14 @@ import androidx.navigation.Navigation;
 import com.jobnet.app.R;
 import com.jobnet.app.data.model.Job;
 import com.jobnet.app.data.model.JobCategory;
+import com.jobnet.app.data.network.dto.ApplicationDto;
 import com.jobnet.app.data.repository.JobNetRepository;
+import com.jobnet.app.data.session.NotificationReadStateStore;
 import com.jobnet.app.data.session.SessionManager;
 import com.jobnet.app.databinding.FragmentHomeBinding;
+import com.jobnet.app.ui.notifications.NotificationItem;
+import com.jobnet.app.util.SkeletonShimmerHelper;
+import com.jobnet.app.util.SalaryUtils;
 import com.jobnet.app.util.SampleData;
 
 import java.util.ArrayList;
@@ -38,7 +47,9 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private JobNetRepository repository;
-    private final List<View> shimmerViews = new ArrayList<>();
+    private Dialog skeletonDialog;
+    private final List<ObjectAnimator> skeletonAnimators = new ArrayList<>();
+    private boolean skipNextResumeRefresh = true;
 
     @Nullable
     @Override
@@ -59,6 +70,29 @@ public class HomeFragment extends Fragment {
         loadCategories();
         loadHomeJobs();
         setupListeners();
+        refreshNotificationDot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (skipNextResumeRefresh) {
+            skipNextResumeRefresh = false;
+            return;
+        }
+        if (binding == null) {
+            return;
+        }
+        refreshNotificationDot();
+        showLoadingState();
+        bindHeaderIdentity();
+        loadHomeJobs();
+    }
+
+    @Override
+    public void onPause() {
+        stopShimmer();
+        super.onPause();
     }
 
     private void setGreeting() {
@@ -106,6 +140,7 @@ public class HomeFragment extends Fragment {
     private void loadCategories() {
         List<JobCategory> categories = SampleData.getCategories();
         LayoutInflater inflater = LayoutInflater.from(requireContext());
+        binding.containerCategories.removeAllViews();
 
         for (int i = 0; i < categories.size(); i++) {
             JobCategory category = categories.get(i);
@@ -127,7 +162,10 @@ public class HomeFragment extends Fragment {
             }
 
             cardView.setOnClickListener(v -> {
-                // Navigate to search with category filter
+                Bundle args = new Bundle();
+                args.putString("categoryName", category.getName());
+                Navigation.findNavController(requireView())
+                        .navigate(R.id.action_home_to_categoryJobsFragment, args);
             });
 
             binding.containerCategories.addView(cardView, params);
@@ -138,10 +176,10 @@ public class HomeFragment extends Fragment {
         repository.loadHomeData(new JobNetRepository.DataCallback<>() {
             @Override
             public void onSuccess(JobNetRepository.HomeData data) {
+                stopShimmer();
                 if (!isAdded() || binding == null) {
                     return;
                 }
-                stopShimmer();
                 List<Job> featured = data == null ? Collections.emptyList() : data.featured;
                 List<Job> recommended = data == null ? Collections.emptyList() : data.recommended;
                 loadFeaturedJobs(featured);
@@ -151,10 +189,10 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onError(Throwable throwable) {
+                stopShimmer();
                 if (!isAdded() || binding == null) {
                     return;
                 }
-                stopShimmer();
                 Toast.makeText(requireContext(), "Could not refresh jobs right now", Toast.LENGTH_SHORT).show();
             }
         });
@@ -197,7 +235,7 @@ public class HomeFragment extends Fragment {
 
             title.setText(job.getTitle());
             company.setText(job.getCompany());
-            salary.setText(job.getSalary());
+            salary.setText(SalaryUtils.normalizeDisplay(job.getSalary()));
             type.setText(job.getWorkMode());
             applyFeaturedBookmarkState(bookmark, job);
 
@@ -213,6 +251,7 @@ public class HomeFragment extends Fragment {
 
             bookmark.setOnClickListener(v -> toggleBookmark(bookmark, job));
             cardView.setOnClickListener(v -> openJobDetail(job));
+            animateCardEntry(cardView, i);
 
             binding.containerFeatured.addView(cardView, params);
         }
@@ -238,6 +277,7 @@ public class HomeFragment extends Fragment {
                 params.bottomMargin = dp(12);
             }
 
+            animateCardEntry(cardView, i);
             binding.containerRecommended.addView(cardView, params);
         }
     }
@@ -253,7 +293,7 @@ public class HomeFragment extends Fragment {
 
         title.setText(job.getTitle());
         company.setText(job.getCompany());
-        salary.setText(job.getSalary());
+        salary.setText(SalaryUtils.normalizeDisplay(job.getSalary()));
         location.setText(job.getLocation());
         jobType.setText(job.getJobType());
         workMode.setText(job.getWorkMode());
@@ -307,16 +347,33 @@ public class HomeFragment extends Fragment {
 
     private void setupListeners() {
         binding.searchBar.setOnClickListener(v -> navigateToSearchTab());
+        binding.btnNotification.setOnClickListener(v ->
+                Navigation.findNavController(requireView())
+                        .navigate(R.id.action_home_to_notificationsFragment));
+        binding.ivAvatar.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(requireView());
+            NavOptions options = new NavOptions.Builder()
+                    .setLaunchSingleTop(true)
+                    .setRestoreState(true)
+                    .setPopUpTo(navController.getGraph().getStartDestinationId(), false, true)
+                    .setEnterAnim(R.anim.slide_in_right)
+                    .setExitAnim(R.anim.slide_out_left)
+                    .setPopEnterAnim(R.anim.slide_in_left)
+                    .setPopExitAnim(R.anim.slide_out_right)
+                    .build();
+            navController.navigate(R.id.profileFragment, null, options);
+        });
 
         binding.btnSeeAllCategories.setOnClickListener(v ->
-            navigateToSearchTab());
+                Navigation.findNavController(requireView())
+                        .navigate(R.id.action_home_to_categoriesFragment));
         binding.btnSeeAllFeatured.setOnClickListener(v ->
             navigateToSearchTab());
         binding.btnSeeAllRecommended.setOnClickListener(v ->
             navigateToSearchTab());
 
         binding.btnFilter.setOnClickListener(v -> {
-            // Show filter bottom sheet
+            navigateToSearchTab();
         });
     }
 
@@ -326,97 +383,121 @@ public class HomeFragment extends Fragment {
                 .setLaunchSingleTop(true)
                 .setRestoreState(true)
                 .setPopUpTo(navController.getGraph().getStartDestinationId(), false, true)
+                .setEnterAnim(R.anim.slide_in_right)
+                .setExitAnim(R.anim.slide_out_left)
+                .setPopEnterAnim(R.anim.slide_in_left)
+                .setPopExitAnim(R.anim.slide_out_right)
                 .build();
         navController.navigate(R.id.searchFragment, null, options);
     }
 
+    private void refreshNotificationDot() {
+        if (!isAdded() || binding == null) {
+            return;
+        }
+        TextView badge = binding.btnNotification.findViewById(R.id.view_notification_badge_dot);
+        if (badge == null) {
+            return;
+        }
+
+        repository.loadMyApplications(new JobNetRepository.DataCallback<>() {
+            @Override
+            public void onSuccess(List<ApplicationDto> data) {
+                if (!isAdded() || binding == null) {
+                    return;
+                }
+                NotificationReadStateStore readStateStore = new NotificationReadStateStore(requireContext());
+                int unread = 0;
+                if (data != null) {
+                    for (ApplicationDto app : data) {
+                        if (app == null || app.status == null) {
+                            continue;
+                        }
+                        String readKey = NotificationReadStateStore.buildKey(
+                                NotificationItem.TYPE_SEEKER_STATUS,
+                                app.id,
+                                app.jobId,
+                                app.status,
+                                app.updatedAt,
+                                app.appliedAt
+                        );
+                        if (!readStateStore.isRead(readKey)) {
+                            unread++;
+                        }
+                    }
+                }
+                if (unread > 0) {
+                    badge.setText(unread > 99 ? "99+" : String.valueOf(unread));
+                    badge.setVisibility(View.VISIBLE);
+                } else {
+                    badge.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                if (!isAdded() || binding == null) {
+                    return;
+                }
+                badge.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void showLoadingState() {
         stopShimmer();
-        binding.containerFeatured.removeAllViews();
-        binding.containerRecommended.removeAllViews();
-
-        for (int i = 0; i < 2; i++) {
-            View featuredBlock = buildFeaturedSkeleton();
-            binding.containerFeatured.addView(featuredBlock);
-            shimmerViews.add(featuredBlock);
-        }
-
-        for (int i = 0; i < 4; i++) {
-            View listBlock = buildListSkeleton();
-            binding.containerRecommended.addView(listBlock);
-            shimmerViews.add(listBlock);
-        }
-
-        for (int i = 0; i < shimmerViews.size(); i++) {
-            View block = shimmerViews.get(i);
-            long delay = i * 90L;
-            block.animate().alpha(0.45f).setStartDelay(delay).setDuration(580).withEndAction(() -> {
-                if (block.getParent() != null) {
-                    block.animate().alpha(1f).setDuration(580).withEndAction(() -> {
-                        if (block.getParent() != null) {
-                            block.animate().alpha(0.45f).setDuration(580).start();
-                        }
-                    }).start();
-                }
-            }).start();
-        }
+        showHomeSkeleton(true);
     }
 
     private void stopShimmer() {
-        for (View block : shimmerViews) {
-            block.animate().cancel();
-            block.setAlpha(1f);
+        showHomeSkeleton(false);
+    }
+
+    private void showHomeSkeleton(boolean show) {
+        if (!show) {
+            SkeletonShimmerHelper.stop(skeletonAnimators);
+            if (skeletonDialog != null && skeletonDialog.isShowing()) {
+                try {
+                    skeletonDialog.dismiss();
+                } catch (Exception ignored) {
+                }
+            }
+            return;
         }
-        shimmerViews.clear();
+
+        if (!isAdded()) {
+            return;
+        }
+
+        if (skeletonDialog == null) {
+            skeletonDialog = new Dialog(requireContext());
+            skeletonDialog.setContentView(R.layout.dialog_home_skeleton);
+            skeletonDialog.setCancelable(false);
+            if (skeletonDialog.getWindow() != null) {
+                skeletonDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                skeletonDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+        }
+        if (!skeletonDialog.isShowing()) {
+            skeletonDialog.show();
+            View root = skeletonDialog.findViewById(R.id.skeleton_root_home);
+            SkeletonShimmerHelper.start(root, skeletonAnimators);
+        }
     }
 
-    private View buildFeaturedSkeleton() {
-        LinearLayout card = new LinearLayout(requireContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setBackgroundResource(R.drawable.bg_card_white);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dp(250), dp(150));
-        params.setMarginEnd(dp(16));
-        card.setLayoutParams(params);
-        card.setPadding(dp(16), dp(16), dp(16), dp(16));
-
-        card.addView(skeletonLine(LinearLayout.LayoutParams.MATCH_PARENT, dp(18)));
-        card.addView(skeletonSpacer(dp(10)));
-        card.addView(skeletonLine(dp(130), dp(14)));
-        card.addView(skeletonSpacer(dp(10)));
-        card.addView(skeletonLine(dp(100), dp(14)));
-        return card;
-    }
-
-    private View buildListSkeleton() {
-        LinearLayout card = new LinearLayout(requireContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setBackgroundResource(R.drawable.bg_card_white);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.bottomMargin = dp(12);
-        card.setLayoutParams(params);
-        card.setPadding(dp(16), dp(16), dp(16), dp(16));
-
-        card.addView(skeletonLine(LinearLayout.LayoutParams.MATCH_PARENT, dp(16)));
-        card.addView(skeletonSpacer(dp(10)));
-        card.addView(skeletonLine(dp(150), dp(14)));
-        card.addView(skeletonSpacer(dp(10)));
-        card.addView(skeletonLine(dp(180), dp(12)));
-        return card;
-    }
-
-    private View skeletonLine(int width, int height) {
-        View line = new View(requireContext());
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
-        line.setLayoutParams(lp);
-        line.setBackgroundResource(R.drawable.bg_skeleton_block);
-        return line;
-    }
-
-    private View skeletonSpacer(int height) {
-        View spacer = new View(requireContext());
-        spacer.setLayoutParams(new LinearLayout.LayoutParams(1, height));
-        return spacer;
+    private void animateCardEntry(View cardView, int index) {
+        if (cardView == null) {
+            return;
+        }
+        cardView.animate().cancel();
+        cardView.setAlpha(0f);
+        cardView.setTranslationY(dp(10));
+        cardView.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(260L)
+                .setStartDelay((long) Math.min(index, 6) * 42L)
+                .start();
     }
 
     private void applyInsets(View root) {

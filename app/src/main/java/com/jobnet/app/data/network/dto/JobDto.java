@@ -2,9 +2,12 @@ package com.jobnet.app.data.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JobDto {
 
-    @SerializedName("id")
+    @SerializedName(value = "id", alternate = {"_id"})
     public String id;
 
     @SerializedName("title")
@@ -37,6 +40,12 @@ public class JobDto {
     @SerializedName("openings")
     public String openings;
 
+    @SerializedName("category")
+    public String category;
+
+    @SerializedName("requiredSkills")
+    public List<String> requiredSkills = new ArrayList<>();
+
     @SerializedName("applicants")
     public String applicants;
 
@@ -48,4 +57,28 @@ public class JobDto {
 
     @SerializedName(value = "full_description", alternate = {"fullDescription"})
     public String fullDescription;
+
+    @SerializedName("employmentType")
+    public String employmentType;
+
+    @SerializedName("jobType")
+    public String jobType;
+
+    @SerializedName("workMode")
+    public String workMode;
+
+    @SerializedName("status")
+    public String status;
+
+    @SerializedName("source")
+    public String source;
+
+    @SerializedName("postedByUserId")
+    public String postedByUserId;
+
+    @SerializedName("dateTime")
+    public String dateTime;
+
+    @SerializedName("updatedAt")
+    public String updatedAt;
 }

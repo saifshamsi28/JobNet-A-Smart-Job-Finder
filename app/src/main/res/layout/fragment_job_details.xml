@@ -105,14 +105,14 @@
                         android:layout_height="0dp"
                         android:layout_weight="1" />
 
-<!--                    <ImageView-->
-<!--                        android:id="@+id/iv_detail_bookmark"-->
-<!--                        android:layout_width="40dp"-->
-<!--                        android:layout_height="40dp"-->
-<!--                        android:padding="8dp"-->
-<!--                        android:src="@drawable/ic_bookmark"-->
-<!--                        app:tint="@color/white"-->
-<!--                        android:layout_marginEnd="4dp" />-->
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/iv_detail_bookmark"-->
+                    <!--                        android:layout_width="40dp"-->
+                    <!--                        android:layout_height="40dp"-->
+                    <!--                        android:padding="8dp"-->
+                    <!--                        android:src="@drawable/ic_bookmark"-->
+                    <!--                        app:tint="@color/white"-->
+                    <!--                        android:layout_marginEnd="4dp" />-->
 
                     <ImageView
                         android:id="@+id/iv_share"
@@ -265,15 +265,48 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/tv_application_status"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/application_status_none"
-                android:textColor="@color/primary"
-                android:textSize="12sp"
-                android:fontFamily="@font/inter_semibold"
-                android:layout_marginBottom="14dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:id="@+id/tv_application_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/application_status_none"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_semibold" />
+
+                <TextView
+                    android:id="@+id/btn_view_timeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/timeline_view_progress"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/btn_withdraw_application_inline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timeline_withdraw_action"
+                    android:textColor="@color/error"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:visibility="gone"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
 
             <!-- Job Description -->
             <TextView
@@ -424,52 +457,91 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Apply Bar -->
+    <!-- Bottom Apply Bar — elevated with bookmark + apply CTA -->
     <LinearLayout
         android:id="@+id/bottom_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:layout_gravity="bottom"
         android:background="@color/surface"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="14dp"
-        android:elevation="12dp">
+        android:elevation="16dp">
+
+        <!-- Top shadow divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/border" />
 
         <LinearLayout
-            android:id="@+id/btn_save_detail"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:gravity="center"
-            android:background="@drawable/bg_chip_unselected"
-            android:layout_marginEnd="12dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp">
 
-            <ImageView
-                android:id="@+id/iv_detail_bookmark"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_bookmark"
-                app:tint="@color/primary" />
-        </LinearLayout>
+            <!-- Save bookmark button -->
+            <LinearLayout
+                android:id="@+id/btn_save_detail"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
+                android:gravity="center"
+                android:background="@drawable/bg_chip_unselected"
+                android:layout_marginEnd="14dp"
+                android:clickable="true"
+                android:focusable="true">
 
-        <LinearLayout
-            android:id="@+id/btn_apply_now"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:background="@drawable/bg_button_primary"
-            android:elevation="4dp">
+                <ImageView
+                    android:id="@+id/iv_detail_bookmark"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_bookmark"
+                    android:contentDescription="Save job"
+                    app:tint="@color/primary" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_apply_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/apply_now_label"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:fontFamily="@font/inter_semibold" />
+            <!-- Apply Now button -->
+            <LinearLayout
+                android:id="@+id/btn_apply_now"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/bg_button_primary"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/iv_apply_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_arrow_right"
+                    android:contentDescription="Apply"
+                    android:layout_marginEnd="8dp"
+                    app:tint="@color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progress_apply"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginEnd="8dp"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_apply_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/apply_now_label"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/inter_semibold" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

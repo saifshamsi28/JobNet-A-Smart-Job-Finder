@@ -1,6 +1,10 @@
 package com.jobnet.app.ui.auth;
 
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -22,6 +27,8 @@ import com.jobnet.app.data.repository.AuthRepository;
 public class RegisterFragment extends Fragment {
 
     private AuthRepository authRepository;
+    private boolean isPasswordHidden = true;
+    private boolean isConfirmPasswordHidden = true;
 
     @Nullable
     @Override
@@ -41,10 +48,33 @@ public class RegisterFragment extends Fragment {
         TextInputEditText inputPassword = view.findViewById(R.id.input_password_register);
         TextInputEditText inputConfirm = view.findViewById(R.id.input_confirm_password);
         RadioGroup roleGroup = view.findViewById(R.id.group_role);
+        LinearLayout seekerCard = view.findViewById(R.id.card_role_seeker);
+        LinearLayout recruiterCard = view.findViewById(R.id.card_role_recruiter);
 
         MaterialButton btnRegister = view.findViewById(R.id.btn_register);
         ProgressBar registerProgress = view.findViewById(R.id.register_progress);
         TextView goToLogin = view.findViewById(R.id.btn_go_login);
+        TextView togglePassword = view.findViewById(R.id.btn_toggle_register_password);
+        TextView toggleConfirmPassword = view.findViewById(R.id.btn_toggle_register_confirm_password);
+
+        roleGroup.setOnCheckedChangeListener((group, checkedId) ->
+            applyRoleSelectionStyle(seekerCard, recruiterCard, checkedId));
+        seekerCard.setOnClickListener(v -> roleGroup.check(R.id.radio_job_seeker));
+        recruiterCard.setOnClickListener(v -> roleGroup.check(R.id.radio_recruiter));
+        applyRoleSelectionStyle(seekerCard, recruiterCard, roleGroup.getCheckedRadioButtonId());
+
+        applyPasswordVisibility(inputPassword, togglePassword, isPasswordHidden);
+        applyPasswordVisibility(inputConfirm, toggleConfirmPassword, isConfirmPasswordHidden);
+
+        togglePassword.setOnClickListener(v -> {
+            isPasswordHidden = !isPasswordHidden;
+            applyPasswordVisibility(inputPassword, togglePassword, isPasswordHidden);
+        });
+
+        toggleConfirmPassword.setOnClickListener(v -> {
+            isConfirmPasswordHidden = !isConfirmPasswordHidden;
+            applyPasswordVisibility(inputConfirm, toggleConfirmPassword, isConfirmPasswordHidden);
+        });
 
         btnRegister.setOnClickListener(v -> {
             String fullName = text(inputName);
@@ -96,5 +126,36 @@ public class RegisterFragment extends Fragment {
         button.setEnabled(!loading);
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
         button.setText(loading ? getString(R.string.register_loading) : getString(R.string.register_title_cta));
+    }
+
+    private void applyRoleSelectionStyle(LinearLayout seekerCard, LinearLayout recruiterCard, int checkedId) {
+        boolean recruiterSelected = checkedId == R.id.radio_recruiter;
+
+        setRoleCardState(seekerCard, !recruiterSelected);
+        setRoleCardState(recruiterCard, recruiterSelected);
+    }
+
+    private void setRoleCardState(LinearLayout card, boolean selected) {
+        card.setBackgroundResource(selected ? R.drawable.bg_role_card_selected : R.drawable.bg_role_card_unselected);
+
+        int iconColor = ContextCompat.getColor(requireContext(), selected ? R.color.primary : R.color.text_tertiary);
+        int titleColor = ContextCompat.getColor(requireContext(), selected ? R.color.primary : R.color.text_secondary);
+
+        View first = card.getChildAt(0);
+        View second = card.getChildAt(1);
+        if (first instanceof ImageView) {
+            ((ImageView) first).setColorFilter(iconColor);
+        }
+        if (second instanceof TextView) {
+            ((TextView) second).setTextColor(titleColor);
+        }
+    }
+
+    private void applyPasswordVisibility(TextInputEditText input, TextView toggle, boolean hidden) {
+        input.setTransformationMethod(hidden
+                ? PasswordTransformationMethod.getInstance()
+                : HideReturnsTransformationMethod.getInstance());
+        toggle.setText(hidden ? R.string.show_password : R.string.hide_password);
+        input.setSelection(input.getText() == null ? 0 : input.getText().length());
     }
 }

@@ -1,8 +1,14 @@
 package com.jobnet.app.data.repository;
 
 import com.jobnet.app.R;
+import com.jobnet.app.data.model.EmploymentType;
 import com.jobnet.app.data.model.Job;
+import com.jobnet.app.data.model.WorkMode;
 import com.jobnet.app.data.network.dto.JobDto;
+import com.jobnet.app.util.DateTimeUtils;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public final class JobMapper {
 
@@ -25,15 +31,22 @@ public final class JobMapper {
         job.setCompany(nonEmpty(dto.company, "Unknown Company"));
         job.setLocation(nonEmpty(dto.location, "Location not specified"));
         job.setSalary(nonEmpty(dto.salary, "Salary not disclosed"));
-        job.setJobType(inferJobType(dto));
-        job.setWorkMode(inferWorkMode(dto));
+        job.setJobType(EmploymentType.from(nonEmpty(dto.employmentType, nonEmpty(dto.jobType, inferJobType(dto)))).label());
+        job.setWorkMode(WorkMode.from(nonEmpty(dto.workMode, inferWorkMode(dto))).label());
         job.setDescription(nonEmpty(dto.fullDescription, nonEmpty(dto.shortDescription, "No description available yet.")));
-        job.setPostedDate(nonEmpty(dto.postDate, "Recently posted"));
+        job.setPostedDate(DateTimeUtils.formatRelativeForPosted(dto.postDate, dto.dateTime, dto.updatedAt));
         job.setExperience("2+ years");
+        job.setOpenings(safe(dto.openings));
+        job.setCategory(nonEmpty(dto.category, inferCategory(dto)));
+        job.setRequiredSkills(dto.requiredSkills == null ? new ArrayList<>() : new ArrayList<>(dto.requiredSkills));
         job.setApplicantsCount(parseIntSafe(dto.applicants, 0));
         job.setRating(parseFloatSafe(dto.rating, 4.4f));
         job.setLogoRes(resolveLogo(dto.company));
         job.setUrl(safe(dto.url));
+        job.setStatus(safe(dto.status).toUpperCase(Locale.ROOT));
+        job.setSource(safe(dto.source));
+        job.setDateTime(safe(dto.dateTime));
+        job.setUpdatedAt(safe(dto.updatedAt));
         return job;
     }
 
@@ -57,6 +70,29 @@ public final class JobMapper {
             return "Hybrid";
         }
         return "On-site";
+    }
+
+    private static String inferCategory(JobDto dto) {
+        String haystack = (safe(dto.title) + " " + safe(dto.shortDescription) + " " + safe(dto.fullDescription)).toLowerCase(Locale.ROOT);
+        if (containsAny(haystack, "design", "ui", "ux", "figma", "visual")) return "Design";
+        if (containsAny(haystack, "engineer", "developer", "software", "android", "ios", "frontend", "backend", "devops")) return "Engineering";
+        if (containsAny(haystack, "marketing", "seo", "campaign", "brand", "content", "growth")) return "Marketing";
+        if (containsAny(haystack, "finance", "account", "audit", "investment", "analyst")) return "Finance";
+        if (containsAny(haystack, "hr", "human resources", "recruit", "talent", "people")) return "HR";
+        if (containsAny(haystack, "teacher", "education", "trainer", "instructor", "curriculum")) return "Education";
+        return "General";
+    }
+
+    private static boolean containsAny(String text, String... values) {
+        if (text == null || text.isEmpty() || values == null) {
+            return false;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank() && text.contains(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static int resolveLogo(String company) {
