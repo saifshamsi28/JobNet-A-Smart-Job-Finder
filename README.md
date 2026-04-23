@@ -1,93 +1,139 @@
-# JobNet — Premium Android Job Portal
+# JobNet Android App
 
-JobNet is a professional, microservice-powered Android application designed to bridge the gap between talented job seekers and top recruiters. Built natively in Java with a modern XML-based UI, JobNet delivers a seamless, high-performance experience with an elegant design system.
+Native Android client for JobNet, a role-based job platform with separate experiences for job seekers and recruiters. The app is written in Java (XML UI) and integrates with a Spring Boot backend plus a Flask service for job data and scraping workflows.
 
-The platform goes beyond standard job portals by integrating a **dual-backend microservice architecture** (Spring Boot + Flask) to provide advanced capabilities like AI Resume Parsing and standardized Skills Extraction (powered by EMSI/Lightcast).
+## What Is Implemented
 
----
+### Job seeker features
+- Login and registration with JWT-based session management.
+- Home feed with suggested and recent jobs.
+- Search by title/location/company and salary filter support.
+- Job details with apply flow.
+- Saved jobs.
+- My applications and application timeline/status tracking.
+- Profile and profile edit (skills + core details).
+- Notifications screen.
+- Categories and category-wise jobs.
 
-## Architecture & Tech Stack
+### Recruiter features
+- Recruiter dashboard.
+- Post new job.
+- View and manage posted jobs.
+- Edit job and update job status.
+- View applicants for a posting.
+- Recruiter profile and dedicated recruiter edit profile screen.
+- Recruiter-facing notifications.
 
-JobNet is built using modern development practices, ensuring high performance, scalability, and maintainability across the full stack.
+### Backend-connected capabilities used by the app
+- Auth: login, register, refresh token, current user.
+- Jobs: suggested/recent lists, filtered search, job details.
+- Applications: apply, list my applications, update status.
+- Recruiter APIs: CRUD-style job management and applicant listing.
+- User APIs: profile fetch/update, save/unsave jobs, skills update.
+- Skills API available in backend (`/skills`, `/skills/search`).
+- Resume upload/finalize endpoints exist in backend (`/user/resume/*`).
 
-### 📱 Android Frontend (Java)
-* **UI Design:** Native XML with Material Design Components, FlexboxLayout, CoordinatorLayout.
-* **Architecture:** MVC/MVVM principles with robust Data Binding and Navigation Graph.
-* **Networking & Media:** Retrofit / OkHttp for API integration, Glide for efficient image loading.
-* **Storage:** SharedPreferences for secure session token management.
+## Tech Stack
 
-### ⚙️ Primary Backend (Spring Boot / Java)
-* **Security:** Stateless JWT-based authentication with refresh token rotation.
-* **Database:** MongoDB with highly optimized compound indexes for lightning-fast job and applicant queries.
-* **API Integration:** Seamless connection with external APIs like EMSI/Lightcast for standardized skill taxonomy.
+### Android
+- Java 17
+- AndroidX + Material Components
+- Navigation Component
+- Retrofit + OkHttp
+- Glide
+- ViewBinding
 
-### 🧠 AI & Parsing Backend (Flask / Python)
-* **Resume Processing:** A dedicated Python microservice handling intelligent NLP Resume Parsing (`resume_parser.py`) to automatically extract candidate details and skills from uploaded PDFs.
+### Backend
+- Spring Boot (auth, users, jobs, applications, recruiter APIs)
+- MongoDB
+- Flask microservice (`/health`, `/jobs`, `/scrape`, `/scrape/<task_id>`)
 
----
+## App In Action
 
-## Key Capabilities & Features
+### Job Seeker Screens
 
-### 👨‍💻 For Job Seekers
-* **Smart Search & Filters:** Find the perfect role with real-time search and advanced filters (Full Time, Remote, Internship, etc.).
-* **AI Resume Parsing:** Upload your resume and let the Python microservice automatically parse your skills and experience.
-* **Standardized Skills:** Real-time skills extraction using the EMSI/Lightcast API.
-* **Detailed Job Listings:** View comprehensive job descriptions, salary brackets, required skills, and location details.
-* **One-Tap Apply:** Streamlined application process with a beautifully animated progress tracker.
-* **Saved Jobs:** Bookmark interesting opportunities to review and apply later.
-* **Profile Management:** Showcase your skills, education, and experience with a dynamic profile dashboard.
-* **Application Tracking:** Monitor the status of your applications across the entire hiring pipeline (Applied → Reviewed → Interviewing).
-
-### 🏢 For Recruiters
-* **Recruiter Dashboard:** A dedicated hub to oversee all active job postings and recent applicant activity.
-* **Job Management:** Easily post new jobs, edit existing listings, and manage application deadlines.
-* **Applicant Tracking System (ATS):** Review applicant profiles, download resumes, and update candidate statuses in real-time.
-* **Real-time Notifications:** Stay informed when new candidates apply to your job postings.
-* **Company Profile:** Manage your employer brand and recruiter details.
-
----
-
-## App in Action
-
-### Job Seeker View
-
-| Dashboard | Search & Filters | Saved Jobs | Profile & Stats |
+| Dashboard | Search | Saved Jobs | Profile |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/dashboard_jobseeker.jpeg" height="320"/> | <img src="screenshots/search.jpeg" height="320"/> | <img src="screenshots/saved_jobs.jpeg" height="320"/> | <img src="screenshots/profile_jobseeker.jpeg" height="320"/> |
+| <img src="screenshots/dashboard_jobseeker.jpeg" height="340"/> | <img src="screenshots/search.jpeg" height="340"/> | <img src="screenshots/saved_jobs.jpeg" height="340"/> | <img src="screenshots/profile_jobseeker.jpeg" height="340"/> |
 
-<br>
-
-| My Applications | Application Progress | Job Details (1) | Job Details (2) |
+| My Applications | Application Timeline | Job Details 1 | Job Details 2 |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/my_applications.jpeg" height="320"/> | <img src="screenshots/application_progress.jpeg" height="320"/> | <img src="screenshots/job_detail_img1.jpeg" height="320"/> | <img src="screenshots/job_detail_img2.jpeg" height="320"/> |
+| <img src="screenshots/my_applications.jpeg" height="340"/> | <img src="screenshots/application_progress.jpeg" height="340"/> | <img src="screenshots/job_detail_img1.jpeg" height="340"/> | <img src="screenshots/job_detail_img2.jpeg" height="340"/> |
 
-<br><br>
+### Recruiter Screens
 
-### Recruiter View
-
-| Dashboard | Posted Jobs | Post New Job | Job Applicants |
+| Dashboard | Posted Jobs | Post Job | Applicants |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/dashboard_recruiter.jpeg" height="320"/> | <img src="screenshots/recruiter_posted_jobs.jpeg" height="320"/> | <img src="screenshots/recruiter_post_new_job.jpeg" height="320"/> | <img src="screenshots/job_applicants.jpeg" height="320"/> |
-
-<br>
+| <img src="screenshots/dashboard_recruiter.jpeg" height="340"/> | <img src="screenshots/recruiter_posted_jobs.jpeg" height="340"/> | <img src="screenshots/recruiter_post_new_job.jpeg" height="340"/> | <img src="screenshots/job_applicants.jpeg" height="340"/> |
 
 | Notifications | Recruiter Profile | Edit Job | Edit Profile |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/notification_recruiter.jpeg" height="320"/> | <img src="screenshots/profile_recruiter.jpeg" height="320"/> | <img src="screenshots/recruiter_edit_job.jpeg" height="320"/> | <img src="screenshots/edit_profile.jpeg" height="320"/> |
+| <img src="screenshots/notification_recruiter.jpeg" height="340"/> | <img src="screenshots/profile_recruiter.jpeg" height="340"/> | <img src="screenshots/recruiter_edit_job.jpeg" height="340"/> | <img src="screenshots/edit_profile.jpeg" height="340"/> |
 
----
+## Project Structure
 
-## Setup Instructions
+- `JobNetApp/` Android app (this folder)
+- `JobNet-springboot-backend/` main backend APIs
+- `JobNet-flask-backend/` scraping/data microservice
 
-### 1. Open in Android Studio
-- Launch Android Studio and select **File → Open**.
-- Navigate to and select the cloned `android/` folder.
-- Android Studio will automatically sync the Gradle files and download required dependencies.
+## Local Setup
 
-### 2. Configure API Endpoints
-Update your networking client's base URL to point to your running Spring Boot server. Make sure the Spring Boot server is correctly linked to the MongoDB instance and the Flask microservice.
+### 1. Start Flask backend
+From `JobNet-flask-backend/`:
 
-### 3. Build & Run
-- Recommended Minimum SDK: `minSdk 24` (Android 7.0 Nougat or higher).
-- Target SDK: `targetSdk 34`.
-- Click the **Run** button (Shift + F10) to deploy the app to an emulator or connected physical device.
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+Default port: `5000`
+
+### 2. Start Spring Boot backend
+From `JobNet-springboot-backend/`:
+
+1. Create `.env` from `.env.example` and fill values (`MONGO_URI`, `JWT_SECRET`, optional skills/supabase keys).
+2. Run:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Default port: `8080`
+
+Spring reads:
+- `MONGO_URI`
+- `FLASK_HOSTED_URL`
+- `JWT_SECRET`
+- skills provider env vars
+
+### 3. Configure Android base URL
+`JobNetApp/app/build.gradle` uses:
+
+```gradle
+def backendBaseUrl = project.findProperty("JOBNET_BASE_URL") ?: "https://jobnet-gdsn.onrender.com/"
+```
+
+For local development, set in `JobNetApp/gradle.properties` (or user-level Gradle properties):
+
+```properties
+JOBNET_BASE_URL=http://10.0.2.2:8080/
+```
+
+Use `10.0.2.2` for Android emulator to reach host machine localhost.
+
+### 4. Run Android app
+- Open `JobNetApp/` in Android Studio.
+- Sync Gradle.
+- Run on emulator/device.
+
+Current Android config:
+- `compileSdk 34`
+- `minSdk 26`
+- `targetSdk 34`
+- Java compatibility: 17
+
+## Notes
+
+- The app supports automatic token refresh through an OkHttp interceptor.
+- Resume upload/finalization APIs are wired in Spring (`/user/resume/upload-chunk`, `/user/resume/finalize-upload`).
+- If you enable skills provider credentials, `/skills` and `/skills/search` use provider data with fallback behavior.
